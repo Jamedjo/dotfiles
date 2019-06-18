@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Sway WM
+Comment=Uses Sway tiling window manager on Wayland
+#Exec=env GNOME_SHELL_SESSION_MODE=ubuntu  gnome-session --session=ubuntu
+#Exec=/usr/local/bin/sway
+Exec=/home/james/sway.sh
+#TryExec=sway -d 2> ~/sway.log
+Type=Application
+DesktopNames=sway
+#X-Ubuntu-Gettext-Domain=gnome-session-3.0

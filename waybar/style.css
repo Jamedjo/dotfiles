@@ -1,0 +1,139 @@
+* {
+    border: none;
+    border-radius: 0;
+    font-family: Roboto, Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    min-height: 0;
+}
+
+window#waybar {
+    background: rgba(43, 48, 59, 0.5);
+    border-bottom: 3px solid rgba(100, 114, 125, 0.5);
+    color: #ffffff;
+}
+
+window#waybar.hidded {
+    opacity: 0.2;
+}
+
+/* https://github.com/Alexays/Waybar/wiki/FAQ#the-workspace-buttons-have-a-strange-hover-effect */
+#workspaces button {
+    padding: 0 5px;
+    background: transparent;
+    color: #ffffff;
+    border-bottom: 3px solid transparent;
+}
+
+#workspaces button.focused {
+    background: rgba(100, 114, 125, 0.5);
+    border-bottom: 3px solid #ffffff;
+}
+
+#workspaces button.urgent {
+    background-color: rgba(235, 77, 75, 0.5);
+}
+
+#mode {
+    background: rgba(100, 114, 125, 0.5);
+    border-bottom: 3px solid #ffffff;
+}
+
+#clock, #battery, #cpu, #memory, #temperature, #backlight, #network, #pulseaudio, #custom-media, #tray, #mode, #idle_inhibitor {
+    padding: 0 10px;
+    margin: 0 5px;
+}
+
+#clock {
+    background-color: rgba(100, 114, 125, 0.5);
+}
+
+#battery {
+    background-color: rgba(255, 255, 255, 0.5);
+    color: #000000;
+}
+
+#battery.charging {
+    color: #ffffff;
+    background-color: rgba(127, 56, 26, 0.5);
+}
+
+@keyframes blink {
+    to {
+        background-color: rgba(255, 255, 255, 0.5);
+        color: #000000;
+    }
+}
+
+#battery.critical:not(.charging) {
+    background: rgba(245, 60, 60, 0.5);
+    color: #ffffff;
+    animation-name: blink;
+    animation-duration: 0.5s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+#cpu {
+    background: rgba(21, 36, 82, 0.5);
+}
+
+#memory {
+    background: rgba(155, 89, 182, 0.5);
+}
+
+#backlight {
+    background: rgba(144, 177, 177, 0.5);
+}
+
+#network {
+    background: rgba(41, 128, 185, 0.5);
+}
+
+#network.disconnected {
+    background: rgba(245, 60, 60, 0.5);
+}
+
+#pulseaudio {
+    background: rgba(21, 54, 82, 0.5);
+}
+
+#pulseaudio.muted {
+    background: rgba(144, 177, 177, 0.5);
+    color: #2a5c45;
+}
+
+#custom-media {
+    background: rgba(102, 204, 153, 0.5);
+    color: #2a5c45;
+}
+
+.custom-spotify {
+    background: rgba(102, 204, 153, 0.5);
+}
+
+.custom-vlc {
+    background: rgba(255, 160, 0, 0.5);
+}
+
+#temperature {
+    background: rgba(240, 147, 43, 0.5);
+}
+
+#temperature.critical {
+    background: rgba(235, 77, 75, 0.5);
+}
+
+#tray {
+    /*background-color: rgba(41, 128, 185, 0.5);*/
+    background-color: rgba(7, 22, 33, 0.9);
+}
+
+#idle_inhibitor {
+    background-color: rgba(45, 52, 54, 0.5);
+}
+
+#idle_inhibitor.activated {
+    background-color: rgba(236, 240, 241, 0.5);
+    color: #2d3436;
+}
