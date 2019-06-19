@@ -335,5 +335,8 @@ exec indicator-kdeconnect
 # Notifications
 exec mako
 
+# Time tracking
+#exec rescuetime
+
 include /usr/local/etc/sway/config.d/*
 

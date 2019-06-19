@@ -7,7 +7,7 @@
     "modules-left": ["sway/workspaces", "sway/mode", "custom/media"],
     "modules-center": ["sway/window"],
     //"modules-right": ["idle_inhibitor", "pulseaudio", "network", "cpu", "memory", "temperature", "backlight", "battery", "battery#bat2", "clock", "tray"],
-    "modules-right": ["clock", "pulseaudio", "cpu", "battery", "network", "tray"],
+    "modules-right": ["pulseaudio", "cpu", "battery", "network", "tray", "clock"],
     // Modules configuration
     // "sway/workspaces": {
     //     "disable-scroll": true,
@@ -40,7 +40,9 @@
     },
     "clock": {
         "tooltip-format": "{:%Y-%m-%d | %H:%M}",
-        "format": "{:%H:%M 🕛}",
+        //"format": "{:%Y-%m-%d %H:%M}",
+        //"format": "{:%H:%M 🕛}",
+        "format": "{:%H:%M}",
         "format-alt": "{:%Y-%m-%d}"
     },
     "cpu": {
@@ -80,8 +82,10 @@
     "network": {
         // "interface": "wlp2s0", // (Optional) To force the use of this interface
         //"interface": "wlp59s0", // (Optional) To force the use of this interface
-        "format-wifi": "{essid} ({signalStrength}%) ",
-        "format-ethernet": "{ifname}: {ipaddr}/{cidr} ",
+        "tooltip-format-wifi": "{essid} ({signalStrength}%)",
+        "format-wifi": "",
+        //"format-wifi": "{essid} ({signalStrength}%) ",
+        //"format-ethernet": "{ifname}: {ipaddr}/{cidr} ",
         "format-disconnected": "Disconnected ⚠"
     },
     "pulseaudio": {
@@ -90,13 +94,15 @@
         "format-bluetooth": "{volume}% {icon}",
         "format-muted": "🔇",
         "format-icons": {
-            "headphones": "🎧",
+            //"headphones": "🎧",
+            "headphones": "",
             "handsfree": "",
             "headset": "",
             "phone": "",
             "portable": "",
             "car": "",
             "default": ["🔈", "🔉", "🔊"]
+            //"default": ["", "", ""]
         },
         "on-click": "pavucontrol"
     },
