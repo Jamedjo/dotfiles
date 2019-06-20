@@ -45,6 +45,7 @@
         "format-alt": "{:%Y-%m-%d}"
     },
     "cpu": {
+        "on-click": "urxvt -e htop",
         "format": " {usage}%"
     },
     "memory": {
@@ -74,12 +75,14 @@
         // "format-good": "", // An empty format will hide the module
         // "format-full": "",
         "format-icons": ["", "", "", "", ""],
+        "on-click": "urxvt -e bash -c 'acpi -b ; read -rsn1'",
         "tooltip": true
     },
     "battery#bat2": {
         "bat": "BAT2"
     },
     "network": {
+        "on-click": "urxvt -e nmtui",
         // "interface": "wlp2s0", // (Optional) To force the use of this interface
         //"interface": "wlp59s0", // (Optional) To force the use of this interface
         "tooltip-format-wifi": "{essid} ({signalStrength}%)",
