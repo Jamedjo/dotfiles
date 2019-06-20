@@ -36,6 +36,7 @@ output * bg /home/james/Pictures/koh-phangang-east-villa.jpg fill
 output eDP-1 scale 2
 #output eDP-1 scale 1.5
 output WL-1 resolution 1920x1050
+output "Goldstar Company Ltd LG TV 0x00000101" resolution 4096x2160
 
 ### Idle configuration
 #
@@ -136,16 +137,20 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
 # Workspaces:
 #
     # name workspaces
-    set $workspace1 "1: Mail"
-    set $workspace2 "2: "
-    set $workspace3 "3: "
-    set $workspace4 "4: "
-    set $workspace5 "5: Notes"
+    set $workspace1 "1: "
+    set $workspace2 "2: "
+    set $workspace3 "3: "
+    set $workspace4 "4: "
+    set $workspace5 "5: "
     set $workspace6 "6: "
     set $workspace7 "7: "
     set $workspace8 "8: "
     set $workspace9 "9: Nine"
     set $workspace10 "10: Ten"
+
+    set $notes $workspace5
+    set $web $workspace1
+    set $chat $workspace8
 
     # switch to workspace
     bindsym $mod+1 workspace $workspace1
@@ -173,7 +178,7 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
 # Window assignments
 #
     exec slack
-    assign [class="Slack"] workspace $workspace8
+    assign [class="Slack"] workspace $chat
 
     # Load urxvt theme and plugins
     exec xrdb ~/.Xresources
@@ -181,12 +186,12 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
     #assign [title='TODO'] workspace $workspace5
 
     exec simplenote
-    assign [class="Simplenote"] workspace $workspace5
+    assign [class="Simplenote"] workspace $notes
 
-    exec thunderbird
-    assign [class="Thunderbird"] workspace $workspace1
+    #exec thunderbird
+    #assign [class="Thunderbird"] workspace $workspace1
 
-    exec swaymsg workspace $workspace2
+    exec swaymsg workspace $web
 #
 # Layout stuff:
 #
