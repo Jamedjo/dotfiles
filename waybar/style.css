@@ -1,7 +1,7 @@
 * {
     border: none;
     border-radius: 0;
-    font-family: Roboto, Helvetica, Arial, sans-serif;
+    font-family: "FontAwesome 5 Free Solid", Roboto, Helvetica, Arial, sans-serif;
     font-size: 13px;
     min-height: 0;
 }
@@ -39,13 +39,7 @@ window#waybar.hidded {
 }
 
 #clock, #battery, #cpu, #memory, #temperature, #backlight, #network, #pulseaudio, #custom-media, #tray, #mode, #idle_inhibitor {
-    padding: 0 10px;
-    /* margin: 0 5px; */
-}
-
-#clock {
-    /* background-color: rgba(7, 22, 33, 0.9); */
-    border-bottom: 3px solid #ffffff;
+    padding: 0 8px;
 }
 
 /* #battery, #cpu, #pulseaudio { */
@@ -55,7 +49,7 @@ window#waybar.hidded {
 
 #battery.charging {
     color: #ffffff;
-    background-color: rgba(127, 56, 26, 0.5);
+    /* background-color: rgba(127, 56, 26, 0.5); */
 }
 
 @keyframes blink {
@@ -91,8 +85,17 @@ window#waybar.hidded {
     background: rgba(41, 128, 185, 0.5);
 } */
 
-#network, #clock, #tray {
+/* #network, #clock, #tray { */
+#clock {
     background-color: rgba(7, 22, 33, 0.9);
+    border-bottom: 3px solid rgba(100, 114, 125, 0.5);
+    padding: 0 15px;
+    margin-left: 8px;
+}
+
+#clock {
+    /* background-color: rgba(7, 22, 33, 0.9); */
+    border-bottom: 3px solid #ffffff;
 }
 
 #network.disconnected {

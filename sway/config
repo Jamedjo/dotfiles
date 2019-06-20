@@ -25,9 +25,6 @@ set $menu ulauncher-toggle
 ### Output configuration
 #
 # Default wallpaper (more resolutions are available in /usr/local/share/backgrounds/sway/)
-#output * bg /usr/local/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
-#output * bg /home/james/Pictures/spurs-mancity.jpg fill
-#output * bg /home/james/Pictures/no-goal-var-offside.jpg fill
 output * bg /home/james/Pictures/koh-phangang-east-villa.jpg fill
 #
 # Example configuration:
