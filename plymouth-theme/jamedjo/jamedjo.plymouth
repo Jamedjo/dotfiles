@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=Jamedjo
+Description=A Jamedjo Splash
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes//jamedjo
+ScriptFile=/usr/share/plymouth/themes//jamedjo/jamedjo.script
