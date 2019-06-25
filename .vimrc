@@ -24,6 +24,7 @@ map <C-p> :FZF<CR>
 map <C-k><C-b> :NERDTreeToggle<CR>
 map <C-_> <Plug>NERDCommenterToggle
 map <C-g> :Tags<CR>
+nnoremap <C-k><C-k> :let @+=expand("%")<CR>
 
 highlight DiffAdd    cterm=NONE ctermfg=0 ctermbg=10
 highlight DiffDelete cterm=NONE ctermfg=0 ctermbg=9
