@@ -5,6 +5,8 @@ sudo ln /usr/share/applications/slack.desktop
 sudo ln /usr/share/wayland-sessions/swaywm.desktop
 sudo ln /var/lib/dpkg/alternatives/default.plymouth
 sudo ln /etc/default/grub
+sudo ln /etc/systemd/logind.conf
+sudo ln /etc/sysctl.conf
 
 ln ~/.config/libinput-gestures.conf
 ln ~/.oh-my-zsh/themes/jamedjo.zsh-theme
