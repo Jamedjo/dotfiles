@@ -3,6 +3,8 @@ sudo ln /usr/share/applications/firefox-nightly.desktop
 sudo ln /usr/share/applications/simplenote.desktop
 sudo ln /usr/share/applications/slack.desktop
 sudo ln /usr/share/wayland-sessions/swaywm.desktop
+sudo ln /var/lib/dpkg/alternatives/default.plymouth
+sudo ln /etc/default/grub
 
 ln ~/.config/libinput-gestures.conf
 ln ~/.oh-my-zsh/themes/jamedjo.zsh-theme
