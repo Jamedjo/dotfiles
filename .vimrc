@@ -10,6 +10,7 @@ call plug#begin()
   "Plug 'tpope/vim-fugitive'
   Plug 'tpope/vim-rails'
   Plug 'ludovicchabant/vim-gutentags'
+  Plug 'mhinz/vim-startify'
 call plug#end()
 
 set mouse=a
