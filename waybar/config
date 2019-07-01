@@ -75,7 +75,7 @@
         // "format-good": "", // An empty format will hide the module
         // "format-full": "",
         "format-icons": ["", "", "", "", ""],
-        "on-click": "urxvt -e bash -c 'acpi -b ; read -rsn1'",
+        "on-click": "urxvt -e bash -c 'watch --no-title acpi -b'",
         "tooltip": true
     },
     "battery#bat2": {
