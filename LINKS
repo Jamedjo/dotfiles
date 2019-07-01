@@ -7,6 +7,7 @@ sudo ln /var/lib/dpkg/alternatives/default.plymouth
 sudo ln /etc/default/grub
 sudo ln /etc/systemd/logind.conf
 sudo ln /etc/sysctl.conf
+sudo ln /etc/sudoers.d/funtion-keys-sudoers
 
 ln ~/.config/libinput-gestures.conf
 ln ~/.oh-my-zsh/themes/jamedjo.zsh-theme

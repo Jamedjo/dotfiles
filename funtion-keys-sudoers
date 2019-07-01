@@ -1,0 +1,1 @@
+james ALL=(ALL) NOPASSWD:/usr/bin/brightnessctl
