@@ -52,9 +52,9 @@ output "Goldstar Company Ltd LG TV 0x00000101" resolution 4096x2160
 # your displays after another 300 seconds, and turn your screens back on when
 # resumed. It will also lock your screen before your computer goes to sleep.
 #bindsym $mod+Shift+x exec swaylock
-set $lock swaylock -f --image /home/james/Pictures/lockscreen.png
+set $lock swaylock -f
 bindsym $mod+l exec $lock
-exec swayidle -w timeout 300 'swaylock -f --image /home/james/Pictures/lockscreen.png' before-sleep 'swaylock -f --image /home/james/Pictures/lockscreen.png' lock 'swaylock -f --image /home/james/Pictures/lockscreen.png'
+exec swayidle -w timeout 300 '$lock' before-sleep '$lock' lock '$lock'
 
 ### Input configuration
 #

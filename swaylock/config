@@ -1,0 +1,16 @@
+inside-color=37344566
+ring-color=00000099
+key-hl-color=fecf3dff
+
+ring-wrong-color=d23c3dff
+inside-wrong-color=37344566
+text-wrong-color=ffffff
+
+ring-ver-color=fecf3dff
+inside-ver-color=37344566
+text-ver-color=ffffff
+
+line-uses-inside
+indicator-thickness=20
+
+image=/home/james/Pictures/el-nido-roof.png
