@@ -7,8 +7,8 @@
 }
 
 window#waybar {
-    background: rgba(43, 48, 59, 0.5);
-    border-bottom: 3px solid rgba(100, 114, 125, 0.5);
+    background: rgba(14, 19, 23, 0.6);
+    border-bottom: 2px solid rgba(14,19, 23, 0.7);
     color: #ffffff;
 }
 
@@ -21,12 +21,12 @@ window#waybar.hidded {
     padding: 0 5px;
     background: transparent;
     color: #ffffff;
-    border-bottom: 3px solid transparent;
+    border-bottom: 2px solid transparent;
 }
 
 #workspaces button.focused {
-    background: rgba(100, 114, 125, 0.5);
-    border-bottom: 3px solid #ffffff;
+    background: rgba(0, 0, 0, 0.5);
+    border-bottom: 2px solid #ffffff;
 }
 
 #workspaces button.urgent {
@@ -35,7 +35,7 @@ window#waybar.hidded {
 
 #mode {
     background: rgba(100, 114, 125, 0.5);
-    border-bottom: 3px solid #ffffff;
+    border-bottom: 2px solid #ffffff;
 }
 
 #clock, #battery, #cpu, #memory, #temperature, #backlight, #network, #pulseaudio, #custom-media, #tray, #mode, #idle_inhibitor {
@@ -87,15 +87,15 @@ window#waybar.hidded {
 
 /* #network, #clock, #tray { */
 #clock {
-    background-color: rgba(7, 22, 33, 0.9);
-    border-bottom: 3px solid rgba(100, 114, 125, 0.5);
+    background-color: rgba(0, 0, 0, 0.5);
+    border-bottom: 2px solid rgba(100, 114, 125, 0.5);
     padding: 0 15px;
     margin-left: 8px;
 }
 
 #clock {
     /* background-color: rgba(7, 22, 33, 0.9); */
-    border-bottom: 3px solid #ffffff;
+    border-bottom: 2px solid #ffffff;
 }
 
 #network.disconnected {

@@ -25,7 +25,7 @@ set $menu ulauncher-toggle
 ### Output configuration
 #
 # Default wallpaper (more resolutions are available in /usr/local/share/backgrounds/sway/)
-output * bg /home/james/Pictures/koh-phangang-east-villa.jpg fill
+output * bg /home/james/Pictures/seven-commandos-beach-el-nido.png fill
 #
 # Example configuration:
 #
@@ -315,12 +315,10 @@ bar {
     }
 }
 
-# class                 border  backgr. text    indicator child_border
-#client.focused          #4c7899 #285577 #ffffff #2e9ef4   #285577
-#client.focused          #0a0821 #22233d #ffffff #2e9ef4   #285577
-client.focused          #0a0821 #1a2130 #ffffff #2e9ef4   #285577
-client.focused_inactive #333333 #5f676a #ffffff #484e50   #5f676a
-client.unfocused        #333333 #222222 #888888 #292d2e   #222222
+# class                 border    backgr.   text    indicator child_border
+client.focused          #131313ff #131313ee #ffffff #6f777a   #131313ee
+client.unfocused        #232427cc #232427cc  #ffffff #2e9ef4   #232427cc
+client.focused_inactive #222222dd #222222dd #888888 #292d2e   #222222
 
 #exec spotify
 
