@@ -321,6 +321,11 @@ bar {
     }
 }
 
+gaps inner 18
+smart_gaps on
+smart_borders on
+focus_follows_mouse no
+
 # class                 border    backgr.   text    indicator child_border
 client.focused          #131313ff #131313ee #ffffff #6f777a   #131313ee
 client.unfocused        #232427cc #232427cc  #ffffff #2e9ef4   #232427cc
