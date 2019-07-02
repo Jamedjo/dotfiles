@@ -175,6 +175,12 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
     bindsym $mod+Shift+9 move container to workspace $workspace9
     bindsym $mod+Shift+0 move container to workspace $workspace10
 
+    # Move workspace to other screen
+    bindsym $mod+Shift+w exec swaymsg -t get_outputs | jq '.[] | select(.focused!=true) | .name' | head -n1 | xargs swaymsg move workspace to
+
+    # Rotate current workspace
+    bindsym $mod+Shift+r exec swaymsg -t get_outputs | jq '.[] | select(.focused==true) | .name' | xargs -I% swaymsg output % transform 90 clockwise
+
 # Window assignments
 #
     exec slack
