@@ -12,6 +12,14 @@ window#waybar {
     color: #ffffff;
 }
 
+window#waybar.bottom {
+    border-top: 2px solid rgba(14,19, 23, 0.7);
+}
+
+window#waybar.focuslock {
+    font-weight: bold;
+}
+
 window#waybar.hidded {
     opacity: 0.2;
 }
@@ -110,6 +118,10 @@ window#waybar.hidded {
     background: rgba(144, 177, 177, 0.5);
     color: #2a5c45;
 } */
+
+#custom-focuslock, #window {
+    font-family: Roboto, Helvetica, Arial, sans-serif;
+}
 
 #custom-media {
     background: rgba(102, 204, 153, 0.5);

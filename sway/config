@@ -16,6 +16,7 @@ set $up k
 set $right l
 # Your preferred terminal emulator
 set $term urxvt
+set $term_run urxvt -e bash -c
 set $browser GDK_BACKEND=wayland /opt/firefox_nightly/firefox
 # Your preferred application launcher
 # Note: it's recommended that you pass the final command to sway
@@ -199,6 +200,8 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
     #assign [class="Thunderbird"] workspace $workspace1
 
     exec swaymsg workspace $web
+
+    bindsym $mod+Shift+f exec $term_run 'vim /home/james/.config/focuslock/current'
 #
 # Layout stuff:
 #
@@ -304,22 +307,7 @@ bindsym Shift+Print exec /home/james/Scripts/screencap_tray.py
 #
 # Read `man 5 sway-bar` for more information about this section.
 bar {
-    #position left
-    position top
-    #tray_bindcode SecondaryActivate
-
-    # When the status_command prints a new line to stdout, swaybar updates.
-    # The default just shows the current date and time.
-    # status_command while date +'%Y-%m-%d %l:%M:%S %p'; do sleep 1; done
-    # status_command i3status
-    # status_command i3blocks
     swaybar_command waybar
-
-    colors {
-        statusline #ffffff
-        background #323232
-        inactive_workspace #32323200 #32323200 #5c5c5c
-    }
 }
 
 gaps inner 18

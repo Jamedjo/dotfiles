@@ -1,6 +1,5 @@
-{
+[{
     "layer": "top", // Waybar at top layer
-    // "position": "bottom", // Waybar position (top|bottom|left|right)
     "height": 25, // Waybar height
     // "width": 1280, // Waybar width
     // Choose the order of the modules
@@ -118,4 +117,17 @@
         "escape": true,
         "exec": "$HOME/.config/waybar/mediaplayer.py 2> /dev/null" // Script in resources folder
     }
-}
+},{
+    "name": "focuslock",
+    "position": "bottom",
+    "layer": "top",
+    "height": 25,
+    "modules-center": ["custom/focuslock"],
+    "custom/focuslock": {
+        "max-length": 40,
+        "escape": true,
+        "exec": "head -n1 $HOME/.config/focuslock/current",
+        "on-click": "urxvt -e bash -c 'vim $HOME/.config/focuslock/current'",
+        "interval": 2
+    }
+}]
