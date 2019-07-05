@@ -15,9 +15,7 @@ URxvt*letterSpace: -1
 
 !! Colorscheme
   urxvt*depth: 32
-! urxvt*background: rgba:0000/0000/0200/c800
-! urxvt*background: [98]#121222
-  urxvt*background: [94]#0C0C0C
+  urxvt*background: [96]#181818
   *.background: #121222
   *.foreground: #FFFFFF
 ! *.foreground: #2E2C5F
