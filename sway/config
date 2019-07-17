@@ -202,7 +202,7 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
 
     exec swaymsg workspace $web
 
-    bindsym $mod+Shift+f exec $term_run 'vim /home/james/.config/focuslock/current'
+    bindsym $mod+Shift+f exec $term_run 'sleep 0.1 && vim /home/james/.config/focuslock/current'
 #
 # Layout stuff:
 #
