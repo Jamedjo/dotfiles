@@ -16,7 +16,7 @@ set $up k
 set $right l
 # Your preferred terminal emulator
 set $term urxvt
-set $term_run urxvt -e bash -c
+set $term_run urxvt -e zsh -c
 set $browser GDK_BACKEND=wayland /opt/firefox_nightly/firefox
 # Your preferred application launcher
 # Note: it's recommended that you pass the final command to sway
@@ -177,8 +177,9 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
     bindsym $mod+Shift+9 move container to workspace $workspace9
     bindsym $mod+Shift+0 move container to workspace $workspace10
 
-    # Move workspace to other screen
-    bindsym $mod+Shift+w exec swaymsg -t get_outputs | jq '.[] | select(.focused!=true) | .name' | head -n1 | xargs swaymsg move workspace to
+    # Move workspace to other screens
+    bindsym $mod+Shift+w exec $term_run "source ~/.fzf.zsh && swaymsg -t get_outputs | jq -r '.[] | select(.focused!=true) | [.name, .make, .model] | @tsv' | fzf --select-1 --reverse --prompt='Move workspace to:' | awk '{print $1}' | xargs -r swaymsg move workspace to"
+    bindsym $mod+Alt+w exec swaymsg -t get_outputs | jq '.[] | select(.focused!=true) | .name' | head -n1 | xargs swaymsg move workspace to
 
     # Rotate current workspace
     bindsym $mod+Shift+r exec swaymsg -t get_outputs | jq '.[] | select(.focused==true) | .name' | xargs -I% swaymsg output % transform 90 clockwise
