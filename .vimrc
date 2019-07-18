@@ -8,6 +8,7 @@ call plug#begin()
   Plug '~/.fzf'
   Plug 'junegunn/fzf.vim'
   Plug 'mhinz/vim-grepper'
+  Plug 'romainl/vim-qf'
   Plug 'vim-ruby/vim-ruby'
   Plug 'tpope/vim-rails'
   Plug 'ludovicchabant/vim-gutentags'
@@ -29,7 +30,11 @@ let g:NERDDefaultAlign = 'left'
 map <C-p> :FZF<CR>
 
 nnoremap <C-S-F> :Grepper -cword -side<cr>
-nnoremap <Esc>f :Grepper -cword<cr>
+map <Esc>f <A-f>
+nnoremap <A-f> :Grepper -cword<cr>
+let g:qf_mapping_ack_style = 1
+nmap <Home> <Plug>(qf_qf_previous)
+nmap <End> <Plug>(qf_qf_next)
 
 map <C-k><C-b> :NERDTreeToggle<CR>
 map <C-_> <Plug>NERDCommenterToggle
