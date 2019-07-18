@@ -5,11 +5,10 @@ call plug#begin()
   Plug 'vim-airline/vim-airline-themes'
   Plug 'flazz/vim-colorschemes'
   Plug 'Jamedjo/setcolors.vim' "Plug '~/Scripts/setcolors.vim'
-  "Plug 'ctrlpvim/ctrlp.vim'
   Plug '~/.fzf'
   Plug 'junegunn/fzf.vim'
+  Plug 'mhinz/vim-grepper'
   Plug 'vim-ruby/vim-ruby'
-  "Plug 'tpope/vim-fugitive'
   Plug 'tpope/vim-rails'
   Plug 'ludovicchabant/vim-gutentags'
   Plug 'mhinz/vim-startify'
@@ -22,18 +21,20 @@ set mouse=a
 set modelines=0
 set tabstop=2 softtabstop=2 shiftwidth=2 expandtab
 
-set background=light
+set background=dark
 colo jamedjo "stereokai dracula thor PaperColor
 let g:airline_theme='base16'
 
 let g:NERDDefaultAlign = 'left'
 map <C-p> :FZF<CR>
 
+nnoremap <C-S-F> :Grepper -cword -side<cr>
+nnoremap <Esc>f :Grepper -cword<cr>
+
 map <C-k><C-b> :NERDTreeToggle<CR>
 map <C-_> <Plug>NERDCommenterToggle
 map <C-g> :Tags<CR>
 nnoremap <C-k><C-k> :let @+=expand("%")<CR>
-
 
 "Close Tree sidebar if it is the last thing open
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
