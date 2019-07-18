@@ -56,7 +56,7 @@ output "Goldstar Company Ltd LG TV 0x00000101" resolution 4096x2160
 #bindsym $mod+Shift+x exec swaylock
 set $lock swaylock -f
 bindsym $mod+l exec $lock
-exec swayidle -w timeout 300 '$lock' before-sleep '$lock' lock '$lock'
+exec swayidle -w timeout 300 '$lock' before-sleep '$lock' lock '$lock' timeout 600 'systemctl suspend'
 
 ### Input configuration
 #
