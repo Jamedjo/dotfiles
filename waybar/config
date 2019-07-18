@@ -124,10 +124,10 @@
     "height": 25,
     "modules-center": ["custom/focuslock"],
     "custom/focuslock": {
-        "max-length": 40,
+        "max-length": 80,
         "escape": true,
         "exec": "head -n1 $HOME/.config/focuslock/current",
-        "on-click": "urxvt -e bash -c 'vim $HOME/.config/focuslock/current'",
+        "on-click": "urxvt -e bash -c 'sleep 0.1 && vim $HOME/.config/focuslock/current'",
         "interval": 2
     }
 }]
