@@ -13,6 +13,7 @@ call plug#begin()
   Plug 'tpope/vim-rails'
   Plug 'ludovicchabant/vim-gutentags'
   Plug 'mhinz/vim-startify'
+  Plug 'terryma/vim-multiple-cursors'
 call plug#end()
 
 filetype plugin on
@@ -41,5 +42,9 @@ map <C-_> <Plug>NERDCommenterToggle
 map <C-g> :Tags<CR>
 nnoremap <C-k><C-k> :let @+=expand("%")<CR>
 
+let g:multi_cursor_select_all_word_key = '<leader><C-N>'
+
 "Close Tree sidebar if it is the last thing open
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+au BufRead,BufNewFile *.vue set filetype=html
