@@ -20,4 +20,5 @@ mkdir sway && ln ~/.config/sway/* sway/
 mkdir waybar && ln ~/.config/waybar/* waybar/
 mkdir Scripts && ln ~/Scripts/* Scripts/
 mkdir swaylock && ln ~/.config/swaylock/config swaylock/config
+mkdir mako && ln ~/.config/mako/* mako/
 

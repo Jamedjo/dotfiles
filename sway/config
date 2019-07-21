@@ -337,7 +337,7 @@ exec indicator-kdeconnect
 #exec autocutsel
 
 # Notifications
-exec dunst
+exec mako
 
 # Time tracking
 #exec rescuetime

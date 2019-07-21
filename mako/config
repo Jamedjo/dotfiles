@@ -1,0 +1,8 @@
+default-timeout=5000
+
+background-color=#18181BF0
+border-color=#08080FA0
+text-color=#CFCFCF
+
+width=350
+height=80
