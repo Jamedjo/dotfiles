@@ -14,6 +14,7 @@ ln ~/.oh-my-zsh/themes/jamedjo.zsh-theme
 ln ~/.Xresources
 ln ~/sway.sh
 ln ~/.vimrc
+ln ~/.gdbinit
 
 mkdir sway && ln ~/.config/sway/* sway/
 mkdir waybar && ln ~/.config/waybar/* waybar/

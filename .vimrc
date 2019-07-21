@@ -18,6 +18,7 @@ call plug#end()
 
 filetype plugin on
 
+set history=10000
 set mouse=a
 "set relativenumber
 set modelines=0
