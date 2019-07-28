@@ -17,7 +17,8 @@ call plug#begin()
   Plug 'airblade/vim-gitgutter'
 call plug#end()
 
-filetype plugin on
+filetype plugin indent on
+packadd! matchit
 
 set history=10000
 set mouse=a
