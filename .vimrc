@@ -14,6 +14,7 @@ call plug#begin()
   Plug 'ludovicchabant/vim-gutentags'
   Plug 'mhinz/vim-startify'
   Plug 'terryma/vim-multiple-cursors'
+  Plug 'airblade/vim-gitgutter'
 call plug#end()
 
 filetype plugin on
@@ -27,6 +28,10 @@ set tabstop=2 softtabstop=2 shiftwidth=2 expandtab
 set background=dark
 colo jamedjo "stereokai dracula thor PaperColor
 let g:airline_theme='base16'
+
+"Remap recording to Q, to avoid accidents
+nnoremap Q q
+nnoremap q <Nop>
 
 let g:NERDDefaultAlign = 'left'
 map <C-p> :FZF<CR>
