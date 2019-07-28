@@ -199,6 +199,8 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
 
     exec simplenote
     assign [class="Simplenote"] workspace $notes
+    exec /opt/todoist/todoist
+    assign [class="todoist"] workspace $notes
 
     #exec thunderbird
     #assign [class="Thunderbird"] workspace $workspace1
@@ -328,6 +330,7 @@ client.focused_inactive #222222dd #222222dd #888888 #292d2e   #222222
 
 # ULauncher listens from a background process
 exec GDK_BACKEND=wayland ulauncher --hide-window
+for_window [app_id="ulauncher"] floating enable, border none
 
 # Android Remote Control/transfer
 exec /usr/lib/x86_64-linux-gnu/libexec/kdeconnectd
