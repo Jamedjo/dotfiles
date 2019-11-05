@@ -25,6 +25,9 @@
     "sway/mode": {
         "format": "<span style=\"italic\">{}</span>"
     },
+    "sway/window": {
+        "tooltip": false
+    },
     "idle_inhibitor": {
         "format": "{icon}",
         "format-icons": {
@@ -124,6 +127,7 @@
     "height": 25,
     "modules-center": ["custom/focuslock"],
     "custom/focuslock": {
+        "tooltip": false,
         "max-length": 80,
         "escape": true,
         "exec": "head -n1 $HOME/.config/focuslock/current",
