@@ -15,6 +15,7 @@ call plug#begin()
   Plug 'mhinz/vim-startify'
   Plug 'terryma/vim-multiple-cursors'
   Plug 'airblade/vim-gitgutter'
+  Plug 'ntpeters/vim-better-whitespace'
 call plug#end()
 
 filetype plugin indent on
