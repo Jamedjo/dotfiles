@@ -132,6 +132,6 @@
         "escape": true,
         "exec": "head -n1 $HOME/.config/focuslock/current",
         "on-click": "urxvt -e bash -c 'sleep 0.1 && vim $HOME/.config/focuslock/current'",
-        "interval": 2
+        "interval": 1
     }
 }]
