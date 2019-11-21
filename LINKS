@@ -8,6 +8,7 @@ sudo ln /etc/default/grub
 sudo ln /etc/systemd/logind.conf
 sudo ln /etc/sysctl.conf
 sudo ln /etc/sudoers.d/funtion-keys-sudoers
+sudo ln /usr/share/pulseaudio/alsa-mixer/paths/analog-input-internal-mic.conf
 
 ln ~/.config/libinput-gestures.conf
 ln ~/.oh-my-zsh/themes/jamedjo.zsh-theme
