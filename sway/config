@@ -317,6 +317,13 @@ bar {
     swaybar_command waybar
 }
 
+# See: https://github.com/Alexays/Waybar/issues/63
+for_window [app_id="waybar" floating] {
+    #move position cursor
+    #move down 158px # Adjust manually so menus fit
+    move absolute position 1630 25
+}
+
 gaps inner 18
 smart_gaps on
 smart_borders on
