@@ -344,6 +344,8 @@ for_window [app_id="ulauncher"] floating enable, border none
 exec /usr/lib/x86_64-linux-gnu/libexec/kdeconnectd
 exec indicator-kdeconnect
 
+for_window [class=zoom title=Settings] floating enable
+
 # Link primary text selection and main clipboard
 #exec autocutsel
 
