@@ -1,0 +1,37 @@
+
+! special
+URxvt.theme.tomorrow-light.foreground:   #373b41
+URxvt.theme.tomorrow-light.background:   #ffffff
+URxvt.theme.tomorrow-light.cursorColor:  #373b41
+
+! black
+URxvt.theme.tomorrow-light.color0:       #1d1f21
+URxvt.theme.tomorrow-light.color8:       #969896
+
+! red
+URxvt.theme.tomorrow-light.color1:       #cc6666
+URxvt.theme.tomorrow-light.color9:       #d96060
+
+! green
+URxvt.theme.tomorrow-light.color2:       #b5bd68
+URxvt.theme.tomorrow-light.color10:      #c6d158
+
+! yellow
+URxvt.theme.tomorrow-light.color3:       #f0c674
+URxvt.theme.tomorrow-light.color11:      #fbbf4b
+
+! blue
+URxvt.theme.tomorrow-light.color4:       #81a2be
+URxvt.theme.tomorrow-light.color12:      #6da6d5
+
+! magenta
+URxvt.theme.tomorrow-light.color5:       #b294bb
+URxvt.theme.tomorrow-light.color13:      #ba89c8
+
+! cyan
+URxvt.theme.tomorrow-light.color6:       #8abeb7
+URxvt.theme.tomorrow-light.color14:      #80cac0
+
+! white
+URxvt.theme.tomorrow-light.color7:       #c5c8c6
+URxvt.theme.tomorrow-light.color15:      #ffffff

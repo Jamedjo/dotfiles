@@ -1,0 +1,37 @@
+
+! special
+URxvt.theme.londontube.foreground:   #5a5758
+URxvt.theme.londontube.background:   #ffffff
+URxvt.theme.londontube.cursorColor:  #5a5758
+
+! black
+URxvt.theme.londontube.color0:       #231f20
+URxvt.theme.londontube.color8:       #737171
+
+! red
+URxvt.theme.londontube.color1:       #ee2e24
+URxvt.theme.londontube.color9:       #ba241c
+
+! green
+URxvt.theme.londontube.color2:       #00853e
+URxvt.theme.londontube.color10:      #006b32
+
+! yellow
+URxvt.theme.londontube.color3:       #ffd204
+URxvt.theme.londontube.color11:      #ffb018
+
+! blue
+URxvt.theme.londontube.color4:       #009ddc
+URxvt.theme.londontube.color12:      #0086bc
+
+! magenta
+URxvt.theme.londontube.color5:       #98005d
+URxvt.theme.londontube.color13:      #cd007d
+
+! cyan
+URxvt.theme.londontube.color6:       #85cebc
+URxvt.theme.londontube.color14:      #4cb89e
+
+! white
+URxvt.theme.londontube.color7:       #d9d8d8
+URxvt.theme.londontube.color15:      #f4f4f4

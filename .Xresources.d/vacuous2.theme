@@ -1,0 +1,37 @@
+
+! special
+URxvt.theme.vacuous2.foreground:   #d2c5bc
+URxvt.theme.vacuous2.background:   #101010
+URxvt.theme.vacuous2.cursorColor:  #d2c5bc
+
+! black
+URxvt.theme.vacuous2.color0:       #202020
+URxvt.theme.vacuous2.color8:       #606060
+
+! red
+URxvt.theme.vacuous2.color1:       #b91e2e
+URxvt.theme.vacuous2.color9:       #d14548
+
+! green
+URxvt.theme.vacuous2.color2:       #81957c
+URxvt.theme.vacuous2.color10:      #a7b79a
+
+! yellow
+URxvt.theme.vacuous2.color3:       #f9bb80
+URxvt.theme.vacuous2.color11:      #fae3a0
+
+! blue
+URxvt.theme.vacuous2.color4:       #356579
+URxvt.theme.vacuous2.color12:      #7491a1
+
+! magenta
+URxvt.theme.vacuous2.color5:       #2d2031
+URxvt.theme.vacuous2.color13:      #87314e
+
+! cyan
+URxvt.theme.vacuous2.color6:       #0b3452
+URxvt.theme.vacuous2.color14:      #0f829d
+
+! white
+URxvt.theme.vacuous2.color7:       #909090
+URxvt.theme.vacuous2.color15:      #fff0f0

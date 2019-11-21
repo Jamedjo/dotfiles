@@ -1,0 +1,37 @@
+
+! special
+URxvt.theme.monokai.foreground:   #49483e
+URxvt.theme.monokai.background:   #f9f8f5
+URxvt.theme.monokai.cursorColor:  #49483e
+
+! black
+URxvt.theme.monokai.color0:       #272822
+URxvt.theme.monokai.color8:       #75715e
+
+! red
+URxvt.theme.monokai.color1:       #f92672
+URxvt.theme.monokai.color9:       #e6427f
+
+! green
+URxvt.theme.monokai.color2:       #a6e22e
+URxvt.theme.monokai.color10:      #ceee4f
+
+! yellow
+URxvt.theme.monokai.color3:       #f4bf75
+URxvt.theme.monokai.color11:      #f4d48d
+
+! blue
+URxvt.theme.monokai.color4:       #66d9ef
+URxvt.theme.monokai.color12:      #a0d7ef
+
+! magenta
+URxvt.theme.monokai.color5:       #ae81ff
+URxvt.theme.monokai.color13:      #cea1ff
+
+! cyan
+URxvt.theme.monokai.color6:       #a1efe4
+URxvt.theme.monokai.color14:      #beefda
+
+! white
+URxvt.theme.monokai.color7:       #f8f8f2
+URxvt.theme.monokai.color15:      #f9f8f5

@@ -1,0 +1,36 @@
+! special
+URxvt.theme.Euphrasia.foreground:   #1c2027
+URxvt.theme.Euphrasia.background:   #cfcfd9
+URxvt.theme.Euphrasia.cursorColor:  #1c2027
+
+! black
+URxvt.theme.Euphrasia.color0:       #192033
+URxvt.theme.Euphrasia.color8:       #666666
+
+! red
+URxvt.theme.Euphrasia.color1:       #a62a3e
+URxvt.theme.Euphrasia.color9:       #f04758
+
+! green
+URxvt.theme.Euphrasia.color2:       #38912b
+URxvt.theme.Euphrasia.color10:      #93c724
+
+! yellow
+URxvt.theme.Euphrasia.color3:       #b27d12
+URxvt.theme.Euphrasia.color11:      #ddb62b
+
+! blue
+URxvt.theme.Euphrasia.color4:       #355c9a
+URxvt.theme.Euphrasia.color12:      #45a3e6
+
+! magenta
+URxvt.theme.Euphrasia.color5:       #7c4f9f
+URxvt.theme.Euphrasia.color13:      #c953ef
+
+! cyan
+URxvt.theme.Euphrasia.color6:       #258f8f
+URxvt.theme.Euphrasia.color14:      #60c6c8
+
+! white
+URxvt.theme.Euphrasia.color7:       #77858c
+URxvt.theme.Euphrasia.color15:      #c0c0c0
