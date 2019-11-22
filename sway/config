@@ -15,7 +15,7 @@ set $down j
 set $up k
 set $right l
 # Your preferred terminal emulator
-set $term urxvt
+set $term termite
 set $term_run urxvt -e zsh -c
 set $browser GDK_BACKEND=wayland /opt/firefox_nightly/firefox
 # Your preferred application launcher
@@ -179,7 +179,7 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
 
     # Select container to focus
     for_window [title=fuzzy-tab] floating enable
-    bindsym $mod+Tab exec $term -title 'fuzzy-tab' -e zsh -c 'source ~/.fzf.zsh && swaymsg -t get_tree | jq -r "recurse(.nodes[]?) | select(.type == \\"con\\") | [.id, .app_id, .name] | @tsv" | fzf --reverse --with-nth=2.. | awk "{print \$1}" | xargs -r -I ID swaymsg "[con_id=ID]" focus'
+    bindsym $mod+Tab exec urxvt --title 'fuzzy-tab' -e zsh -c 'source ~/.fzf.zsh && swaymsg -t get_tree | jq -r "recurse(.nodes[]?) | select(.type == \\"con\\") | [.id, .app_id, .name] | @tsv" | fzf --reverse --with-nth=2.. | awk "{print \$1}" | xargs -r -I ID swaymsg "[con_id=ID]" focus'
 
     # Move workspace to another screen with fzf
     bindsym $mod+Shift+w exec $term_run "source ~/.fzf.zsh && swaymsg -t get_outputs | jq -r '.[] | select(.focused!=true) | [.name, .make, .model] | @tsv' | fzf --select-1 --reverse --prompt='Move workspace to:' | awk '{print $1}' | xargs -r swaymsg move workspace to"

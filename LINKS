@@ -16,6 +16,7 @@ ln ~/.Xresources
 ln ~/sway.sh
 ln ~/.vimrc
 ln ~/.gdbinit
+ln ~/.config/termite/config termite.config
 
 mkdir sway && ln ~/.config/sway/* sway/
 mkdir waybar && ln ~/.config/waybar/* waybar/
