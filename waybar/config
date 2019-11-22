@@ -48,7 +48,7 @@
     },
     "cpu": {
         "on-click": "urxvt -e htop",
-        "format": " {usage}%"
+        "format": " {usage}%"
     },
     "memory": {
         "format": "{}% "

@@ -1,8 +1,8 @@
 * {
     border: none;
     border-radius: 0;
-    font-family: "FontAwesome 5 Free Solid", Helvetica, Arial, Roboto, sans-serif;
-    font-size: 13px;
+    font-family: "Ubuntu Nerd Font", Helvetica, Arial, Roboto, sans-serif;
+    font-size: 16px;
     min-height: 0;
 }
 
@@ -17,7 +17,7 @@ window#waybar.bottom {
 }
 
 window#waybar.focuslock {
-    font-weight: bold;
+    /*font-weight: bold;*/
 }
 
 window#waybar.hidded {
@@ -120,7 +120,8 @@ window#waybar.hidded {
 } */
 
 #custom-focuslock, #window {
-    font-family: Helvetica, Arial, Roboto, sans-serif;
+    font-family: "DejaVu Sans Mono Nerd Font", Helvetica, Arial, Roboto, sans-serif;
+    font-size: 16px;
 }
 
 #custom-media {
