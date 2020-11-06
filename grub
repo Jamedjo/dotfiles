@@ -6,10 +6,12 @@
 GRUB_DEFAULT=0
 GRUB_TIMEOUT="-1"
 GRUB_DISTRIBUTOR=`lsb_release -i -s 2> /dev/null || echo Debian`
-GRUB_CMDLINE_LINUX_DEFAULT="quiet loglevel=2 splash rd.systemd.show_status=auto rd.udev.log_priority=3 acpi_rev_override=1 acpi_osi=Linux nouveau.modeset=0 pcie_aspm=force drm.vblankoffdelay=1 scsi_mod.use_blk_mq=1 nouveau.runpm=0 mem_sleep_default=deep"
+GRUB_CMDLINE_LINUX_DEFAULT="quiet loglevel=2 splash rd.systemd.show_status=auto rd.udev.log_priority=3 acpi_rev_override=5 acpi_osi=Linux nouveau.blacklist=1 nouveau.modeset=0 pcie_aspm=force drm.vblankoffdelay=1 scsi_mod.use_blk_mq=1 nouveau.runpm=0 mem_sleep_default=deep resume=b32cda4b-220b-40f6-be8d-78ffc51e3efb resume_offset=37693440"
+##GRUB_CMDLINE_LINUX_DEFAULT="quiet loglevel=2 splash rd.systemd.show_status=auto rd.udev.log_priority=3 acpi_rev_override=1 acpi_osi=Linux nouveau.modeset=0 pcie_aspm=force drm.vblankoffdelay=1 scsi_mod.use_blk_mq=1 nouveau.runpm=0 mem_sleep_default=deep"
+#GRUB_CMDLINE_LINUX_DEFAULT="quiet loglevel=2 splash rd.systemd.show_status=auto rd.udev.log_priority=3 acpi_rev_override=1 acpi_osi=Linux nvidea-drm.modeset=1 nouveau.modeset=0 pcie_aspm=force drm.vblankoffdelay=1 scsi_mod.use_blk_mq=1 nouveau.runpm=0 mem_sleep_default=deep"
+##GRUB_CMDLINE_LINUX_DEFAULT="quiet nomodeset loglevel=2 splash rd.systemd.show_status=auto rd.udev.log_priority=3 acpi_rev_override=1 acpi_osi=Linux nvidea-drm.modeset=1 nouveau.modeset=0 pcie_aspm=force drm.vblankoffdelay=1 scsi_mod.use_blk_mq=1 nouveau.runpm=0 mem_sleep_default=deep"
+##GRUB_CMDLINE_LINUX_DEFAULT="nvidia-drm.modeset=1 acpi_rev_override=1 acpi_osi=Linux nouveau.modeset=0 pcie_aspm=force drm.vblankoffdelay=1 scsi_mod.use_blk_mq=1 nouveau.runpm=0 mem_sleep_default=deep"
 GRUB_CMDLINE_LINUX=""
-GRUB_THEME="/boot/grub/themes/SD_custom/theme.txt"
-
 
 # Uncomment to enable BadRAM filtering, modify to suit your needs
 # This works with Linux (no patch required) and with any kernel that obtains
@@ -32,3 +34,10 @@ GRUB_THEME="/boot/grub/themes/SD_custom/theme.txt"
 
 # Uncomment to get a beep at grub start
 #GRUB_INIT_TUNE="480 440 1"
+GRUB_THEME="/boot/grub/themes/Stylish/theme.txt"
+
+### REMOVED CONFIGS
+GRUB_DEFAULT=saved
+GRUB_SAVEDDEFAULT=true
+#GRUB_THEME="/boot/grub/themes/SD_custom/theme.txt"
+#GRUB_GFXPAYLOAD_LINUX="1920x1080"
