@@ -128,7 +128,7 @@
     "modules-center": ["custom/focuslock"],
     "custom/focuslock": {
         "tooltip": false,
-        "max-length": 80,
+        "max-length": 140,
         "escape": true,
         "exec": "head -n1 $HOME/.config/focuslock/current",
         "on-click": "urxvt -e bash -c 'sleep 0.1 && vim $HOME/.config/focuslock/current'",
