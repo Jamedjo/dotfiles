@@ -41,6 +41,12 @@ nnoremap q <Nop>
 
 let g:NERDDefaultAlign = 'left'
 map <C-p> :FZF<CR>
+map <leader>b :Buffers<CR>
+map <leader>g :GFiles?<CR>
+map <leader>l :Lines<CR>
+map <leader>m :Marks<CR>
+map <leader>w :Windows<CR>
+map <leader>c :Commits<CR>
 
 nnoremap <C-S-F> :Grepper -cword -side<cr>
 map <Esc>f <A-f>
