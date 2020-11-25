@@ -19,7 +19,8 @@ set $term termite
 set $term_run urxvt -e zsh -c
 set $browser GDK_BACKEND=wayland /opt/firefox_nightly/firefox
 # Your preferred application launcher
-# Note: it's recommended that you pass the final command to sway
+# Note: pass the final command to swaymsg so that the resulting window can be opened
+# on the original workspace that the command was run on.
 #set $menu dmenu_path | dmenu | xargs swaymsg exec --
 set $menu ulauncher-toggle
 
@@ -36,7 +37,7 @@ output eDP-1 bg /home/james/Pictures/seven-commandos-beach-el-nido.png fill
 # You can get the names of your outputs by running: swaymsg -t get_outputs
 #output eDP-1 mode --custom 1920x1080
 output eDP-1 scale 2
-#output eDP-1 mode 3840x2160
+output DP-1 scale 2
 output WL-1 resolution 1920x1050
 output "Goldstar Company Ltd LG TV 0x00000101" resolution 4096x2160
 
@@ -187,12 +188,15 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
     # Move workspace to next screen/output
     bindsym $mod+Alt+w exec swaymsg -t get_outputs | jq '.[] | .name' | sed -n "1p;/`swaymsg -t get_outputs | jq '.[] | select(.focused==true) | .name'`/{n;p;}" | tail -n1 | xargs swaymsg move workspace to
 
+    for_window [class='Xmessage'] floating enable
+    for_window [class='Xmessage'] sticky enable
+
     # Rotate current workspace
     bindsym $mod+Shift+r output - transform 90 clockwise
 
 # Window assignments
 #
-    exec slack
+    #exec slack
     assign [class="Slack"] workspace $chat
 
     # Load urxvt theme and plugins
@@ -202,8 +206,8 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
 
     exec simplenote
     assign [class="Simplenote"] workspace $notes
-    exec /opt/todoist/todoist
-    assign [class="todoist"] workspace $notes
+    exec /opt/Todoist/todoist
+    assign [class="Todoist"] workspace $notes
 
     #exec thunderbird
     #assign [class="Thunderbird"] workspace $workspace1
@@ -280,6 +284,7 @@ mode "$mode_system" {
     bindsym l exec $lock, mode "default"
     bindsym e exit
     bindsym s exec systemctl suspend, mode "default"
+    bindsym h exec systemctl hibernate, mode "default"
     bindsym r exec systemctl reboot, mode "default"
     bindsym Shift+s exec systemctl poweroff -i, mode "default"
     bindsym Shift+r exec systemctl reboot --firmware-setup, mode "default"
