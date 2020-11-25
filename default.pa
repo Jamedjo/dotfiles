@@ -1,0 +1,8 @@
+.include /etc/pulse/default.pa
+
+# Create virtual audio output and monitor
+# for use when sharing screen
+load-module module-null-sink sink_name=AudioToShare
+update-sink-proplist AudioToShare device.description="Audio to Share"
+update-source-proplist AudioToShare.monitor device.description="Monitor of Audio to Share"
+
