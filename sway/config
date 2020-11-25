@@ -357,5 +357,9 @@ exec mako
 # Time tracking
 #exec rescuetime
 
+# Ensure xdg-desktop-portal-wlr knows which wayland instance to use
+exec systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
+exec dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP
+
 include /usr/local/etc/sway/config.d/*
 
