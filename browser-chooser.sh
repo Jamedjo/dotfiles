@@ -1,0 +1,1 @@
+gtk-launch firefox-nightly
