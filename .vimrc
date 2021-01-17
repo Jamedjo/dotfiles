@@ -46,6 +46,7 @@ map <leader>g :GFiles?<CR>
 map <leader>l :Lines<CR>
 map <leader>m :Marks<CR>
 map <leader>w :Windows<CR>
+map <leader>t :Windows<CR>
 map <leader>c :Commits<CR>
 
 nnoremap <C-S-F> :Grepper -cword -side<cr>
