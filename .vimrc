@@ -64,6 +64,9 @@ nnoremap <C-k><C-k> :!wl-copy %<CR><CR>
 
 let g:multi_cursor_select_all_word_key = '<leader><C-N>'
 
+let g:gutentags_ctags_exclude = [ 'build', 'dist', 'node_modules', 'bower_components', 'cache', 'bundle', 'vendor', '*.min.*', 'package.json', '*-lock.json', '*.lock', '*bundle*.js', '*build*.js' ]
+"let g:gutentags_file_list_command = { 'markers': { '.git': 'git ls-files', '.hg': 'hg files' }  }
+
 "Close Tree sidebar if it is the last thing open
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
