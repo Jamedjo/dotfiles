@@ -10,15 +10,10 @@ call plug#begin()
   Plug 'mhinz/vim-grepper'
   Plug 'romainl/vim-qf'
   Plug 'dense-analysis/ale'
-  "Plug 'vim-syntastic/syntastic'
   Plug 'vim-ruby/vim-ruby'
   Plug 'tpope/vim-rails'
   Plug 'HerringtonDarkholme/yats.vim'
   Plug 'MaxMEllon/vim-jsx-pretty'
-  "Plug 'Quramy/tsuquyomi'
-  "Plug 'leafgarland/typescript-vim'
-  "Plug 'peitalin/vim-jsx-typescript'
-  "Plug 'suy/vim-context-commentstring'
   Plug 'kchmck/vim-coffee-script'
   Plug 'ludovicchabant/vim-gutentags'
   Plug 'mhinz/vim-startify'
@@ -77,23 +72,5 @@ let g:gutentags_ctags_exclude = [ 'build', 'dist', 'node_modules', 'bower_compon
 
 "Close Tree sidebar if it is the last thing open
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-
-"Allow TypeScript react highlighting and commenting
-"autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescriptreact
-"au BufNewFile,BufRead *.jsx set filetype=javascriptreact
-"au BufNewFile,BufRead *.tsx set filetype=typescriptreact
-
-"let g:tsuquyomi_disable_quickfix = 1
-"let g:syntastic_javascript_checkers = ['eslint']
-"let g:syntastic_typescript_checkers = ['tsuquyomi', 'typescript/eslint']
-"let g:syntastic_typescriptreact_checkers = ['tsuquyomi', 'eslint']
-"let g:syntastic_javascript_eslint_exe='$(npm bin)/eslint'
-"let g:syntastic_typescript_eslint_exe='$(npm bin)/eslint'
-"let g:syntastic_typescriptreact_eslint_exe='$(npm bin)/eslint'
-"let g:syntastic_javascript_eslint_exec = '/bin/ls'
-"let g:syntastic_typescript_eslint_exec = '/bin/ls'
-"let g:syntastic_typescriptreact_eslint_exec = '/bin/ls'
-"let g:syntastic_typescriptreact_eslint_args='-f compact'
-"let g:syntastic_debug=3
 
 au BufRead,BufNewFile *.vue set filetype=html
