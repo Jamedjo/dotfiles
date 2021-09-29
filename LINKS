@@ -5,6 +5,7 @@ sudo ln /usr/share/wayland-sessions/swaywm.desktop
 sudo ln /var/lib/dpkg/alternatives/default.plymouth
 sudo ln /etc/default/grub
 sudo ln /etc/systemd/sleep.conf
+sudo ln /etc/security/limits.conf
 sudo ln /etc/systemd/logind.conf
 sudo ln /etc/sysctl.conf
 sudo ln /etc/sudoers.d/funtion-keys-sudoers
