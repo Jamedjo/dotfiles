@@ -15,14 +15,14 @@ set $down j
 set $up k
 set $right l
 # Your preferred terminal emulator
-set $term termite
-set $term_run urxvt -e zsh -c
-set $browser GDK_BACKEND=wayland /opt/firefox_nightly/firefox
+set $term foot
+set $term_run foot -e zsh -c
+set $browser GDK_BACKEND=wayland /sbin/firefox
 # Your preferred application launcher
 # Note: pass the final command to swaymsg so that the resulting window can be opened
 # on the original workspace that the command was run on.
 #set $menu dmenu_path | dmenu | xargs swaymsg exec --
-set $menu ulauncher-toggle
+set $menu wofi --show=drun | xargs swaymsg exec --
 
 ### Output configuration
 #
@@ -36,7 +36,7 @@ output eDP-1 bg /home/james/Pictures/seven-commandos-beach-el-nido.png fill
 #
 # You can get the names of your outputs by running: swaymsg -t get_outputs
 #output eDP-1 mode --custom 1920x1080
-output eDP-1 scale 2
+#output eDP-1 scale 2
 output DP-1 scale 2
 output WL-1 resolution 1920x1050
 output "Goldstar Company Ltd LG TV 0x00000101" resolution 4096x2160

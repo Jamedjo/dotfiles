@@ -47,7 +47,7 @@
         "format-alt": "{:%Y-%m-%d}"
     },
     "cpu": {
-        "on-click": "urxvt -e htop",
+        "on-click": "foot -e htop",
         "format": " {usage}%"
     },
     "memory": {
@@ -77,14 +77,14 @@
         // "format-good": "", // An empty format will hide the module
         // "format-full": "",
         "format-icons": ["", "", "", "", ""],
-        "on-click": "urxvt -e bash -c 'watch --no-title acpi -b'",
+        "on-click": "foot -e bash -c 'watch --no-title acpi -b'",
         "tooltip": true
     },
     "battery#bat2": {
         "bat": "BAT2"
     },
     "network": {
-        "on-click": "urxvt -e nmtui",
+        "on-click": "foot -e nmtui",
         // "interface": "wlp2s0", // (Optional) To force the use of this interface
         //"interface": "wlp59s0", // (Optional) To force the use of this interface
         "tooltip-format-wifi": "{essid} ({signalStrength}%)",
@@ -131,7 +131,7 @@
         "max-length": 140,
         "escape": true,
         "exec": "head -n1 $HOME/.config/focuslock/current",
-        "on-click": "urxvt -e bash -c 'sleep 0.1 && vim $HOME/.config/focuslock/current'",
+        "on-click": "foot -e bash -c 'sleep 0.1 && vim $HOME/.config/focuslock/current'",
         "interval": 1
     }
 }]
