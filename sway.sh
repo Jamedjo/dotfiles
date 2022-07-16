@@ -1,3 +1,7 @@
+# Increases the max number of file descriptors per process from 1024
+# Avoid sway crash when too many windows open or plugging in monitor with firefox open
+ulimit -n 10000
+
 export XDG_SESSION_TYPE=wayland # So firefox knows to use portals
 export XDG_CURRENT_DESKTOP=sway # So portals knows to use wlr
 export QT_STYLE_OVERRIDE=adwaita
