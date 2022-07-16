@@ -322,7 +322,8 @@ bindsym XF86AudioPrev exec playerctl previous
 #bindsym XF86AudioMicMute exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
 bindsym XF86MonBrightnessDown exec sudo brightnessctl set 5%-
 bindsym XF86MonBrightnessUp exec sudo brightnessctl set +5%
-bindsym Print exec grim -g "$(slurp)" /home/james/Screenshots/$(date +'screenshot_%F-%T.png')
+bindsym Print exec grim -g "$(slurp)" /home/james/Screenshots/$(date +'screenshot_%F-%H_%M_%S.png')
+bindsym Alt+Print exec grim -c /home/james/Screenshots/$(date +'screenshot_%F-%T.png')
 bindsym Shift+Print exec /home/james/Scripts/screencap_tray.py
 bindsym $mod+Alt+c exec grim -g "$(slurp -p)" -t ppm - | convert - -format '%[pixel:p{0,0}]' txt:- | tail -n 1 | cut -d ' ' -f 4 | wl-copy
 
