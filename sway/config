@@ -27,8 +27,9 @@ set $menu wofi --show=drun | xargs swaymsg exec --
 ### Output configuration
 #
 # Default wallpaper (more resolutions are available in /usr/local/share/backgrounds/sway/)
-output * bg /home/james/Pictures/lockscreen.jpg fill
-output eDP-1 bg /home/james/Pictures/seven-commandos-beach-el-nido.png fill
+#output * bg /home/james/Pictures/lockscreen.jpg fill
+#output eDP-1 bg /home/james/Pictures/seven-commandos-beach-el-nido.png fill
+output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
 #
 # Example configuration:
 #
