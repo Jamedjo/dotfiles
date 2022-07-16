@@ -6,3 +6,18 @@ text-color=#CFCFCF
 
 width=350
 height=80
+
+[mode=do-not-disturb]
+invisible=1
+
+[mode=secondary-dp-3-only]
+output=DP-3
+
+[mode=secondary-dp-4-only]
+output=DP-4
+
+[mode=secondary-dp-1-only]
+output=DP-1
+
+[mode=secondary-edp-1-only]
+output=eDP-1
