@@ -66,6 +66,8 @@ map <C-g> :Tags<CR>
 nnoremap <C-k><C-k> :!wl-copy %<CR><CR>
 
 let g:multi_cursor_select_all_word_key = '<leader><C-N>'
+let g:ale_set_highlights = 0
+set omnifunc=ale#completion#OmniFunc
 
 let $FZF_DEFAULT_COMMAND = 'rg --files'
 
