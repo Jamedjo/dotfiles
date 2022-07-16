@@ -21,6 +21,7 @@ call plug#begin()
   Plug 'airblade/vim-gitgutter'
   Plug 'ntpeters/vim-better-whitespace'
   Plug 'editorconfig/editorconfig-vim'
+  Plug 'kana/vim-fakeclip'
 call plug#end()
 
 filetype plugin indent on
@@ -69,6 +70,9 @@ let $FZF_DEFAULT_COMMAND = 'rg --files'
 
 let g:gutentags_ctags_exclude = [ 'build', 'dist', 'node_modules', 'bower_components', 'cache', 'bundle', 'vendor', '*.min.*', 'package.json', '*-lock.json', '*.lock', '*bundle*.js', '*build*.js' ]
 "let g:gutentags_file_list_command = { 'markers': { '.git': 'git ls-files', '.hg': 'hg files' }  }
+
+" Wayland clipboard with wl-copy/wl-paste
+let g:fakeclip_provide_clipboard_key_mappings = !empty($WAYLAND_DISPLAY)
 
 "Close Tree sidebar if it is the last thing open
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
