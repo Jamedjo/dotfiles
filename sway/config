@@ -144,14 +144,14 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
     set $workspace2 "2: "
     set $workspace3 "3: "
     set $workspace4 "4: "
-    set $workspace5 "5: "
-    set $workspace6 "6: "
+    set $workspace5 "5: "
+    set $workspace6 "6: "
     set $workspace7 "7: "
     set $workspace8 "8: "
     set $workspace9 "9: Nine"
     set $workspace10 "10: Ten"
 
-    set $notes $workspace5
+    set $notes $workspace6
     set $web $workspace1
     set $chat $workspace8
 
