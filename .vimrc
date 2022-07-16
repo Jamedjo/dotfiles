@@ -50,6 +50,7 @@ map <leader>m :Marks<CR>
 map <leader>w :Windows<CR>
 map <leader>t :Windows<CR>
 map <leader>c :Commits<CR>
+map <leader>h :History<CR>
 
 nnoremap <C-S-F> :Grepper -cword -side<cr>
 map <Esc>f <A-f>
