@@ -1,0 +1,5 @@
+# Setup fzf
+# ---------
+FZF_PATH=/usr/share/fzf
+source "${FZF_PATH}/key-bindings.zsh"
+source "${FZF_PATH}/completion.zsh"

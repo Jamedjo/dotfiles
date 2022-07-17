@@ -1,8 +1,12 @@
 mkdir -p ~/.config/{sway,waybar,Scripts,swaylock,mako}
+
 echo -n {sway,waybar,Scripts,swaylock,mako} | xargs -d' ' -I FOLDER bash -c 'ln ./FOLDER/* ~/.config/FOLDER/'
+mv ~/.config/Scripts ~/
 
 sudo rm /usr/share/applications/slack.desktop && sudo ln -s ./slack.desktop /usr/share/applications/slack.desktop
 
 ln ./.vimrc ~/.vimrc
 mkdir -p ~/.vim/colors && ln ./jamedjo.vim ~/.vim/colors/jamedjo.vim
 ln jamedjo.zsh-theme ~/.oh-my-zsh/themes/jamedjo.zsh-theme
+mkdir ~/.config/focuslock
+rm ~/.zshrc && ln ./.zshrc ~/.zshrc
