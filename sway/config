@@ -181,16 +181,16 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
 
     # Select container to focus
     for_window [title=fuzzy-tab] floating enable
-    bindsym $mod+Tab exec urxvt --title 'fuzzy-tab' -e zsh -c 'source ~/.fzf.zsh && swaymsg -t get_tree | jq -r "recurse(.nodes[]?) | select(.type == \\"con\\") | [.id, .app_id, .name] | @tsv" | fzf --reverse --with-nth=2.. | awk "{print \$1}" | xargs -r -I ID swaymsg "[con_id=ID]" focus'
+    bindsym $mod+Tab exec foot --title 'fuzzy-tab' -e zsh -c 'source ~/.fzf.zsh && swaymsg -t get_tree | jq -r "recurse(.nodes[]?) | select(.type == \\"con\\") | [.id, .app_id, .name] | @tsv" | fzf --reverse --with-nth=2.. | awk "{print \$1}" | xargs -r -I ID swaymsg "[con_id=ID]" focus'
 
     # Move container to fzf workspace
     for_window [title=fuzzy-workspace] floating enable
     #TODO: Should work for current container not new float
-    #bindsym $mod+Shift+grave exec urxvt --title 'fuzzy-workspace' -e zsh -c 'source ~/.fzf.zsh && swaymsg -t get_workspaces | jq -r \\".[] | select(.focused? != true) | .name\\" | fzf --reverse | xargs -r -I NAME swaymsg move container to workspace NAME'
-    #bindsym Mod4+grave exec -- urxvt --title fuzzy-workspace -e zsh -c '\\"source ~/.fzf.zsh && swaymsg -t get_workspaces | jq -r '"'.[] | select(.focused? != true) | .name'"' | fzf --reverse | xargs -r -I NAME swaymsg move container to workspace NAME\\"'
+    bindsym $mod+Shift+grave exec foot --title 'fuzzy-workspace' -e zsh -c "source ~/.fzf.zsh && swaymsg -t get_workspaces | jq -r '.[] | select(.focused? != true) | .name' | fzf --reverse | xargs -r -I NAME swaymsg move container to workspace NAME"
+    #bindsym Mod4+grave exec -- foot --title fuzzy-workspace -e zsh -c '\\"source ~/.fzf.zsh && swaymsg -t get_workspaces | jq -r '"'.[] | select(.focused? != true) | .name'"' | fzf --reverse | xargs -r -I NAME swaymsg move container to workspace NAME\\"'
 
     # Focus fzf workspace
-    bindsym $mod+grave exec urxvt --title 'fuzzy-workspace' -e zsh -c 'source ~/.fzf.zsh && swaymsg -t get_workspaces | jq -r \\".[] | select(.focused? != true) | .name\\" | fzf --reverse | xargs -r -I NAME swaymsg workspace NAME'
+    bindsym $mod+grave exec foot --title 'fuzzy-workspace' -e zsh -c "source ~/.fzf.zsh && swaymsg -t get_workspaces | jq -r '.[] | select(.focused? != true) | .name' | fzf --reverse | xargs -r -I NAME swaymsg workspace NAME"
 
     # Move workspace to another screen with fzf
     bindsym $mod+Shift+w exec $term_run "source ~/.fzf.zsh && swaymsg -t get_outputs | jq -r '.[] | select(.focused!=true) | [.name, .make, .model] | @tsv' | fzf --select-1 --reverse --prompt='Move workspace to:' | awk '{print $1}' | xargs -r swaymsg move workspace to"
