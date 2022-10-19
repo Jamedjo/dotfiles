@@ -122,17 +122,28 @@
     }
 },{
     "name": "focuslock",
+    "output": "eDP-1",
     "position": "bottom",
     "layer": "top",
     "height": 25,
-    "modules-center": ["custom/focuslock"],
+    "modules-left": ["custom/focuslock"],
+    "modules-right": ["custom/todoist"],
     "custom/focuslock": {
         "tooltip": false,
         "max-length": 140,
         //"escape": true,
-        "restart-interval": 5,
+        "restart-interval": 60,
         "return-type": "json",
-        "exec": "$HOME/.config/waybar/focuslock-module.rb $HOME/.config/focuslock/current",
+        "exec": "PATH=/home/james/.rbenv/shims:$PATH ~/.config/waybar/focuslock-module.rb ~/.config/focuslock/current",
+        "on-click": "foot -e bash -c 'sleep 0.1 && vim $HOME/.config/focuslock/current'"
+    },
+    "custom/todoist": {
+        "tooltip": false,
+        "max-length": 140,
+        //"escape": true,
+        "restart-interval": 60,
+        "return-type": "json",
+        "exec": "PATH=/home/james/.rbenv/shims:$PATH ~/.config/waybar/todoist-module.rb '#MindfulChef'",
         "on-click": "foot -e bash -c 'sleep 0.1 && vim $HOME/.config/focuslock/current'"
     }
 }]
