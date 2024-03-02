@@ -25,6 +25,8 @@ ln ~/.gdbinit
 ln ~/.config/termite/config termite.config
 ln ~/.config/pulse/default.pa
 ln ~/browser-chooser.sh
+ln ~/.config/alacritty/alacritty.yml
+ln ~/.config/alacritty/alacritty.toml
 
 mkdir sway && ln ~/.config/sway/* sway/
 mkdir waybar && ln ~/.config/waybar/* waybar/

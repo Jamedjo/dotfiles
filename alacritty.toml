@@ -1,0 +1,42 @@
+[colors]
+draw_bold_text_with_bright_colors = true
+
+[colors.bright]
+black = "#78332a"
+blue = "#77c3e2"
+cyan = "#98dddb"
+green = "#baba58"
+magenta = "#b291dd"
+red = "#ff2177"
+white = "#dbab83"
+yellow = "#fecc77"
+
+[colors.normal]
+black = "#212121"
+blue = "#aa9987"
+cyan = "#ececec"
+green = "#444433"
+magenta = "#cccccc"
+red = "#af743a"
+white = "#ffffff"
+yellow = "#99997c"
+
+[colors.primary]
+background = "#171717"
+foreground = "#FFFFFF"
+
+[font]
+size = 14
+
+[font.normal]
+family = "Ubuntu Mono Nerd Font"
+
+[window]
+opacity = 0.96
+
+[scrolling]
+history = 100000
+
+[window.padding]
+x = 5
+y = 5

@@ -157,3 +157,7 @@ window#waybar.hidded {
     background-color: rgba(236, 240, 241, 0.5);
     color: #2d3436;
 }
+
+#scratchpad {
+    padding-left: 10px;
+}
