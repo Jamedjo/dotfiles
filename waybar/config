@@ -11,21 +11,36 @@
     "modules-center": ["sway/window"],
     "modules-right": ["pulseaudio", "cpu", "battery", "network", "tray", "clock"], //["idle_inhibitor", "memory", "temperature", "backlight", "battery#bat2"]
     // Modules configuration
-    // "sway/workspaces": {
-    //     "disable-scroll": true,
-    //     "all-outputs": true,
-    //     "format": "{name}: {icon}",
-    //     "format-icons": {
-    //         "1": "",
-    //         "2": "",
-    //         "3": "",
-    //         "4": "",
-    //         "5": "",
-    //         "urgent": "",
-    //         "focused": "",
-    //         "default": ""
-    //     }
-    // },
+    "sway/workspaces": {
+        "disable-scroll": true,
+        "all-outputs": false,
+        "format": "{name}: {icon}",
+        "format-icons": {
+            "1": "",
+            "2": "󰌃",
+            "3": "󰹑",
+            "4": "",
+            "5": "󰖟",
+            "6": "",
+            "7": "",
+            "8": "",
+            "9": "",
+            "10": "󰊫",
+            "11": "󱠏",
+            "12": "",
+            "13": "",
+            "14": "",
+            "15": "",
+            "16": "",
+            "17": "",
+            "18": "",
+            "19": "󰉋",
+            "20": "",
+            //"urgent": "",
+            //"focused": "",
+            "default": ""
+        }
+    },
     "sway/mode": {
         "format": "<span style=\"italic\">{}</span>"
     },

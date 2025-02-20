@@ -148,19 +148,40 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
 # Workspaces:
 #
     # name workspaces
-    set $workspace1 "1: "
-    set $workspace2 "2: "
-    set $workspace3 "3: "
-    set $workspace4 "4: "
-    set $workspace5 "5: "
-    set $workspace6 "6: "
-    set $workspace7 "7: "
-    set $workspace8 "8: "
-    set $workspace9 "9: Nine"
-    set $workspace10 "10: Ten"
+    set $workspace1 "1"
+    set $workspace2 "2"
+    set $workspace3 "3"
+    set $workspace4 "4"
+    set $workspace5 "5"
+    set $workspace6 "6"
+    set $workspace7 "7"
+    set $workspace8 "8"
+    set $workspace9 "9"
+    set $workspace10 "10"
+    set $workspace11 "11"
+    set $workspace12 "12"
+    set $workspace12 "12"
+    set $workspace13 "13"
+    set $workspace14 "14"
+    set $workspace15 "15"
+    set $workspace16 "16"
+    set $workspace17 "17"
+    set $workspace18 "18"
+    set $workspace19 "19"
+    set $workspace20 "20"
+    #set $workspace1 "1: "
+    #set $workspace2 "2: "
+    #set $workspace3 "3: "
+    #set $workspace4 "4: "
+    #set $workspace5 "5: "
+    #set $workspace6 "6: "
+    #set $workspace7 "7: "
+    #set $workspace8 "8: "
+    #set $workspace9 "9: Nine"
+    #set $workspace10 "10: Ten"
 
-    set $notes $workspace6
-    set $web $workspace1
+    set $notes $workspace9
+    set $web $workspace5
     set $chat $workspace8
 
     # switch to workspace
@@ -174,6 +195,16 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
     bindsym $mod+8 workspace $workspace8
     bindsym $mod+9 workspace $workspace9
     bindsym $mod+0 workspace $workspace10
+    bindsym $mod+Alt+1 workspace $workspace11
+    bindsym $mod+Alt+2 workspace $workspace12
+    bindsym $mod+Alt+3 workspace $workspace13
+    bindsym $mod+Alt+4 workspace $workspace14
+    bindsym $mod+Alt+5 workspace $workspace15
+    bindsym $mod+Alt+6 workspace $workspace16
+    bindsym $mod+Alt+7 workspace $workspace17
+    bindsym $mod+Alt+8 workspace $workspace18
+    bindsym $mod+Alt+9 workspace $workspace19
+    bindsym $mod+Alt+0 workspace $workspace20
     # move focused container to workspace
     bindsym $mod+Shift+1 move container to workspace $workspace1
     bindsym $mod+Shift+2 move container to workspace $workspace2
@@ -185,6 +216,16 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
     bindsym $mod+Shift+8 move container to workspace $workspace8
     bindsym $mod+Shift+9 move container to workspace $workspace9
     bindsym $mod+Shift+0 move container to workspace $workspace10
+    bindsym $mod+Shift+Alt+1 move container to workspace $workspace11
+    bindsym $mod+Shift+Alt+2 move container to workspace $workspace12
+    bindsym $mod+Shift+Alt+3 move container to workspace $workspace13
+    bindsym $mod+Shift+Alt+4 move container to workspace $workspace14
+    bindsym $mod+Shift+Alt+5 move container to workspace $workspace15
+    bindsym $mod+Shift+Alt+6 move container to workspace $workspace16
+    bindsym $mod+Shift+Alt+7 move container to workspace $workspace17
+    bindsym $mod+Shift+Alt+8 move container to workspace $workspace18
+    bindsym $mod+Shift+Alt+9 move container to workspace $workspace19
+    bindsym $mod+Shift+Alt+0 move container to workspace $workspace20
 
     # Select container to focus
     for_window [title=fuzzy-tab] floating enable
