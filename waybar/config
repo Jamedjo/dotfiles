@@ -1,6 +1,10 @@
 [{
+"reload_style_on_change": true,
     "layer": "top", // Waybar at top layer
-    "height": 25, // Waybar height
+    "height": 31, // Waybar height
+    "margin-bottom": 3,
+    "margin-left": 3,
+    "margin-right": 3,
     // "width": 1280, // Waybar width
     // Choose the order of the modules
     "modules-left": ["sway/workspaces", "sway/mode", "custom/media"],
@@ -97,7 +101,8 @@
         //"scroll-step": 1,
         "format": "{icon} {volume}%",
         "format-bluetooth": "{volume}% {icon}",
-        "format-muted": "",
+        "format-muted": "󰖁  0%",
+        "format-muted": "󰖁 mute",
         "format-icons": {
             "headphones": "",
             "handsfree": "",

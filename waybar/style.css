@@ -1,4 +1,5 @@
 * {
+    all: initial;
     border: none;
     border-radius: 0;
     font-family: "Ubuntu Nerd Font", Helvetica, Arial, Roboto, sans-serif;
@@ -7,9 +8,15 @@
 }
 
 window#waybar {
-    background: rgba(14, 19, 23, 0.6);
-    border-bottom: 2px solid rgba(14,19, 23, 0.7);
+    background: rgba(14, 19, 23, 0.8);
+    border-radius: 0 0 28px 28px;
+    border-bottom: 2px solid rgba(154, 97, 179, 1.0);
     color: #ffffff;
+}
+
+#waybar > box {
+    padding-left: 25px;
+    padding-right: 25px;
 }
 
 window#waybar.bottom {
@@ -26,19 +33,26 @@ window#waybar.hidded {
 
 /* https://github.com/Alexays/Waybar/wiki/FAQ#the-workspace-buttons-have-a-strange-hover-effect */
 #workspaces button {
-    padding: 0 5px;
+    padding: 1px 8px 1px 4px;
+    margin-right: 3px;
+    margin-top: 6px;
+    margin-bottom: 6px;
     background: transparent;
     color: #ffffff;
     border-bottom: 2px solid transparent;
 }
 
 #workspaces button.focused {
-    background: rgba(0, 0, 0, 0.5);
-    border-bottom: 2px solid #ffffff;
+    background: rgba(154, 97, 179, 1.0);
+    border-radius: 9px;
+    /*border-bottom: 2px solid #ffffff;*/
+    /*border-bottom: 2px solid rgba(154, 97, 179, 1.0);*/
+    /*border-bottom: 2px solid rgba(255, 255, 255, 0.3);*/
 }
 
 #workspaces button.urgent {
     background-color: rgba(235, 77, 75, 0.5);
+    border-radius: 9px;
 }
 
 #mode {
@@ -93,17 +107,8 @@ window#waybar.hidded {
     background: rgba(41, 128, 185, 0.5);
 } */
 
-/* #network, #clock, #tray { */
 #clock {
-    background-color: rgba(0, 0, 0, 0.5);
-    border-bottom: 2px solid rgba(100, 114, 125, 0.5);
-    padding: 0 15px;
-    margin-left: 8px;
-}
-
-#clock {
-    /* background-color: rgba(7, 22, 33, 0.9); */
-    border-bottom: 2px solid #ffffff;
+    font-size: 18px;
 }
 
 #network.disconnected {

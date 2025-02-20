@@ -349,15 +349,19 @@ for_window [app_id="waybar" floating] {
     move absolute position 1630 25
 }
 
-#gaps inner 18
-smart_gaps on
+gaps inner 5
+smart_gaps off
 smart_borders on
 focus_follows_mouse no
 
+default_border pixel 2
+title_align center
+
 # class                 border    backgr.   text    indicator child_border
-client.focused          #131313ff #131313ee #ffffff #6f777a   #131313ee
-client.unfocused        #232427cc #232427cc  #ffffff #2e9ef4   #232427cc
-client.focused_inactive #222222dd #222222dd #888888 #292d2e   #222222
+client.focused          #9a61b3f5 #9a61b3f5 #FFFFFF #ce83e6FF   #9a61b355
+client.unfocused        #171717f5 #171717f5 #ffffff #00000000 #171717F5
+client.focused_inactive #131313f5 #131313f5 #D8A881 #00000000 #171717F5
+#client.focused_tab_title
 
 #exec spotify
 
