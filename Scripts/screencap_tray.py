@@ -15,6 +15,9 @@ import os
 import subprocess
 import signal
 from datetime import datetime
+import gi
+gi.require_version('Gtk', '3.0')
+gi.require_version('AppIndicator3', '0.1')
 from gi.repository import Gtk as gtk, AppIndicator3 as appindicator
 
 def main():
@@ -25,8 +28,8 @@ def main():
   filepath = os.path.join(folder, filename)
 
   if geometry:
-    print "using geometry " + geometry
-    print "recording to " + filepath
+    print("using geometry " + geometry)
+    print("recording to " + filepath)
     global process
     process = subprocess.Popen(['wf-recorder', '-g', geometry, '-f', filepath])
     indicator = appindicator.Indicator.new("sway-record", "media-record-symbolic", appindicator.IndicatorCategory.APPLICATION_STATUS)
@@ -34,7 +37,7 @@ def main():
     indicator.set_menu(build_menu())
     gtk.main()
   else:
-    print "aborting due to missing geometry"
+    print("aborting due to missing geometry")
 
 def build_menu():
   menu = gtk.Menu()
