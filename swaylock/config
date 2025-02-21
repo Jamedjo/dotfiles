@@ -1,16 +1,35 @@
+image=/home/james/Pictures/lockscreen.png
+
+show-failed-attempts
+
+indicator-radius=200
+indicator-thickness=40
+font-size=36
+
 inside-color=37344566
 ring-color=00000099
-key-hl-color=fecf3dff
 
-ring-wrong-color=d23c3dff
+key-hl-color=d6d1deff
+text-color=d6d1deff
+text-wrong-color=d6d1deff
+text-caps-lock-color=d6d1deff
+text-clear-color=d6d1deff
+
+#backspace highlight
+bs-hl-color=cc7ae2ff
+
+ring-wrong-color=cc7ae2aa
 inside-wrong-color=37344566
-text-wrong-color=ffffff
+line-wrong-color=2d185366
 
-ring-ver-color=fecf3dff
+line-clear-color=6f61abff
+ring-clear-color=6f61abff
+inside-clear-color=6f61ab66
+
+ring-ver-color=4c4b96ff
 inside-ver-color=37344566
 text-ver-color=ffffff
 
 line-uses-inside
 indicator-thickness=20
 
-image=/home/james/Pictures/el-nido-roof.png
