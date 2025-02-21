@@ -180,8 +180,9 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
     #set $workspace9 "9: Nine"
     #set $workspace10 "10: Ten"
 
-    set $notes $workspace9
     set $web $workspace5
+    set $todo $workspace9
+    set $notes $workspace9
     set $chat $workspace8
 
     # switch to workspace
@@ -262,10 +263,10 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
     #exec xrdb ~/.Xresources && urxvt -title 'TODO' -e 'vim' '/home/james/todo.txt'
     #assign [title='TODO'] workspace $workspace5
 
-    exec simplenote
+    #exec simplenote
     assign [class="Simplenote"] workspace $notes
-    exec /opt/Todoist/todoist
-    assign [class="Todoist"] workspace $notes
+    #exec todoist-nativefier --enable-features=UseOzonePlatform --ozone-platform=wayland
+    assign [class="Todoist"] workspace $todo
 
     #exec thunderbird
     #assign [class="Thunderbird"] workspace $workspace1

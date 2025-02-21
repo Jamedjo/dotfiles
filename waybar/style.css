@@ -9,8 +9,6 @@
 
 window#waybar {
     background: rgba(14, 19, 23, 0.8);
-    border-radius: 0 0 28px 28px;
-    border-bottom: 2px solid rgba(154, 97, 179, 1.0);
     color: #ffffff;
 }
 
@@ -19,12 +17,20 @@ window#waybar {
     padding-right: 25px;
 }
 
+window#waybar.top {
+    border-radius: 0 0 28px 28px;
+    border-bottom: 2px solid rgba(154, 97, 179, 1.0);
+}
+
 window#waybar.bottom {
-    border-top: 2px solid rgba(14,19, 23, 0.7);
+    border-top: 2px solid rgba(154, 97, 179, 1.0);
+    /*border-top: 2px solid rgba(14,19, 23, 0.7);*/
+    border-radius: 28px 28px 0 0;
 }
 
 window#waybar.focuslock {
     /*font-weight: bold;*/
+    /*border-bottom: none;*/
 }
 
 window#waybar.hidded {
@@ -45,9 +51,6 @@ window#waybar.hidded {
 #workspaces button.focused {
     background: rgba(154, 97, 179, 1.0);
     border-radius: 9px;
-    /*border-bottom: 2px solid #ffffff;*/
-    /*border-bottom: 2px solid rgba(154, 97, 179, 1.0);*/
-    /*border-bottom: 2px solid rgba(255, 255, 255, 0.3);*/
 }
 
 #workspaces button.urgent {
@@ -58,6 +61,21 @@ window#waybar.hidded {
 #mode {
     background: rgba(100, 114, 125, 0.5);
     border-bottom: 2px solid #ffffff;
+}
+
+tooltip {
+  background: rgba(14, 19, 23, 1);
+  border: 2px solid rgba(154, 97, 179, 1.0);
+  margin-top: 100px;
+}
+tooltip label {
+  color: white;
+  padding: 8px;
+}
+
+#custom-todoist {
+  margin: 6px 0px;
+  font-size: 20px;
 }
 
 #clock, #battery, #cpu, #memory, #temperature, #backlight, #network, #pulseaudio, #custom-media, #tray, #mode, #idle_inhibitor {

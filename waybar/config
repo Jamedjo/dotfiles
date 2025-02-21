@@ -1,5 +1,6 @@
 [{
 "reload_style_on_change": true,
+    "position": "top",
     "layer": "top", // Waybar at top layer
     "height": 31, // Waybar height
     "margin-bottom": 3,
@@ -146,8 +147,10 @@
     "position": "bottom",
     "layer": "top",
     "height": 25,
-    "modules-left": ["custom/focuslock"],
-    "modules-right": ["custom/todoist"],
+    "width": 1200,
+    "margin-top": 3,
+    //"modules-left": ["custom/focuslock"],
+    "modules-center": ["custom/todoist"],
     "custom/focuslock": {
         "tooltip": false,
         "max-length": 140,
@@ -158,12 +161,12 @@
         "on-click": "foot -e bash -c 'sleep 0.1 && vim $HOME/.config/focuslock/current'"
     },
     "custom/todoist": {
-        "tooltip": false,
+        "tooltip": true,
         "max-length": 140,
         //"escape": true,
-        "restart-interval": 60,
+        "restart-interval": 600,
         "return-type": "json",
         "exec": "PATH=/home/james/.rbenv/shims:$PATH ~/.config/waybar/todoist-module.rb '#MindfulChef'",
-        "on-click": "foot -e bash -c 'sleep 0.1 && vim $HOME/.config/focuslock/current'"
+        "on-click": "swaymsg workspace 9 && todoist"
     }
 }]
