@@ -77,6 +77,11 @@ let g:gutentags_ctags_exclude = [ 'build', 'dist', 'node_modules', 'bower_compon
 " Wayland clipboard with wl-copy/wl-paste
 let g:fakeclip_provide_clipboard_key_mappings = !empty($WAYLAND_DISPLAY)
 
+" Set titlebar format including current project, start time and file count
+" E.g. 'vim - my_folder (3 buffers) 03/09 14:25'
+let g:vim_start_time = strftime('%d/%m %H:%M')
+set title titlestring=vim\ -\ %{fnamemodify(getcwd(),':t')}\ (%{len(filter(range(1,bufnr('$')),'buflisted(v:val)'))}\ buffers)\ %{g:vim_start_time}
+
 "Close Tree sidebar if it is the last thing open
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
