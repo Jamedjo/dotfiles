@@ -5,7 +5,7 @@
     // Choose the order of the modules
     "modules-left": ["sway/workspaces", "sway/mode", "sway/scratchpad", "custom/media"],
     "modules-center": ["sway/window"],
-    "modules-right": ["pulseaudio", "cpu", "battery", "network", "tray", "clock"], //["idle_inhibitor", "memory", "temperature", "backlight", "battery#bat2"]
+    "modules-right": ["wireplumber", "pulseaudio", "cpu", "battery", "network", "tray", "clock"], //["idle_inhibitor", "memory", "temperature", "backlight", "battery#bat2"]
     // Modules configuration
     // "sway/workspaces": {
     //     "disable-scroll": true,
@@ -115,6 +115,11 @@
             "default": ["", "", ""]
         },
         "on-click": "pavucontrol"
+    },
+    "wireplumber": {
+      "format": "{volume}%",
+      "format-muted": "",
+      "on-click": "helvum"
     },
     "custom/media": {
         "format": "{icon} {}",
