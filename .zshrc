@@ -129,6 +129,10 @@ eval "$(rbenv init -)"
 
 eval "$(direnv hook zsh)"
 
+# fly.io deploys
+export FLYCTL_INSTALL="/home/james/.fly"
+export PATH="$FLYCTL_INSTALL/bin:$PATH"
+
 # Lines configured by zsh-newuser-install
 unsetopt autocd
 # End of lines configured by zsh-newuser-install
