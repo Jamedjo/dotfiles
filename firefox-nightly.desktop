@@ -5,3 +5,4 @@ Exec=env MOZ_ENABLE_WAYLAND=1 /opt/firefox_nightly/firefox %u
 Terminal=false
 Type=Application
 Icon=/opt/firefox_nightly/browser/chrome/icons/default/default128.png
+Categories=Network;WebBrowser;
