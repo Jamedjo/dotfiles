@@ -115,8 +115,15 @@ alias hg=chg
 [ -f ~/.cargo/env ] && source $HOME/.cargo/env
 [ -f ~/.asdf/asdf.sh ] && source $HOME/.asdf/asdf.sh
 
+# NVM slows down every terminal window startup, Use fnm or asdf instead
 #export NVM_DIR="$HOME/.nvm"
 #[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" #
+#[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# fnm
+export PATH="/home/james/.local/share/fnm:$PATH"
+eval "`fnm env`"
+eval "$(fnm env --use-on-cd)"
 
 eval "$(rbenv init -)"
 
