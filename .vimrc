@@ -60,7 +60,7 @@ nmap <Home> <Plug>(qf_qf_previous)
 nmap <End> <Plug>(qf_qf_next)
 
 map <C-k><C-b> :NERDTreeToggle<CR>
-map <C-_> <Plug>NERDCommenterToggle
+map <C-/> <Plug>NERDCommenterToggle
 map <C-g> :Tags<CR>
 "nnoremap <C-k><C-k> :let @+=expand("%")<CR>
 nnoremap <C-k><C-k> :!wl-copy %<CR><CR>
