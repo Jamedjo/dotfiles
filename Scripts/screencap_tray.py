@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 ###
 #
@@ -25,8 +25,8 @@ def main():
   filepath = os.path.join(folder, filename)
 
   if geometry:
-    print "using geometry " + geometry
-    print "recording to " + filepath
+    print("using geometry " + geometry)
+    print("recording to " + filepath)
     global process
     process = subprocess.Popen(['wf-recorder', '-g', geometry, '-f', filepath])
     indicator = appindicator.Indicator.new("sway-record", "media-record-symbolic", appindicator.IndicatorCategory.APPLICATION_STATUS)
@@ -34,7 +34,7 @@ def main():
     indicator.set_menu(build_menu())
     gtk.main()
   else:
-    print "aborting due to missing geometry"
+    print("aborting due to missing geometry")
 
 def build_menu():
   menu = gtk.Menu()
