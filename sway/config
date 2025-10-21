@@ -286,7 +286,7 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
 
     exec simplenote
     assign [class="Simplenote"] workspace $notes
-    exec /opt/Todoist/todoist
+    #exec /opt/Todoist/todoist
     assign [class="Todoist"] workspace $notes
 
     #exec thunderbird
