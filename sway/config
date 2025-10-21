@@ -457,3 +457,4 @@ exec dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSO
 
 include /usr/local/etc/sway/config.d/*
 
+include ~/.config/sway/config.d/*

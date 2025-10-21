@@ -29,6 +29,7 @@ ln ~/.config/alacritty/alacritty.yml
 ln ~/.config/alacritty/alacritty.toml
 
 mkdir sway && ln ~/.config/sway/* sway/
+mkdir sway/config.d && ln ~/.config/sway/config.d/* sway/config.d/
 mkdir waybar && ln ~/.config/waybar/* waybar/
 mkdir Scripts && ln ~/Scripts/* Scripts/
 mkdir swaylock && ln ~/.config/swaylock/config swaylock/config
