@@ -6,3 +6,7 @@ load-module module-null-sink sink_name=AudioToShare
 update-sink-proplist AudioToShare device.description="Audio to Share"
 update-source-proplist AudioToShare.monitor device.description="Monitor of Audio to Share"
 
+# Avoid static on internal mic
+# This is mono so will pick up loud static otherwise
+load-module module-remap-source source_name=record_mono master=alsa_input.pci-0000_00_1f.3.analog-stereo master_chanel_map=front-left chanel_map=mono
+set-default-source record_mono
