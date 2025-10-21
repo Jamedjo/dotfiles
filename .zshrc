@@ -7,6 +7,7 @@ export PATH="$HOME/.local/bin:/snap/bin:$HOME/.rbenv/bin:$PATH"
 
 # Configure android SDK
 export ANDROID_HOME="$HOME/Android/Sdk"
+export NDK_HOME="$ANDROID_HOME/ndk/29.0.14033849"
 export PATH=$ANDROID_HOME/platform-tools:$PATH
 export PATH=$ANDROID_HOME/tools:$PATH
 
