@@ -15,6 +15,9 @@ import os
 import subprocess
 import signal
 from datetime import datetime
+import gi
+gi.require_version('Gtk', '3.0')
+gi.require_version('AppIndicator3', '0.1')
 from gi.repository import Gtk as gtk, AppIndicator3 as appindicator
 
 def main():
