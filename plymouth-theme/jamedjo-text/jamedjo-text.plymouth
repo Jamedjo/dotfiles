@@ -1,8 +1,0 @@
-[Plymouth Theme]
-Name=Jamedjo (Text Mode)
-Description=A Jamedjo splash for text mode
-ModuleName=jamedjo-text
-
-[breeze-text]
-title=Booting...
-
