@@ -119,9 +119,13 @@ window#waybar.hidded {
     color: #2a5c45;
 } */
 
-#custom-focuslock, #window {
+/* Text-heavy modules: disable ligatures to prevent Nerd Font glyph conflicts (e.g. "fi" → telephone icon) */
+#custom-focuslock,
+#custom-todoist,
+#window {
     font-family: "DejaVu Sans Mono Nerd Font", Helvetica, Arial, Roboto, sans-serif;
     font-size: 16px;
+    font-feature-settings: "liga=0";
 }
 
 #custom-media {
