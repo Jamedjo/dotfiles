@@ -1,10 +1,19 @@
 #!/usr/bin/env ruby
 
 require 'json/ext'
+require 'cgi'
+
+def pango_escape(hash)
+  hash.transform_values { |v| CGI.escapeHTML(v) }
+end
+
+def print_json(hash)
+  $stdout.puts(hash.to_json)
+  $stdout.flush
+end
 
 def log(text, **args)
-  $stdout.puts({text: text.chomp}.merge(**args).to_json)
-  $stdout.flush
+  print_json(pango_escape({text: text.chomp}.merge(args)))
 end
 
 focuslock_file = ARGV.first
