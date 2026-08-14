@@ -31,7 +31,12 @@ def main():
     print("using geometry " + geometry)
     print("recording to " + filepath)
     global process
-    process = subprocess.Popen(['wf-recorder', '-g', geometry, '-f', filepath])
+    # H.264 4:2:0 on the Intel iGPU's encoder: plays on phones (wf-recorder's
+    # yuv444p default does not) and costs less CPU than the software encoder.
+    # Find the node on another machine with: vainfo --display drm --device /dev/dri/renderD12N | grep H264.*Enc
+    process = subprocess.Popen(['wf-recorder', '-g', geometry, '-f', filepath,
+                                '-c', 'h264_vaapi', '-d', '/dev/dri/renderD129',
+                                '-p', 'profile=high', '-p', 'qp=20'])
     indicator = appindicator.Indicator.new("sway-record", "media-record-symbolic", appindicator.IndicatorCategory.APPLICATION_STATUS)
     indicator.set_status(appindicator.IndicatorStatus.ACTIVE)
     indicator.set_menu(build_menu())
