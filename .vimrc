@@ -22,6 +22,7 @@ call plug#begin()
   Plug 'ntpeters/vim-better-whitespace'
   Plug 'editorconfig/editorconfig-vim'
   Plug 'kana/vim-fakeclip'
+  "Plug 'rickhowe/diffchar.vim'
 call plug#end()
 
 filetype plugin indent on
@@ -32,6 +33,8 @@ set mouse=a
 "set relativenumber
 set modelines=0
 set tabstop=2 softtabstop=2 shiftwidth=2 expandtab
+set display=lastline "If the last line is very long we still want to see it
+set smoothscroll "If a line is very long we don't want to jump past it but scroll through the word wrap
 
 set background=dark
 colo jamedjo "stereokai dracula thor PaperColor
