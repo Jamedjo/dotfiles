@@ -395,6 +395,7 @@ bindsym XF86AudioPrev exec playerctl previous
 bindsym XF86MonBrightnessDown exec sudo brightnessctl set 5%-
 bindsym XF86MonBrightnessUp exec sudo brightnessctl set +5%
 bindsym $mod+p exec wdisplays
+bindsym $mod+d exec pkill -USR1 wlsunset
 bindsym Print exec grim -g "$(slurp)" /home/james/Screenshots/$(date +'screenshot_%F-%H_%M_%S.png')
 bindsym Alt+Print exec grim -c /home/james/Screenshots/$(date +'screenshot_%F-%T.png')
 bindsym Shift+Print exec /home/james/Scripts/screencap_tray.py
@@ -449,6 +450,9 @@ for_window [class=zoom title=Settings] floating enable
 # Notifications
 exec mako
 exec swaynag-battery --interval 10s
+
+# Night light (blue light filter) for St. Albans, UK
+exec wlsunset -l 51.7527 -L -0.3394
 
 # Time tracking
 #exec rescuetime
