@@ -1,0 +1,14 @@
+#!/bin/sh
+# Switch to a workspace by name. Typing a name that does not exist creates it:
+# fuzzel's dmenu mode prints unmatched input as-is.
+set -u
+. /home/james/.config/sway/scripts/sway-ws-lib
+
+sel=$(ws_pick 'workspace: ') || exit 0
+[ -n "$sel" ] || exit 0
+
+if ws_json | jq -e --arg n "$sel" '.[] | select(.name == $n)' >/dev/null; then
+    swaymsg workspace "$sel"
+else
+    swaymsg workspace "$(ws_free_num):$sel"
+fi

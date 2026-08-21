@@ -1,0 +1,15 @@
+#!/bin/sh
+# Send the focused window to a workspace by name, creating it if the typed name
+# is new. Creating a project and putting its first window in it is one action.
+# Focus stays put: moving a window out of the way should not move you with it.
+set -u
+. /home/james/.config/sway/scripts/sway-ws-lib
+
+sel=$(ws_pick 'move window to: ') || exit 0
+[ -n "$sel" ] || exit 0
+
+if ws_json | jq -e --arg n "$sel" '.[] | select(.name == $n)' >/dev/null; then
+    swaymsg move container to workspace "$sel"
+else
+    swaymsg move container to workspace "$(ws_free_num):$sel"
+fi

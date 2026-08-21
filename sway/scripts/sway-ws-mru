@@ -1,0 +1,28 @@
+#!/bin/sh
+# Records workspace focus order for the pickers. sway's IPC can tell you which
+# workspace is focused now but keeps no history, so with ~35 workspaces a
+# number-sorted menu is a wall of text; most-recent-first puts the answer in
+# the top few rows.
+set -u
+. /home/james/.config/sway/scripts/sway-ws-lib
+
+# Started with exec_always, because plain exec does not re-run on
+# `swaymsg reload` and the daemon would never come back after one. reload does
+# not kill the old copy either, so the lock is what stops them stacking: the
+# incumbent holds it and the new copy exits.
+exec 9> "$MRU_STATE.lock"
+flock -n 9 || exit 0
+
+swaymsg -t subscribe -m '["workspace"]' \
+| jq -r --unbuffered 'select(.change == "focus") | .current.id // empty' \
+| while IFS= read -r id; do
+    [ -n "$id" ] || continue
+    tmp=$(mktemp "$MRU_STATE.XXXXXX") || continue
+    printf '%s\n' "$id" > "$tmp"
+    # Ids, not names: renaming a workspace must not lose its place in the list.
+    # Entries for closed workspaces never match a live id and are ignored.
+    if [ -f "$MRU_STATE" ]; then
+        grep -vxF "$id" "$MRU_STATE" | head -n 200 >> "$tmp"
+    fi
+    mv "$tmp" "$MRU_STATE"
+  done

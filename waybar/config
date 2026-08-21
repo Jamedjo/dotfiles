@@ -30,6 +30,13 @@
             "tray",
             "clock"
         ],
+        // {name} is the workspace name with the number stripped, so the bar
+        // shows "langfuse" rather than "21:langfuse". With ~35 workspaces the
+        // numbers were most of the width and none of the meaning.
+        "sway/workspaces": {
+            "all-outputs": true,
+            "format": "{name}"
+        },
         "sway/mode": {
             "format": "{}"
         },

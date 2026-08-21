@@ -1,0 +1,28 @@
+#!/bin/sh
+# Move the current workspace into keyboard slot N, swapping with whatever is
+# there. Renumbering is a rename, so no window moves and nothing is redrawn.
+set -u
+. /home/james/.config/sway/scripts/sway-ws-lib
+
+slot=${1:?usage: sway-ws-promote <number>}
+
+cur=$(ws_focused_name)
+[ -n "$cur" ] || exit 1
+cur_num=$(ws_num "$cur")
+[ "$cur_num" = "$slot" ] && exit 0
+
+occupant=$(ws_json | jq -r --argjson n "$slot" '.[] | select(.num == $n) | .name')
+
+# Rename the occupant first: two workspaces briefly sharing a number would make
+# `workspace number N` ambiguous.
+if [ -n "$occupant" ]; then
+    # A true swap when the current workspace has a number to give away,
+    # otherwise the occupant is parked at 11+.
+    if [ -n "$cur_num" ]; then
+        swaymsg rename workspace "$occupant" to "$cur_num:$(ws_label "$occupant")"
+    else
+        swaymsg rename workspace "$occupant" to "$(ws_free_num):$(ws_label "$occupant")"
+    fi
+fi
+
+swaymsg rename workspace "$cur" to "$slot:$(ws_label "$cur")"

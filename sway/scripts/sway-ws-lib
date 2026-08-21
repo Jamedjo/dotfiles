@@ -1,0 +1,55 @@
+# Shared helpers for the workspace scripts. Sourced, not run.
+#
+# Workspace names are "<number>:<label>", where label may lead with an icon.
+# The number is the keyboard slot; sway matches `workspace number N` on it and
+# ignores the label, which is what lets labels be renamed freely.
+
+MRU_STATE="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/sway-ws-mru"
+FUZZEL_CONFIG=/home/james/.config/fuzzel/sway-menu.ini
+
+# Slots 2-5 are the hot ones and 1/6/7/8/10 are pinned by hand, so anything
+# created or displaced lands at 11+ where $mod+Alt+N can still reach it.
+PARK_FROM=11
+
+ws_json() { swaymsg -t get_workspaces; }
+
+ws_focused_name() { ws_json | jq -r '.[] | select(.focused) | .name'; }
+
+# "15:chief/langfuse" -> "15"; a workspace never given a number yields "".
+ws_num() { printf '%s' "${1%%:*}" | grep -x '[0-9]\+' || true; }
+
+# "15:chief/langfuse" -> "chief/langfuse"; nameless workspaces yield themselves.
+ws_label() {
+    case "$1" in
+        [0-9]*:*) label=${1#*:}; printf '%s' "${label# }" ;;
+        *) printf '%s' "$1" ;;
+    esac
+}
+
+# Lowest unused number at or above PARK_FROM, so displaced work stays reachable.
+ws_free_num() {
+    used=$(ws_json | jq -r '.[].num')
+    n=$PARK_FROM
+    while printf '%s\n' "$used" | grep -qx "$n"; do n=$((n + 1)); done
+    printf '%s' "$n"
+}
+
+# Live workspace names, most-recently-focused first, current one omitted.
+# sway tracks no history of its own, so the order comes from sway-ws-mru, which
+# records workspace ids rather than names: ids survive rename and promote, and
+# both happen often enough that a name-keyed history would be wrong constantly.
+ws_menu_list() {
+    live=$(mktemp) || return 1
+    ws_json | jq -r '.[] | select(.focused | not) | "\(.id)\t\(.name)"' > "$live"
+    [ -f "$MRU_STATE" ] || : > "$MRU_STATE"
+    awk -F'\t' '
+        FNR == NR { name[$1] = $2; order[++n] = $1; next }
+        ($0 in name) { print name[$0]; delete name[$0] }
+        END { for (i = 1; i <= n; i++) if (order[i] in name) print name[order[i]] }
+    ' "$live" "$MRU_STATE"
+    rm -f "$live"
+}
+
+ws_pick() {
+    ws_menu_list | fuzzel --dmenu --prompt="$1" --config="$FUZZEL_CONFIG"
+}

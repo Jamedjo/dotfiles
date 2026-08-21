@@ -1,0 +1,40 @@
+#!/bin/sh
+# Rename the current workspace, keeping its number so keybindings and `assign`
+# rules survive. An icon is prefixed from ws-icons by longest matching prefix,
+# because waybar's format-icons matches whole names and cannot cover projects
+# that get invented on the fly.
+set -u
+. /home/james/.config/sway/scripts/sway-ws-lib
+
+ICONS=/home/james/.config/sway/scripts/ws-icons
+
+cur=$(ws_focused_name)
+[ -n "$cur" ] || exit 1
+num=$(ws_num "$cur")
+
+label=$(ws_menu_list | fuzzel --dmenu --prompt='name: ' --config="$FUZZEL_CONFIG") || exit 0
+[ -n "$label" ] || exit 0
+label=$(ws_label "$label")
+
+# Strip a leading icon so renaming twice does not stack them. Matched as
+# "non-alphanumeric run then space" so a name like "new sync work" keeps its
+# first word.
+label=$(printf '%s' "$label" | sed 's/^[^[:alnum:][:space:]]\{1,\} //')
+icon=
+best=0
+if [ -f "$ICONS" ]; then
+    while IFS=' 	' read -r prefix glyph; do
+        case "$prefix" in ''|'#'*) continue ;; esac
+        case "$label" in
+            "$prefix"*)
+                if [ ${#prefix} -gt $best ]; then best=${#prefix}; icon=$glyph; fi ;;
+        esac
+    done < "$ICONS"
+fi
+
+[ -n "$icon" ] && label="$icon $label"
+if [ -n "$num" ]; then
+    swaymsg rename workspace "$cur" to "$num:$label"
+else
+    swaymsg rename workspace "$cur" to "$(ws_free_num):$label"
+fi

@@ -1,0 +1,8 @@
+# <name prefix><space><icon>   -- longest matching prefix wins, edit freely.
+# Glyphs must exist in the bar font; these are ones already in use.
+chief 
+chief/chrome 
+infra 
+brand 
+notes 
+chat 
