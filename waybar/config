@@ -50,8 +50,10 @@
             "format-icons": {
             // Checked before any name, so the focused workspace shows its name
             // in full while every other one stays an icon -- you always know
-            // where you are without hovering.
-            "focused":                "<span>",
+            // where you are without hovering. Capitalised via pango's
+            // text_transform (1.50+; 1.52 here) because GTK3 CSS has no
+            // text-transform -- that only arrived in GTK4.
+            "focused":                "<span text_transform=\"capitalize\">",
             "meetings":               "  <span size=\"1\">",  // video camera
             "email":                  "  <span size=\"1\">",  // envelope
             "slack":                  "  <span size=\"1\">",  // slack
@@ -94,8 +96,10 @@
             "format-icons": {
             // Checked before any name, so the focused workspace shows its name
             // in full while every other one stays an icon -- you always know
-            // where you are without hovering.
-            "focused":                "<span>",
+            // where you are without hovering. Capitalised via pango's
+            // text_transform (1.50+; 1.52 here) because GTK3 CSS has no
+            // text-transform -- that only arrived in GTK4.
+            "focused":                "<span text_transform=\"capitalize\">",
                 "activated": "",
                 "deactivated": ""
             }
@@ -160,8 +164,10 @@
             "format-icons": {
             // Checked before any name, so the focused workspace shows its name
             // in full while every other one stays an icon -- you always know
-            // where you are without hovering.
-            "focused":                "<span>",
+            // where you are without hovering. Capitalised via pango's
+            // text_transform (1.50+; 1.52 here) because GTK3 CSS has no
+            // text-transform -- that only arrived in GTK4.
+            "focused":                "<span text_transform=\"capitalize\">",
                 "headphones": "",
                 "handsfree": "",
                 "headset": "",
@@ -188,8 +194,10 @@
             "format-icons": {
             // Checked before any name, so the focused workspace shows its name
             // in full while every other one stays an icon -- you always know
-            // where you are without hovering.
-            "focused":                "<span>",
+            // where you are without hovering. Capitalised via pango's
+            // text_transform (1.50+; 1.52 here) because GTK3 CSS has no
+            // text-transform -- that only arrived in GTK4.
+            "focused":                "<span text_transform=\"capitalize\">",
                 "spotify": "",
                 "default": "🎜"
             },
