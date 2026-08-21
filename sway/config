@@ -338,8 +338,34 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
     # Toggle the current focus between tiling and floating mode
     bindsym $mod+t floating toggle
 
-    # Swap focus between the tiling area and the floating area
-    bindsym $mod+Shift+t focus mode_toggle
+    # Nearly fullscreen: float the window and size it to the workspace, which is
+    # the output minus waybar's exclusive zones, so the bars stay visible. The
+    # client is never told it is fullscreen, so apps that swap their own chrome
+    # in that state - Chrome hiding its tab strip, players raising an OSD - keep
+    # the UI they have. $mod+t above is the way back out.
+    #
+    # ppt for a floating window is a fraction of the workspace box rather than
+    # the output, and that box already has the gaps taken out of it - here 1898
+    # x1114 inside a 1920x1200 panel, so 100 ppt would land exactly where a lone
+    # tiled window sits. 98/97 pulls in from that to leave ~19px down each side
+    # and ~17px top and bottom, which is the point: the windows behind stay
+    # visible around the edge, so this never reads as an empty fullscreen. It is
+    # a thin margin on purpose - twice the 8px inner gap, enough to read as a
+    # window sitting over a stack without giving up the room.
+    #
+    # A thicker border would say the same thing, but sway never resets `border`
+    # when a container goes back to tiling - it survived a floating disable and
+    # enable in testing - so the window would keep the fat frame for good. Size
+    # carries no state: unfloating restores the tiled geometry on its own.
+    #
+    # `move position center` twice is not a typo. The first one runs before the
+    # resize has settled and centres on the height without the title bar, which
+    # leaves the window sitting 23px high; the second lands it square.
+    #
+    # This replaced `focus mode_toggle`, which swapped focus between the tiling
+    # and floating layers. That is only worth a key when several windows float
+    # at once; one floating window at a time is reached by clicking it.
+    bindsym $mod+Shift+t floating enable, resize set 98 ppt 97 ppt, move position center, move position center
 
     # move focus to the parent container
     bindsym $mod+a focus parent
