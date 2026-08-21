@@ -1,0 +1,53 @@
+#!/bin/sh
+# Remembers workspace names across restarts.
+#
+# sway destroys a workspace as soon as its last window closes and knows nothing
+# about it at startup, so names earned over a session are gone on the next boot.
+# This records num -> label as you name things, and renames a workspace back
+# when sway recreates it.
+#
+# Only workspaces whose name is exactly their number are restored: anything
+# else was named deliberately just now, and must not be overwritten by history.
+set -u
+. /home/james/.config/sway/scripts/sway-ws-lib
+
+STORE="${XDG_STATE_HOME:-$HOME/.local/state}/sway-workspace-names"
+mkdir -p "$(dirname "$STORE")"
+[ -f "$STORE" ] || : > "$STORE"
+
+exec 9> "$STORE.lock"
+flock -n 9 || exit 0
+
+remember() { # num label
+    [ -n "$1" ] && [ -n "$2" ] && [ "$1" != "$2" ] || return 0
+    tmp=$(mktemp "$STORE.XXXXXX") || return 0
+    printf '%s\t%s\n' "$1" "$2" > "$tmp"
+    grep -v "^$1	" "$STORE" >> "$tmp" 2>/dev/null
+    mv "$tmp" "$STORE"
+}
+
+recall() { # num -> label on stdout, empty if unknown
+    awk -F'\t' -v n="$1" '$1 == n { print $2; exit }' "$STORE"
+}
+
+restore() { # num name
+    [ "$1" = "$2" ] || return 0          # already named; leave it alone
+    label=$(recall "$1")
+    [ -n "$label" ] || return 0
+    swaymsg rename workspace "$2" to "$1:$label" >/dev/null
+}
+
+# Catch up on anything already open, so a restart repaints names immediately.
+ws_json | jq -r '.[] | "\(.num)\t\(.name)"' | while IFS='	' read -r num name; do
+    restore "$num" "$name"
+done
+
+swaymsg -t subscribe -m '["workspace"]' \
+| jq -r --unbuffered '"\(.change)\t\(.current.num // "")\t\(.current.name // "")"' \
+| while IFS='	' read -r change num name; do
+    [ -n "$num" ] || continue
+    case "$change" in
+        init)   restore "$num" "$name" ;;
+        rename|focus) remember "$num" "$(ws_label "$name")" ;;
+    esac
+  done

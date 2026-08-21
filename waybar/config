@@ -62,6 +62,8 @@
             "chief:replace-llama":    "  <span size=\"1\">",  // microchip
             "productivity:sway":      "  <span size=\"1\">",  // terminal
             "productivity:new-phone": "  <span size=\"1\">",  // mobile
+            "chief:hubspot":          "  <span size=\"1\">",  // address card
+            "chief:llm-dump":         "  <span size=\"1\">",  // robot
             "default": "<span>"
             }
         },

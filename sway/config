@@ -283,6 +283,8 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
     # exist yet is how a new project gets made.
     set $ws_scripts /home/james/.config/sway/scripts
     exec_always $ws_scripts/sway-ws-mru
+    # Names survive a restart: sway destroys empty workspaces and starts blank.
+    exec_always $ws_scripts/sway-ws-names
 
     # grave is where sway's default config puts it; backslash is where the key
     # sits on a UK layout.
