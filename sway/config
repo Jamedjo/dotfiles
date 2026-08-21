@@ -250,9 +250,26 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
     bindsym $mod+Alt+Shift+9 move container to workspace $workspace19
     bindsym $mod+Alt+Shift+0 move container to workspace $workspace20
 
-    # Select container to focus
+    # Select container to focus.
+    # fuzzel is a layer-shell surface, not a window: it has no --title or
+    # --app-id, and for_window criteria never match it. The rules here are kept
+    # only for the commented-out urxvt fallbacks below.
+    # fzf hid the con_id with --with-nth and fuzzel has no equivalent, so the
+    # list is teed to a file and its id column cut off before display, then
+    # awk matches the chosen line back to its row to recover the id. Matching
+    # on the text rather than on fuzzel's --index because that index counts the
+    # entries fuzzel accepted, so anything it skips or dedupes shifts it. The
+    # cost is that two windows sharing a title byte for byte resolve to the
+    # first of them; put .id last in the jq and take $NF if that ever matters
+    # more than keeping the id out of the list.
+    # Nameless cons are split and tabbed containers, not windows: they showed
+    # up as 15 blank rows here. The file lives in the runtime dir rather than
+    # /tmp so window titles are not world-readable.
+    # One pipeline, no ';': sway splits a binding's commands on an unquoted
+    # semicolon and would read everything after it as a sway command. Nothing
+    # validates that until the key is pressed.
     for_window [title=fuzzy-tab] floating enable
-    bindsym $mod+Tab exec urxvt --title 'fuzzy-tab' -e zsh -c 'source ~/.fzf.zsh && swaymsg -t get_tree | jq -r "recurse(.nodes[]?) | select(.type == \\"con\\") | [.id, .app_id, .name] | @tsv" | fzf --reverse --with-nth=2.. | awk "{print \$1}" | xargs -r -I ID swaymsg "[con_id=ID]" focus'
+    bindsym $mod+Tab exec swaymsg -t get_tree | jq -r 'recurse(.nodes[]?) | select(.type == "con" and .name != null) | [.id, .app_id, .name] | @tsv' | tee /run/user/1000/sway-fuzzel-windows.tsv | cut -f2- | fuzzel --dmenu --prompt='window: ' --config=/home/james/.config/fuzzel/sway-menu.ini | awk 'NR == FNR { sel = $0; next } { row = $0; sub(/^[0-9]+\t/, "", row); if (row == sel) { print $1; exit } }' - /run/user/1000/sway-fuzzel-windows.tsv | xargs -r -I ID swaymsg '[con_id=ID]' focus
 
     # Move container to fzf workspace
     for_window [title=fuzzy-workspace] floating enable
@@ -261,10 +278,12 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
     #bindsym Mod4+grave exec -- urxvt --title fuzzy-workspace -e zsh -c '\\"source ~/.fzf.zsh && swaymsg -t get_workspaces | jq -r '"'.[] | select(.focused? != true) | .name'"' | fzf --reverse | xargs -r -I NAME swaymsg move container to workspace NAME\\"'
 
     # Focus fzf workspace
-    bindsym $mod+grave exec urxvt --title 'fuzzy-workspace' -e zsh -c 'source ~/.fzf.zsh && swaymsg -t get_workspaces | jq -r \\".[] | select(.focused? != true) | .name\\" | fzf --reverse | xargs -r -I NAME swaymsg workspace NAME'
+    bindsym $mod+grave exec swaymsg -t get_workspaces | jq -r '.[] | select(.focused? != true) | .name' | fuzzel --dmenu --prompt='workspace: ' --config=/home/james/.config/fuzzel/sway-menu.ini | xargs -r -I NAME swaymsg workspace NAME
 
     # Move workspace to another screen with fzf
-    bindsym $mod+Shift+w exec $term_run "source ~/.fzf.zsh && swaymsg -t get_outputs | jq -r '.[] | select(.focused!=true) | [.name, .make, .model] | @tsv' | fzf --select-1 --reverse --prompt='Move workspace to:' | awk '{print $1}' | xargs -r swaymsg move workspace to"
+    # fzf's --select-1 auto-picked a lone output; fuzzel has no equivalent, so a
+    # single candidate still needs Enter.
+    bindsym $mod+Shift+w exec swaymsg -t get_outputs | jq -r '.[] | select(.focused != true) | [.name, .make, .model] | @tsv' | fuzzel --dmenu --prompt='move workspace to: ' --config=/home/james/.config/fuzzel/sway-menu.ini | awk '{print $1}' | xargs -r swaymsg move workspace to
 
     # Move workspace to next screen/output
     bindsym $mod+Alt+w exec swaymsg -t get_outputs | jq '.[] | .name' | sed -n "1p;/`swaymsg -t get_outputs | jq '.[] | select(.focused==true) | .name'`/{n;p;}" | tail -n1 | xargs swaymsg move workspace to

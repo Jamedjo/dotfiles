@@ -35,3 +35,5 @@ mkdir Scripts && ln ~/Scripts/* Scripts/
 mkdir swaylock && ln ~/.config/swaylock/config swaylock/config
 mkdir mako && ln ~/.config/mako/* mako/
 
+
+mkdir fuzzel && ln ~/.config/fuzzel/* fuzzel/
