@@ -211,47 +211,47 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
     set $chat $workspace8
 
     # switch to workspace
-    bindsym $mod+1 workspace $workspace1
-    bindsym $mod+2 workspace $workspace2
-    bindsym $mod+3 workspace $workspace3
-    bindsym $mod+4 workspace $workspace4
-    bindsym $mod+5 workspace $workspace5
-    bindsym $mod+6 workspace $workspace6
-    bindsym $mod+7 workspace $workspace7
-    bindsym $mod+8 workspace $workspace8
-    bindsym $mod+9 workspace $workspace9
-    bindsym $mod+0 workspace $workspace10
-    bindsym $mod+Alt+1 workspace $workspace11
-    bindsym $mod+Alt+2 workspace $workspace12
-    bindsym $mod+Alt+3 workspace $workspace13
-    bindsym $mod+Alt+4 workspace $workspace14
-    bindsym $mod+Alt+5 workspace $workspace15
-    bindsym $mod+Alt+6 workspace $workspace16
-    bindsym $mod+Alt+7 workspace $workspace17
-    bindsym $mod+Alt+8 workspace $workspace18
-    bindsym $mod+Alt+9 workspace $workspace19
-    bindsym $mod+Alt+0 workspace $workspace20
+    bindsym $mod+1 workspace number $workspace1
+    bindsym $mod+2 workspace number $workspace2
+    bindsym $mod+3 workspace number $workspace3
+    bindsym $mod+4 workspace number $workspace4
+    bindsym $mod+5 workspace number $workspace5
+    bindsym $mod+6 workspace number $workspace6
+    bindsym $mod+7 workspace number $workspace7
+    bindsym $mod+8 workspace number $workspace8
+    bindsym $mod+9 workspace number $workspace9
+    bindsym $mod+0 workspace number $workspace10
+    bindsym $mod+Alt+1 workspace number $workspace11
+    bindsym $mod+Alt+2 workspace number $workspace12
+    bindsym $mod+Alt+3 workspace number $workspace13
+    bindsym $mod+Alt+4 workspace number $workspace14
+    bindsym $mod+Alt+5 workspace number $workspace15
+    bindsym $mod+Alt+6 workspace number $workspace16
+    bindsym $mod+Alt+7 workspace number $workspace17
+    bindsym $mod+Alt+8 workspace number $workspace18
+    bindsym $mod+Alt+9 workspace number $workspace19
+    bindsym $mod+Alt+0 workspace number $workspace20
     # move focused container to workspace
-    bindsym $mod+Shift+1 move container to workspace $workspace1
-    bindsym $mod+Shift+2 move container to workspace $workspace2
-    bindsym $mod+Shift+3 move container to workspace $workspace3
-    bindsym $mod+Shift+4 move container to workspace $workspace4
-    bindsym $mod+Shift+5 move container to workspace $workspace5
-    bindsym $mod+Shift+6 move container to workspace $workspace6
-    bindsym $mod+Shift+7 move container to workspace $workspace7
-    bindsym $mod+Shift+8 move container to workspace $workspace8
-    bindsym $mod+Shift+9 move container to workspace $workspace9
-    bindsym $mod+Shift+0 move container to workspace $workspace10
-    bindsym $mod+Alt+Shift+1 move container to workspace $workspace11
-    bindsym $mod+Alt+Shift+2 move container to workspace $workspace12
-    bindsym $mod+Alt+Shift+3 move container to workspace $workspace13
-    bindsym $mod+Alt+Shift+4 move container to workspace $workspace14
-    bindsym $mod+Alt+Shift+5 move container to workspace $workspace15
-    bindsym $mod+Alt+Shift+6 move container to workspace $workspace16
-    bindsym $mod+Alt+Shift+7 move container to workspace $workspace17
-    bindsym $mod+Alt+Shift+8 move container to workspace $workspace18
-    bindsym $mod+Alt+Shift+9 move container to workspace $workspace19
-    bindsym $mod+Alt+Shift+0 move container to workspace $workspace20
+    bindsym $mod+Shift+1 move container to workspace number $workspace1
+    bindsym $mod+Shift+2 move container to workspace number $workspace2
+    bindsym $mod+Shift+3 move container to workspace number $workspace3
+    bindsym $mod+Shift+4 move container to workspace number $workspace4
+    bindsym $mod+Shift+5 move container to workspace number $workspace5
+    bindsym $mod+Shift+6 move container to workspace number $workspace6
+    bindsym $mod+Shift+7 move container to workspace number $workspace7
+    bindsym $mod+Shift+8 move container to workspace number $workspace8
+    bindsym $mod+Shift+9 move container to workspace number $workspace9
+    bindsym $mod+Shift+0 move container to workspace number $workspace10
+    bindsym $mod+Alt+Shift+1 move container to workspace number $workspace11
+    bindsym $mod+Alt+Shift+2 move container to workspace number $workspace12
+    bindsym $mod+Alt+Shift+3 move container to workspace number $workspace13
+    bindsym $mod+Alt+Shift+4 move container to workspace number $workspace14
+    bindsym $mod+Alt+Shift+5 move container to workspace number $workspace15
+    bindsym $mod+Alt+Shift+6 move container to workspace number $workspace16
+    bindsym $mod+Alt+Shift+7 move container to workspace number $workspace17
+    bindsym $mod+Alt+Shift+8 move container to workspace number $workspace18
+    bindsym $mod+Alt+Shift+9 move container to workspace number $workspace19
+    bindsym $mod+Alt+Shift+0 move container to workspace number $workspace20
 
     # Select container to focus.
     # fuzzel is a layer-shell surface, not a window: it has no --title or
@@ -280,8 +280,12 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
     #bindsym $mod+Shift+grave exec urxvt --title 'fuzzy-workspace' -e zsh -c 'source ~/.fzf.zsh && swaymsg -t get_workspaces | jq -r \\".[] | select(.focused? != true) | .name\\" | fzf --reverse | xargs -r -I NAME swaymsg move container to workspace NAME'
     #bindsym Mod4+grave exec -- urxvt --title fuzzy-workspace -e zsh -c '\\"source ~/.fzf.zsh && swaymsg -t get_workspaces | jq -r '"'.[] | select(.focused? != true) | .name'"' | fzf --reverse | xargs -r -I NAME swaymsg move container to workspace NAME\\"'
 
-    # Focus fzf workspace
-    bindsym $mod+grave exec swaymsg -t get_workspaces | jq -r '.[] | select(.focused? != true) | .name' | fuzzel --dmenu --prompt='workspace: ' --config=/home/james/.config/fuzzel/sway-menu.ini | xargs -r -I NAME swaymsg workspace NAME
+    # Focus workspace by name. Bound twice: grave is where sway's default
+    # config puts it, backslash is where a UK layout puts the key James
+    # reaches for. One $ws_switch so the pipeline is not duplicated.
+    set $ws_switch exec swaymsg -t get_workspaces | jq -r '.[] | select(.focused? != true) | .name' | fuzzel --dmenu --prompt='workspace: ' --config=/home/james/.config/fuzzel/sway-menu.ini | xargs -r -I NAME swaymsg workspace NAME
+    bindsym $mod+grave $ws_switch
+    bindsym $mod+backslash $ws_switch
 
     # Move workspace to another screen with fzf
     # fzf's --select-1 auto-picked a lone output; fuzzel has no equivalent, so a
@@ -300,7 +304,7 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
 # Window assignments
 #
     #exec slack
-    assign [class="Slack"] workspace $chat
+    assign [class="Slack"] workspace number $chat
 
     # Load urxvt theme and plugins
     exec xrdb ~/.Xresources
@@ -308,14 +312,14 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
     #assign [title='TODO'] workspace $workspace5
 
     exec simplenote
-    assign [class="Simplenote"] workspace $notes
+    assign [class="Simplenote"] workspace number $notes
     #exec /opt/Todoist/todoist
-    assign [class="Todoist"] workspace $notes
+    assign [class="Todoist"] workspace number $notes
 
     #exec thunderbird
     #assign [class="Thunderbird"] workspace $workspace1
 
-    exec swaymsg workspace $web
+    exec swaymsg workspace number $web
 
     bindsym $mod+Shift+f exec $term_run 'sleep 0.1 && cd /home/james/.config/focuslock && vim current'
 #
