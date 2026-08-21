@@ -1,8 +1,6 @@
 #!/bin/sh
 # Rename the current workspace, keeping its number so keybindings and `assign`
-# rules survive. The icon comes from ws-icons rather than waybar's
-# format-icons, which matches whole names and so cannot cover projects that get
-# invented on the fly.
+# rules survive.
 set -u
 . /home/james/.config/sway/scripts/sway-ws-lib
 
@@ -14,7 +12,7 @@ label=$(ws_menu_list | fuzzel --dmenu --prompt='name: ' --config="$FUZZEL_CONFIG
 [ -n "$label" ] || exit 0
 label=$(ws_label "$label")
 
-label=$(ws_decorate "$label")
+label=$(ws_clean "$label")
 
 if [ -n "$num" ]; then
     swaymsg rename workspace "$cur" to "$num:$label"

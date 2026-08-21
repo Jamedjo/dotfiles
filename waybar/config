@@ -30,13 +30,42 @@
             "tray",
             "clock"
         ],
-        // {name} is the workspace name with the number stripped, so the bar
-        // shows "langfuse" rather than "21:langfuse". With ~35 workspaces the
-        // numbers were most of the width and none of the meaning.
+        // {index} is sway's workspace number; {name} is the label with the
+        // number already stripped.
+        //
+        // The dangling </span> is deliberate. waybar renders each label as
+        // pango markup, and format-icons values are arbitrary strings, so an
+        // icon that ends with an unclosed <span size="1"> shrinks the name
+        // that follows it to nothing -- which is how a workspace shows its
+        // icon INSTEAD of its name. "default" opens a plain span, so anything
+        // without an icon renders normally. format itself cannot branch per
+        // workspace; this is the branch.
+        //
+        // Adding an icon means adding a line here and `pkill -SIGUSR2 waybar`.
+        // Names are matched exactly -- no prefixes -- so each workspace gets
+        // its own icon rather than sharing one per project.
         "sway/workspaces": {
             "all-outputs": true,
-            "format": "{name}"
+            "format": "{index} {icon}{name}</span>",
+            "format-icons": {
+            "meetings":               "  <span size=\"1\">",  // video camera
+            "email":                  "  <span size=\"1\">",  // envelope
+            "slack":                  "  <span size=\"1\">",  // slack
+            "todos":                  "  <span size=\"1\">",  // task list
+            "dump":                   "  <span size=\"1\">",  // trash
+            "chief:v2-review":        "  <span size=\"1\">",  // code branch
+            "chief:api-v2":           "  <span size=\"1\">",  // server
+            "chief:api-planner":      "  <span size=\"1\">",  // calendar
+            "chief:ask-tool":         "  <span size=\"1\">",  // cogs
+            "chief:brand":            "  <span size=\"1\">",  // paint brush
+            "chief:stripe":           "  <span size=\"1\">",  // credit card
+            "chief:replace-llama":    "  <span size=\"1\">",  // microchip
+            "productivity:sway":      "  <span size=\"1\">",  // terminal
+            "productivity:new-phone": "  <span size=\"1\">",  // mobile
+            "default": "<span>"
+            }
         },
+
         "sway/mode": {
             "format": "{}"
         },
