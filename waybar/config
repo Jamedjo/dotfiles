@@ -48,6 +48,10 @@
             "all-outputs": true,
             "format": "{index} {icon}{name}</span>",
             "format-icons": {
+            // Checked before any name, so the focused workspace shows its name
+            // in full while every other one stays an icon -- you always know
+            // where you are without hovering.
+            "focused":                "<span>",
             "meetings":               "  <span size=\"1\">",  // video camera
             "email":                  "  <span size=\"1\">",  // envelope
             "slack":                  "  <span size=\"1\">",  // slack
@@ -88,6 +92,10 @@
         "idle_inhibitor": {
             "format": "{icon}",
             "format-icons": {
+            // Checked before any name, so the focused workspace shows its name
+            // in full while every other one stays an icon -- you always know
+            // where you are without hovering.
+            "focused":                "<span>",
                 "activated": "",
                 "deactivated": ""
             }
@@ -150,6 +158,10 @@
             "format-bluetooth": "{volume}% {icon}",
             "format-muted": "",
             "format-icons": {
+            // Checked before any name, so the focused workspace shows its name
+            // in full while every other one stays an icon -- you always know
+            // where you are without hovering.
+            "focused":                "<span>",
                 "headphones": "",
                 "handsfree": "",
                 "headset": "",
@@ -174,6 +186,10 @@
             "return-type": "json",
             "max-length": 40,
             "format-icons": {
+            // Checked before any name, so the focused workspace shows its name
+            // in full while every other one stays an icon -- you always know
+            // where you are without hovering.
+            "focused":                "<span>",
                 "spotify": "",
                 "default": "🎜"
             },
