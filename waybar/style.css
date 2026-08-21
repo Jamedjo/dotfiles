@@ -1,167 +1,341 @@
+/* Chief — a waybar theme wearing chief-site's nav.
+ *
+ * Sources: chief-site src/styles/components/site-nav.css and
+ * src/styles/base/variables.css, with the state colours from chrome-chief
+ * agent-v2-client styles/theme.css.
+ *
+ * The bar is not a strip with a blue tint on it. It is the site's nav bar,
+ * built the way the site builds one:
+ *
+ *   - .drop, the nav's floating dropdown card, is the shape: --nav-ground under
+ *     a 1px --nav-border hairline. The top bar is three of them — workspaces,
+ *     the window title, the status readouts — rather than one full-width slab,
+ *     and the title's drops its chrome when there is no title to hold. The
+ *     footer is the other half of the site's pairing: .site-footer runs edge to
+ *     edge under a rule, so the bottom bar does too.
+ *   - .site-header's 135deg white glass wash sits on the ground. The site keeps
+ *     .9 alpha under it only so its backdrop-filter has something to blur, and
+ *     paints an opaque --nav-ground behind that; waybar has no blur to feed, so
+ *     the ground is opaque here and the composite is identical. Nothing shows
+ *     through either card.
+ *   - The right card additionally rides the Deep Navy ramp — --bg-section into
+ *     --bg-elevated, brightening left to right and terminating in the clock,
+ *     which is --navy-twilight from the sidepanel's footer. That ramp is the
+ *     one place the palette has a gradient in it, and the status side is where
+ *     it earns its keep: it gives eight modules an order without eight fills.
+ *   - The active workspace is the site's filled CTA — --color-primary-deep with
+ *     white text, the pair that makes the button clear AA. Urgent is
+ *     .badge-early verbatim: gold letter inside a gold hairline capsule.
+ *
+ * Compact by construction: 31px of reserved height carrying 25px capsules, at
+ * 15px Inter on both bars. Inter has no Nerd glyphs, so pango falls through to
+ * Ubuntu Nerd Font per-glyph — brand letterforms, icon coverage, one stack.
+ */
+
+@define-color nav-ground   #0f1f38;  /* --bg-section / --nav-ground */
+@define-color nav-elevated #1a2d4f;  /* --bg-elevated */
+@define-color twilight     #2b4470;  /* theme.css --navy-twilight */
+@define-color nav-border   rgba(74, 158, 255, 0.4);   /* --nav-border, at fuzzel's 4a9eff66 */
+@define-color blue         #4a9eff;  /* --color-primary */
+@define-color blue-deep    #256aba;  /* --color-primary-deep, the filled CTA */
+@define-color gold         #f0b35e;  /* .badge-early */
+@define-color success      #7fba00;
+@define-color danger       #ff4a4a;
+
 * {
     border: none;
     border-radius: 0;
-    font-family: "Ubuntu Nerd Font", Helvetica, Arial, Roboto, sans-serif;
-    font-size: 16px;
+    font-family: "Inter", "Ubuntu Nerd Font", Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    font-weight: 500;
     min-height: 0;
 }
 
+/* The window is only the gap between the cards. */
 window#waybar {
-    background: rgba(14, 19, 23, 0.6);
-    border-bottom: 2px solid rgba(14,19, 23, 0.7);
-    color: #ffffff;
-}
-
-window#waybar.bottom {
-    border-top: 2px solid rgba(14,19, 23, 0.7);
-}
-
-window#waybar.focuslock {
-    /*font-weight: bold;*/
+    background: transparent;
+    color: rgba(255, 255, 255, 0.72); /* .nav-link */
 }
 
 window#waybar.hidded {
     opacity: 0.2;
 }
 
-/* https://github.com/Alexays/Waybar/wiki/FAQ#the-workspace-buttons-have-a-strange-hover-effect */
+/* The cards. All three wear .drop; the title's is the one that can be empty,
+   and an empty card is just a scar in the middle of the bar, so it drops its
+   chrome when waybar marks the bar .empty and the gap closes over it. */
+.modules-left,
+.modules-center,
+.modules-right {
+    background-color: @nav-ground;
+    background-image: linear-gradient(135deg,
+                                      rgba(255, 255, 255, 0.08) 0%,
+                                      rgba(255, 255, 255, 0.04) 50%,
+                                      rgba(255, 255, 255, 0.02) 100%);
+    /* Capsules rather than .drop's 14px. On a 21px card 14px is already most
+       of the way to a capsule, and GTK renders the two arcs of a capsule far
+       more cleanly than it renders four corners that nearly meet — the edge
+       was visibly stepped at 14. --nav-border also goes up from .2 to .4:
+       .2 is tuned for a hairline under a 75px header and thins out to nothing
+       at this size, and .4 is what fuzzel/fuzzel.ini already sets as this
+       desktop's hairline (border=4a9eff66). */
+    border: 1px solid @nav-border;
+    border-radius: 999px;
+    margin: 2px 6px;
+    padding: 0 5px;
+}
+
+/* The status card rides the ramp, with the glass wash still on top of it. */
+.modules-right {
+    background-image: linear-gradient(135deg,
+                                      rgba(255, 255, 255, 0.08) 0%,
+                                      rgba(255, 255, 255, 0.04) 50%,
+                                      rgba(255, 255, 255, 0.02) 100%),
+                      linear-gradient(90deg, @nav-ground 0%, @nav-elevated 100%);
+}
+
+window#waybar.empty .modules-center {
+    background: transparent;
+    border-color: transparent;
+    margin: 0;
+    padding: 0;
+}
+
+/* Workspaces. Capsules, not underlines: the card is already a rounded shape and
+   a rule on its bottom edge fights the corners. */
+#workspaces {
+    padding: 0 2px;
+}
+
 #workspaces button {
     padding: 0 5px;
+    margin: 3px 0;
     background: transparent;
+    color: rgba(255, 255, 255, 0.52);
+    border: none;
+    border-radius: 999px;
+    transition: all 0.2s ease; /* --transition-default */
+}
+
+#workspaces button:hover {
+    background: rgba(74, 158, 255, 0.1);
     color: #ffffff;
-    border-bottom: 2px solid transparent;
+    box-shadow: none;
+    text-shadow: none;
 }
 
-#workspaces button.focused {
-    background: rgba(0, 0, 0, 0.5);
-    border-bottom: 2px solid #ffffff;
+/* The site's filled CTA, white on --color-primary-deep. */
+#workspaces button.focused,
+#workspaces button.active {
+    background: @blue-deep;
+    color: #ffffff;
+    font-weight: 600;
 }
 
+/* .badge-early, verbatim. */
 #workspaces button.urgent {
-    background-color: rgba(235, 77, 75, 0.5);
+    background: transparent;
+    color: @gold;
+    border: 1px solid rgba(240, 179, 94, 0.6);
+    font-weight: 700;
 }
 
 #mode {
-    background: rgba(100, 114, 125, 0.5);
-    border-bottom: 2px solid #ffffff;
+    background: @blue;
+    color: #06121f;
+    font-weight: 700;
+    border-radius: 999px;
+    padding: 0 9px;
+    margin: 3px 2px;
 }
 
-#clock, #battery, #cpu, #memory, #temperature, #backlight, #network, #pulseaudio, #custom-media, #tray, #mode, #idle_inhibitor {
+#scratchpad,
+#custom-media {
+    padding: 0 7px;
+    color: rgba(255, 255, 255, 0.72);
+}
+
+#window {
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: 400;
     padding: 0 8px;
 }
 
-/* #battery, #cpu, #pulseaudio { */
-    /* background-color: rgba(255, 255, 255, 0.5); */
-    /* color: #000000; */
-/* } */
-
-#battery.charging {
-    color: #ffffff;
-    /* background-color: rgba(127, 56, 26, 0.5); */
+window#waybar.empty #window {
+    background: transparent;
 }
 
-@keyframes blink {
-    to {
-        background-color: rgba(255, 255, 255, 0.5);
-        color: #000000;
-    }
+/* Status modules sit on the ramp and add no fill of their own. */
+#cpu,
+#memory,
+#temperature,
+#network,
+#pulseaudio,
+#wireplumber,
+#battery,
+#idle_inhibitor,
+#backlight,
+#tray {
+    padding: 0 7px;
+    color: rgba(255, 255, 255, 0.72);
+    background: transparent;
+}
+
+#cpu:hover,
+#network:hover,
+#pulseaudio:hover,
+#wireplumber:hover,
+#battery:hover {
+    color: #ffffff;
+}
+
+/* The drawer. cpu is the face; memory and temperature ink down while stowed so
+   the reveal is a brightening rather than an appearance. cpu takes no divider
+   of its own — it opens the card, where a hairline would sit on the corner. */
+#cpu {
+    padding-left: 9px;
+}
+
+#memory.drawer-child,
+#temperature.drawer-child {
+    color: rgba(255, 255, 255, 0.55);
+}
+
+/* The clock terminates the ramp: --navy-twilight, one step past the card's
+   bright end, as a capsule. */
+#clock {
+    background: @twilight;
+    color: #ffffff;
+    font-weight: 600;
+    border-radius: 999px;
+    padding: 0 10px;
+    margin: 3px 0 3px 4px;
+}
+
+#clock:hover {
+    background: #34528a;
+}
+
+#battery.warning:not(.charging) {
+    color: @gold;
 }
 
 #battery.critical:not(.charging) {
-    background: rgba(245, 60, 60, 0.5);
+    background: rgba(255, 74, 74, 0.25);
     color: #ffffff;
+    border-radius: 999px;
+    margin: 3px 0;
     animation-name: blink;
-    animation-duration: 0.5s;
-    animation-timing-function: linear;
+    animation-duration: 0.9s;
+    animation-timing-function: ease-in-out;
     animation-iteration-count: infinite;
     animation-direction: alternate;
 }
 
-/* #cpu {
-    background: rgba(21, 36, 82, 0.5);
-} */
-
-#memory {
-    background: rgba(155, 89, 182, 0.5);
+@keyframes blink {
+    to {
+        background: @danger;
+    }
 }
 
-#backlight {
-    background: rgba(144, 177, 177, 0.5);
-}
-
-/* #network {
-    background: rgba(41, 128, 185, 0.5);
-} */
-
-/* #network, #clock, #tray { */
-#clock {
-    background-color: rgba(0, 0, 0, 0.5);
-    border-bottom: 2px solid rgba(100, 114, 125, 0.5);
-    padding: 0 15px;
-    margin-left: 8px;
-}
-
-#clock {
-    /* background-color: rgba(7, 22, 33, 0.9); */
-    border-bottom: 2px solid #ffffff;
-}
-
+#temperature.critical,
 #network.disconnected {
-    background: rgba(245, 60, 60, 0.5);
+    color: @danger;
 }
 
-/* #pulseaudio {
-    background: rgba(21, 54, 82, 0.5);
-}
-
-#pulseaudio.muted {
-    background: rgba(144, 177, 177, 0.5);
-    color: #2a5c45;
-} */
-
-/* Text-heavy modules: disable ligatures to prevent Nerd Font glyph conflicts (e.g. "fi" → telephone icon) */
-#custom-focuslock,
-#custom-todoist,
-#window {
-    font-family: "DejaVu Sans Mono Nerd Font", Helvetica, Arial, Roboto, sans-serif;
-    font-size: 16px;
-    font-feature-settings: "liga=0";
-}
-
-#custom-media {
-    background: rgba(102, 204, 153, 0.5);
-    color: #2a5c45;
-}
-
-.custom-spotify {
-    background: rgba(102, 204, 153, 0.5);
-}
-
-.custom-vlc {
-    background: rgba(255, 160, 0, 0.5);
-}
-
-#temperature {
-    background: rgba(240, 147, 43, 0.5);
-}
-
-#temperature.critical {
-    background: rgba(235, 77, 75, 0.5);
-}
-
-/* #tray {
-    background-color: rgba(41, 128, 185, 0.5);
-} */
-
-#idle_inhibitor {
-    background-color: rgba(45, 52, 54, 0.5);
+#pulseaudio.muted,
+#wireplumber.muted {
+    color: rgba(255, 255, 255, 0.3);
 }
 
 #idle_inhibitor.activated {
-    background-color: rgba(236, 240, 241, 0.5);
-    color: #2d3436;
+    color: @blue;
 }
 
-#scratchpad {
-    padding-left: 10px;
+#custom-media.custom-spotify {
+    color: @success;
+}
+
+#custom-media.custom-vlc {
+    color: @gold;
+}
+
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+}
+
+/* Text-heavy modules: disable ligatures to prevent Nerd Font glyph conflicts
+   (e.g. "fi" → telephone icon) on any glyph Inter does not cover. */
+#custom-focuslock,
+#custom-todoist,
+#window {
+    font-feature-settings: "liga=0";
+}
+
+/* The footer carries no size of its own: both bars set type at the global
+   15px, so a sentence down here and a percentage up there are the same size.
+ */
+/* On the footer the card goes on the module, not on the modules-* box. The box
+   keeps its card even when every child is hidden, and todoist hides itself
+   whenever the query comes back empty — which left a stub capsule sitting in
+   the corner with nothing in it. A module that hides takes its own card with
+   it. */
+/* The footer is one bar, not two cards.
+ *
+ * The status side is a set of readouts that each stand alone, so cards suit it;
+ * the footer holds one line of prose at each end of the same thought, and
+ * putting a capsule round each end made them look like two unrelated widgets
+ * that happened to share a strip. As one ground they read as one line.
+ *
+ * It is also the shape the site gives a footer: .site-footer runs the full
+ * width under a rule rather than floating clear of the edges. The rule goes on
+ * top here, since that is the side the page is on. */
+window#waybar.focuslock {
+    background-color: @nav-ground;
+    background-image: linear-gradient(135deg,
+                                      rgba(255, 255, 255, 0.08) 0%,
+                                      rgba(255, 255, 255, 0.04) 50%,
+                                      rgba(255, 255, 255, 0.02) 100%);
+    border-top: 1px solid @nav-border;
+}
+
+window#waybar.focuslock .modules-left,
+window#waybar.focuslock .modules-center,
+window#waybar.focuslock .modules-right {
+    background: none;
+    border-color: transparent;
+    margin: 0;
+    padding: 0;
+}
+
+/* 19px is where the first workspace label starts on the bar above: the card's
+   6px margin, its border, its 5px padding and the button's own 7px. The site
+   makes the nav and the page column read one --gutter so the wordmark lines up
+   with the headline under it; this is that, down the left edge of the screen. */
+#custom-focuslock,
+#custom-todoist {
+    padding: 0 19px;
+}
+
+#custom-focuslock {
+    color: #ffffff;
+}
+
+#custom-todoist {
+    color: rgba(255, 255, 255, 0.72);
+}
+
+tooltip {
+    background: @nav-ground;
+    border: 1px solid @nav-border;
+    border-radius: 14px; /* .drop */
+}
+
+tooltip label {
+    color: #e2eaf6; /* .drop a */
+    padding: 2px;
 }

@@ -1,159 +1,190 @@
-[{
-    "layer": "top", // Waybar at top layer
-    "height": 25, // Waybar height
-    // "width": 1280, // Waybar width
-    // Choose the order of the modules
-    "modules-left": ["sway/workspaces", "sway/mode", "sway/scratchpad", "custom/media"],
-    "modules-center": ["sway/window"],
-    "modules-right": ["wireplumber", "pulseaudio", "cpu", "battery", "network", "tray", "clock"], //["idle_inhibitor", "memory", "temperature", "backlight", "battery#bat2"]
-    // Modules configuration
-    // "sway/workspaces": {
-    //     "disable-scroll": true,
-    //     "all-outputs": true,
-    //     "format": "{name}: {icon}",
-    //     "format-icons": {
-    //         "1": "",
-    //         "2": "",
-    //         "3": "",
-    //         "4": "",
-    //         "5": "",
-    //         "urgent": "",
-    //         "focused": "",
-    //         "default": ""
-    //     }
-    // },
-    "sway/mode": {
-        "format": "<span style=\"italic\">{}</span>"
-    },
-    "sway/scratchpad": {
-        "format": "{icon} {count}",
-        "show-empty": false,
-        "format-icons": ["", ""],
-        "tooltip": true,
-        "tooltip-format": "{app}: {title}"
-    },
-    "sway/window": {
-        "tooltip": false
-    },
-    "idle_inhibitor": {
-        "format": "{icon}",
-        "format-icons": {
-            "activated": "",
-            "deactivated": ""
+// Chief — waybar in chief-site's nav.
+//
+// Two ideas from the site drive the layout:
+//   1. The nav is a card, not a strip. modules-left and modules-right are two
+//      floating islands in the nav's own .drop treatment; the window title
+//      floats between them with no chrome, so the bar has air in it.
+//   2. The nav has a dropdown. group/system is that dropdown as a drawer: cpu
+//      is the face, memory and temperature slide out from under it on hover.
+//      It opens leftwards so it grows into the bar rather than shoving the
+//      clock off the end.
+[
+    {
+        "layer": "top",
+        "height": 31,
+        "modules-left": [
+            "sway/workspaces",
+            "sway/mode",
+            "sway/scratchpad",
+            "custom/media"
+        ],
+        "modules-center": [
+            "sway/window"
+        ],
+        "modules-right": [
+            "group/system",
+            "wireplumber",
+            "pulseaudio",
+            "network",
+            "battery",
+            "tray",
+            "clock"
+        ],
+        "sway/mode": {
+            "format": "{}"
+        },
+        "sway/scratchpad": {
+            "format": "{icon} {count}",
+            "show-empty": false,
+            "format-icons": [
+                "",
+                ""
+            ],
+            "tooltip": true,
+            "tooltip-format": "{app}: {title}"
+        },
+        "sway/window": {
+            "tooltip": false,
+            "max-length": 90
+        },
+        "idle_inhibitor": {
+            "format": "{icon}",
+            "format-icons": {
+                "activated": "",
+                "deactivated": ""
+            }
+        },
+        "tray": {
+            "spacing": 10
+        },
+        "clock": {
+            "tooltip-format": "{:%Y-%m-%d | %H:%M}",
+            "format": "{:%H:%M}",
+            "format-alt": "{:%Y-%m-%d}"
+        },
+        "cpu": {
+            "on-click": "foot -e htop",
+            "format": " {usage}%"
+        },
+        "memory": {
+            "format": " {}%"
+        },
+        "temperature": {
+            "critical-threshold": 80,
+            "format": "{temperatureC}°C "
+        },
+        "backlight": {
+            "format": "{percent}% {icon}",
+            "format-icons": [
+                "",
+                ""
+            ]
+        },
+        "battery": {
+            "bat": "BAT0",
+            "states": {
+                "warning": 30,
+                "critical": 15
+            },
+            "format": "{icon} {capacity}%",
+            "format-charging": " {capacity}%",
+            "format-icons": [
+                "",
+                "",
+                "",
+                "",
+                ""
+            ],
+            "on-click": "foot -e bash -c 'watch --no-title acpi -b'",
+            "tooltip": true
+        },
+        "battery#bat2": {
+            "bat": "BAT2"
+        },
+        "network": {
+            "on-click": "foot -e nmtui",
+            "tooltip-format-wifi": "{essid} ({signalStrength}%)",
+            "format-wifi": "",
+            "format-disconnected": ""
+        },
+        "pulseaudio": {
+            "format": "{icon} {volume}%",
+            "format-bluetooth": "{volume}% {icon}",
+            "format-muted": "",
+            "format-icons": {
+                "headphones": "",
+                "handsfree": "",
+                "headset": "",
+                "phone": "",
+                "portable": "",
+                "car": "",
+                "default": [
+                    "",
+                    "",
+                    ""
+                ]
+            },
+            "on-click": "pavucontrol"
+        },
+        "wireplumber": {
+            "format": "{volume}%",
+            "format-muted": "",
+            "on-click": "helvum"
+        },
+        "custom/media": {
+            "format": "{icon} {}",
+            "return-type": "json",
+            "max-length": 40,
+            "format-icons": {
+                "spotify": "",
+                "default": "🎜"
+            },
+            "escape": true,
+            "exec": "$HOME/.config/waybar/mediaplayer.py 2> /dev/null"
+        },
+        "spacing": 0,
+        "reload_style_on_change": true,
+        "group/system": {
+            "orientation": "horizontal",
+            "drawer": {
+                "transition-duration": 300,
+                "children-class": "drawer-child",
+                "transition-left-to-right": false
+            },
+            "modules": [
+                "cpu",
+                "memory",
+                "temperature"
+            ]
         }
     },
-    "tray": {
-        // "icon-size": 21,
-        "spacing": 16
-    },
-    "clock": {
-        "tooltip-format": "{:%Y-%m-%d | %H:%M}",
-        //"format": "{:%Y-%m-%d %H:%M}",
-        //"format": "{:%H:%M 🕛}",
-        "format": "{:%H:%M}",
-        "format-alt": "{:%Y-%m-%d}"
-    },
-    "cpu": {
-        "on-click": "foot -e htop",
-        "format": " {usage}%"
-    },
-    "memory": {
-        "format": "{}% "
-    },
-    "temperature": {
-        // "thermal-zone": 2,
-        // "hwmon-path": "/sys/class/hwmon/hwmon2/temp1_input",
-        "critical-threshold": 80,
-        // "format-critical": "{temperatureC}°C ",
-        "format": "{temperatureC}°C "
-    },
-    "backlight": {
-        // "device": "acpi_video1",
-        "format": "{percent}% {icon}",
-        "format-icons": ["", ""]
-    },
-    "battery": {
-        "bat": "BAT0",
-        "states": {
-            // "good": 95,
-            "warning": 30,
-            "critical": 15
+    {
+        "name": "focuslock",
+        "position": "bottom",
+        "layer": "top",
+        "height": 31,
+        "modules-left": [
+            "custom/focuslock"
+        ],
+        "modules-right": [
+            "custom/todoist"
+        ],
+        "custom/focuslock": {
+            "tooltip": false,
+            "max-length": 140,
+            "restart-interval": 5,
+            "return-type": "json",
+            "exec": "$HOME/.config/waybar/focuslock-module.rb $HOME/.config/focuslock/current",
+            "on-click": "foot -e bash -c 'sleep 0.1 && vim $HOME/.config/focuslock/current'"
         },
-        "format": "{icon} {capacity}%",
-        "format-charging": " {capacity}%",
-        // "format-good": "", // An empty format will hide the module
-        // "format-full": "",
-        "format-icons": ["", "", "", "", ""],
-        "on-click": "foot -e bash -c 'watch --no-title acpi -b'",
-        "tooltip": true
-    },
-    "battery#bat2": {
-        "bat": "BAT2"
-    },
-    "network": {
-        "on-click": "foot -e nmtui",
-        // "interface": "wlp2s0", // (Optional) To force the use of this interface
-        //"interface": "wlp59s0", // (Optional) To force the use of this interface
-        "tooltip-format-wifi": "{essid} ({signalStrength}%)",
-        "format-wifi": "",
-        //"format-wifi": "{essid} ({signalStrength}%) ",
-        //"format-ethernet": "{ifname}: {ipaddr}/{cidr} ",
-        "format-disconnected": "Disconnected ⚠"
-    },
-    "pulseaudio": {
-        //"scroll-step": 1,
-        "format": "{icon} {volume}%",
-        "format-bluetooth": "{volume}% {icon}",
-        "format-muted": "",
-        "format-icons": {
-            "headphones": "",
-            "handsfree": "",
-            "headset": "",
-            "phone": "",
-            "portable": "",
-            "car": "",
-            "default": ["", "", ""]
+        "custom/todoist": {
+            "tooltip": false,
+            "max-length": 140,
+            "restart-interval": 60,
+            "return-type": "json",
+            "exec": "PATH=/home/james/.rbenv/shims:$PATH ~/.config/waybar/todoist-module.rb '#MindfulChef'"
         },
-        "on-click": "pavucontrol"
-    },
-    "wireplumber": {
-      "format": "{volume}%",
-      "format-muted": "",
-      "on-click": "helvum"
-    },
-    "custom/media": {
-        "format": "{icon} {}",
-        "return-type": "json",
-        "max-length": 40,
-        "format-icons": {
-            "spotify": "",
-            "default": "🎜"
-        },
-        "escape": true,
-        "exec": "$HOME/.config/waybar/mediaplayer.py 2> /dev/null" // Script in resources folder
+        "spacing": 0,
+        "reload_style_on_change": true
     }
-},{
-    "name": "focuslock",
-    "position": "bottom",
-    "layer": "top",
-    "height": 25,
-    "modules-left": ["custom/focuslock"],
-    "modules-right": ["custom/todoist"],
-    "custom/focuslock": {
-        "tooltip": false,
-        "max-length": 140,
-        //"escape": true,
-        "restart-interval": 5,
-        "return-type": "json",
-        "exec": "$HOME/.config/waybar/focuslock-module.rb $HOME/.config/focuslock/current",
-        "on-click": "foot -e bash -c 'sleep 0.1 && vim $HOME/.config/focuslock/current'"
-    },
-    "custom/todoist": {
-        "tooltip": false,
-        "max-length": 140,
-        //"escape": true,
-        "restart-interval": 60,
-        "return-type": "json",
-        "exec": "PATH=/home/james/.rbenv/shims:$PATH ~/.config/waybar/todoist-module.rb '#MindfulChef'"
-    }
-}]
+]
