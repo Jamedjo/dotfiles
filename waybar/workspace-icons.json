@@ -20,7 +20,8 @@
       "productivity:workspaces": "  <span size=\"1\">",
       "productivity:wayland": "  <span size=\"1\">",
       "lightbulb": "  <span size=\"1\">",
-      "productivity:multitasking": "  <span size=\"1\">"
+      "productivity:multitasking": "  <span size=\"1\">",
+      "sway": "  <span size=\"1\">"
     }
   }
 }
