@@ -165,5 +165,14 @@ ws_display_map() {
 # Show the pretty form, hand back the real workspace name. Text that matched
 # nothing is the user naming a new workspace, so it comes back as typed.
 ws_pick() {
-    ws_menu_list | fuzzel --dmenu --prompt="$1" --config="$FUZZEL_CONFIG"
+    _map=$(mktemp) || return 1
+    ws_menu_list | ws_display_map > "$_map"
+    _sel=$(cut -f1 "$_map" | fuzzel --dmenu --prompt="$1" --config="$FUZZEL_CONFIG")
+    _rc=$?
+    if [ "$_rc" -eq 0 ]; then
+        _raw=$(awk -F'\t' -v s="$_sel" '$1 == s { print $2; exit }' "$_map")
+        printf '%s' "${_raw:-$_sel}"
+    fi
+    rm -f "$_map"
+    return "$_rc"
 }

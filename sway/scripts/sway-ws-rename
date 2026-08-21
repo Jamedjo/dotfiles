@@ -8,7 +8,7 @@ cur=$(ws_focused_name)
 [ -n "$cur" ] || exit 1
 num=$(ws_num "$cur")
 
-label=$(ws_menu_list | fuzzel --dmenu --prompt='name: ' --config="$FUZZEL_CONFIG") || exit 0
+label=$(ws_pick 'name: ') || exit 0
 [ -n "$label" ] || exit 0
 label=$(ws_label "$label")
 
