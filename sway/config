@@ -450,15 +450,42 @@ gaps outer 3
 # sits flush to it is the one thing on screen not lining up with anything.
 smart_gaps off
 smart_borders on
-# --i3 is the half that matters here: it drops the title bar on a tabbed or
-# stacked container holding one child, which is where the second, redundant
-# title bar was coming from. `smart` on its own only handles the screen edges.
-hide_edge_borders --i3 smart
+# --i3 is a modifier on the mode, not a mode of its own: `both` hides the
+# borders along every screen edge, and --i3 additionally drops the title row on
+# a tabbed or stacked container holding a single child, where that row names one
+# window and nothing else. Both halves are automatic; nothing here needs a key.
+hide_edge_borders --i3 both
 focus_follows_mouse no
 
-# Inter, to match the bar. sway caches each container's title texture, so
-# changing this at runtime needs `swaymsg '[title=".*"] title_format "%title"'`
-# after it to force existing windows to re-render.
+# Title bars on. `normal` is the directive that draws them; `pixel` is what
+# removes them. hide_edge_borders only ever hid borders, and its --i3 form
+# dropped a title bar in the one narrow case of a tabbed container holding a
+# single child, which is why it looked like the right knob and wasn't.
+#
+# The width argument is the border, not the title row: `normal 1` keeps the 1px
+# ring of --color-primary-deep that already marked focus and puts the title back
+# above it. sway's own default is 2, which doubles a line that was already
+# reading clearly at 1 against 8px of gap.
+#
+# A tabbed or stacked container with more than one child draws its title row
+# whatever this is set to, and should: that row is the only way to see what is in
+# the stack. hide_edge_borders --i3, above, takes care of the single-child case
+# where the row names one window and nothing else.
+default_border normal 1
+default_floating_border normal 1
+
+# Apps that draw their own title bar get sway's suppressed, so the window isn't
+# wearing two. Chrome under Wayland puts the tab strip where the title would go
+# and names the page there already; a sway title row above it repeats the same
+# string in a second font. `pixel 1` keeps the focus ring and drops only the
+# text. Match on app_id — Chrome runs native Wayland here, so class= (XWayland)
+# would never fire.
+for_window [app_id="google-chrome"] border pixel 1
+
+# Inter, for the title rows and for the tabbed and stacked headers. sway caches
+# each container's title texture, so changing this at runtime needs
+# `swaymsg '[title=".*"] title_format "%title"'` after it to force existing
+# windows to re-render.
 font pango:Inter Medium 10
 titlebar_padding 12 5
 
