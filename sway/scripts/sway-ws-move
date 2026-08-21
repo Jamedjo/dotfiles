@@ -11,5 +11,8 @@ sel=$(ws_pick 'move window to: ') || exit 0
 if ws_json | jq -e --arg n "$sel" '.[] | select(.name == $n)' >/dev/null; then
     swaymsg move container to workspace "$sel"
 else
-    swaymsg move container to workspace "$(ws_free_num):$(ws_clean "$sel")"
+    label=$(ws_clean "$sel")
+    swaymsg move container to workspace "$(ws_free_num):$label"
+    # A name that did not exist a moment ago has no icon yet.
+    /home/james/.config/sway/scripts/sway-ws-icon "$label" >> "$HOME/.local/state/sway-ws-icon.log" 2>&1 &
 fi

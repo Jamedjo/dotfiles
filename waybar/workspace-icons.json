@@ -1,0 +1,26 @@
+{
+  "sway/workspaces": {
+    "format-icons": {
+      "meetings": "  <span size=\"1\">",
+      "email": "  <span size=\"1\">",
+      "slack": "  <span size=\"1\">",
+      "todos": "  <span size=\"1\">",
+      "dump": "  <span size=\"1\">",
+      "chief:v2-review": "  <span size=\"1\">",
+      "chief:api-v2": "  <span size=\"1\">",
+      "chief:api-planner": "  <span size=\"1\">",
+      "chief:ask-tool": "  <span size=\"1\">",
+      "chief:brand": "  <span size=\"1\">",
+      "chief:stripe": "  <span size=\"1\">",
+      "chief:replace-llama": "  <span size=\"1\">",
+      "productivity:sway": "  <span size=\"1\">",
+      "productivity:new-phone": "  <span size=\"1\">",
+      "chief:hubspot": "  <span size=\"1\">",
+      "chief:llm-dump": "  <span size=\"1\">",
+      "productivity:workspaces": "  <span size=\"1\">",
+      "productivity:wayland": "  <span size=\"1\">",
+      "lightbulb": "  <span size=\"1\">",
+      "productivity:multitasking": "  <span size=\"1\">"
+    }
+  }
+}

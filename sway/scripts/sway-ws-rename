@@ -19,3 +19,7 @@ if [ -n "$num" ]; then
 else
     swaymsg rename workspace "$cur" to "$(ws_free_num):$label"
 fi
+
+# Pick an icon for the new name in the background: it takes a few seconds and
+# the keybinding must not wait. Skips silently if the name already has one.
+/home/james/.config/sway/scripts/sway-ws-icon "$label" >> "$HOME/.local/state/sway-ws-icon.log" 2>&1 &

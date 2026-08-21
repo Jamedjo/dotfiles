@@ -1,0 +1,233 @@
+#!/usr/bin/env python3
+"""Pick a waybar icon for a workspace, using Claude to choose from the font.
+
+The model is never asked for a codepoint. It picks a *name* from
+ws-icon-candidates, which is generated from the bar font itself, and this
+script maps the name back to its codepoint. A model asked for codepoints
+confidently returns ones that draw something else entirely -- U+f544 is a
+robot in Font Awesome 5 and a down arrow in this font.
+
+Usage:
+  sway-ws-icon                 icon for the focused workspace
+  sway-ws-icon <label>         icon for a named workspace
+  sway-ws-icon --all           every workspace that has no icon yet
+  sway-ws-icon --force         replace an icon that already exists
+  sway-ws-icon --dry-run       show the choice, write nothing
+  sway-ws-icon --no-reload     write, but leave the bar alone
+
+Naming a workspace fires this in the background, so an icon appears a few
+seconds after the name does. Only one run at a time, and a run that finds the
+lock held waits for it: renaming three things in quick succession is three
+distinct workspaces wanting three icons, not one job started three times.
+"""
+import fcntl
+import json
+import os
+import re
+import subprocess
+import sys
+import time
+
+SCRIPTS = "/home/james/.config/sway/scripts"
+CANDIDATES = os.path.join(SCRIPTS, "ws-icon-candidates")
+# Icons are written to a file waybar includes rather than into waybar/config,
+# so an unattended run touches one small generated file instead of rewriting
+# hand-maintained config. It is tracked (hard-linked into the repo like the
+# rest), just committed in batches rather than per rename.
+CONFIG = os.environ.get("WS_ICON_CONFIG", "/home/james/.config/waybar/config")
+ICONS = os.environ.get("WS_ICON_FILE", "/home/james/.config/waybar/workspace-icons.json")
+# Picking from a fixed list is not a hard task, so the cheap fast model is
+# the right default. WS_ICON_MODEL overrides it.
+MODEL = os.environ.get("WS_ICON_MODEL", "claude-haiku-4-5")
+# Keybindings run this with no terminal attached, so anything printed would be
+# lost. Every run leaves a line here instead -- a silent background failure is
+# indistinguishable from "the model chose nothing".
+LOG = os.path.expanduser("~/.local/state/sway-ws-icon.log")
+# How long a queued run waits for the one ahead of it. A pick takes a few
+# seconds, so this covers a burst of renames while still giving up on a run
+# that has wedged holding the lock.
+LOCK_WAIT = 120
+
+
+def log(msg):
+    os.makedirs(os.path.dirname(LOG), exist_ok=True)
+    with open(LOG, "a") as fh:
+        fh.write("%s %s\n" % (subprocess.run(["date", "+%F %T"], capture_output=True,
+                                              text=True).stdout.strip(), msg))
+
+
+def only_one():
+    """Hold a lock for the life of the process, queueing behind any run ahead.
+
+    This used to exit on a held lock, and exit before writing any log line, so
+    the second and third rename of a burst got no icon and left no trace of
+    why. Waiting costs one model call per workspace, which is what each one
+    needs anyway."""
+    fh = open("/run/user/%d/sway-ws-icon.lock" % os.getuid(), "w")
+    for waited in range(LOCK_WAIT + 1):
+        try:
+            fcntl.flock(fh, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            return fh
+        except OSError:
+            if waited == 0:
+                log("waiting: another run holds the lock")
+            time.sleep(1)
+    log("FAILED: gave up after %ds waiting for the lock" % LOCK_WAIT)
+    sys.exit(1)
+
+
+def sh(*cmd, stdin=None):
+    return subprocess.run(cmd, capture_output=True, text=True, input=stdin).stdout
+
+
+def candidates():
+    out = {}
+    for line in open(CANDIDATES):
+        if line.startswith("#") or not line.strip():
+            continue
+        cp, name = line.split(None, 1)
+        out[name.strip()] = int(cp, 16)
+    return out
+
+
+def ipc(query):
+    """swaymsg JSON, or None. This runs unattended from keybindings now, so a
+    compositor that is gone or busy must degrade rather than raise."""
+    try:
+        return json.loads(sh("swaymsg", "-t", query) or "null")
+    except json.JSONDecodeError:
+        return None
+
+
+def workspaces():
+    return ipc("get_workspaces") or []
+
+
+def label_of(name):
+    return name.split(":", 1)[1].lstrip() if ":" in name else name
+
+
+def load_icons():
+    try:
+        return json.load(open(ICONS))["sway/workspaces"]["format-icons"]
+    except (OSError, KeyError, json.JSONDecodeError):
+        return {}
+
+
+def existing_icons(config_text, icons):
+    """Names already spoken for -- in the include file, or hand-set in the main
+    config, where they take precedence over anything written here."""
+    body = re.search(r'"format-icons":\s*\{(.*?)\n\s*\}', config_text, re.S)
+    manual = set(re.findall(r'"([^"]+)":', body.group(1))) if body else set()
+    return (manual | set(icons)) - {"focused", "default"}
+
+
+def windows_on(ws_name):
+    """Window titles on a workspace: the strongest signal for what it is for."""
+    tree = ipc("get_tree")
+    if tree is None:
+        return []   # no context is survivable; the name alone still picks well
+
+    def walk(node, ws=None):
+        if node.get("type") == "workspace":
+            ws = node.get("name")
+        if node.get("type") == "con" and node.get("name") and ws == ws_name:
+            yield "%s: %s" % (node.get("app_id") or "?", node["name"][:70])
+        for kid in node.get("nodes", []) + node.get("floating_nodes", []):
+            yield from walk(kid, ws)
+
+    return list(walk(tree))[:12]
+
+
+def choose(label, wins, names):
+    context = "\n".join("  " + w for w in wins) or "  (no windows open)"
+    prompt = (
+        "Pick the single best icon for a tiling-WM workspace from the list below.\n\n"
+        "Workspace name: %s\n"
+        "Windows currently on it:\n%s\n\n"
+        "Rules:\n"
+        "- Reply with exactly one name from the list, nothing else.\n"
+        "- The workspace name is the primary signal. Use the windows only to\n"
+        "  disambiguate it; a workspace about a person or a topic keeps that\n"
+        "  meaning even when a terminal happens to be open on it.\n"
+        "- Depict the subject, not the tool it is done with.\n"
+        "- These are Font Awesome 4 glyphs, so favour concrete, literal choices.\n\n"
+        "Available names:\n%s\n"
+    ) % (label, context, ", ".join(sorted(names)))
+
+    out = subprocess.run(
+        ["claude", "-p", "--model", MODEL, "--output-format", "text"],
+        input=prompt, capture_output=True, text=True,
+    )
+    if out.returncode != 0:
+        log("FAILED %s: claude exited %d: %s" % (label, out.returncode,
+                                                 out.stderr.strip()[:200]))
+        sys.exit("claude failed: %s" % out.stderr.strip()[:300])
+    return out.stdout.strip().split()[-1].strip(".,'\"") if out.stdout.strip() else ""
+
+
+def write_icons(icons):
+    json.dump({"sway/workspaces": {"format-icons": icons}},
+              open(ICONS, "w"), indent=2, ensure_ascii=False)
+
+
+def main():
+    args = [a for a in sys.argv[1:]]
+    force = "--force" in args
+    dry = "--dry-run" in args
+    do_all = "--all" in args
+    rest = [a for a in args if not a.startswith("--")]
+
+    names = candidates()
+    config_text = open(CONFIG).read()
+    icons = load_icons()
+    have = existing_icons(config_text, icons)
+
+    if do_all:
+        targets = [(label_of(w["name"]), w["name"]) for w in workspaces()]
+        targets = [t for t in targets if t[0] not in have and t[0] != str(t[1])]
+    elif rest:
+        ws = {label_of(w["name"]): w["name"] for w in workspaces()}
+        targets = [(rest[0], ws.get(rest[0], rest[0]))]
+    else:
+        focused = [w for w in workspaces() if w["focused"]][0]
+        targets = [(label_of(focused["name"]), focused["name"])]
+
+    if not targets:
+        print("nothing to do: every workspace already has an icon")
+        return
+
+    changed = False
+    for label, ws_name in targets:
+        if label in have and not force:
+            log("skipped %s: already has an icon" % label)
+            print("%-24s already has an icon (--force to replace)" % label)
+            continue
+        pick = choose(label, windows_on(ws_name), names)
+        if pick not in names:
+            log("REJECTED %s: model returned %r, not a candidate" % (label, pick[:60]))
+            print("%-24s model returned %r, which is not a candidate -- skipped"
+                  % (label, pick[:40]))
+            continue
+        glyph = chr(names[pick])
+        log("%s -> %s (U+%04x)" % (label, pick, names[pick]))
+        print("%-24s %s  %s (U+%04x)" % (label, glyph, pick, names[pick]))
+        if not dry:
+            # The trailing unclosed span is what hides the name behind the icon;
+            # waybar's format string closes it. See waybar/config.
+            icons[label] = ' %s <span size="1">' % glyph
+            changed = True
+
+    if changed:
+        write_icons(icons)
+        if "--no-reload" in args:
+            print("\nwritten. run %s/sway-waybar to reload the bar." % SCRIPTS)
+        else:
+            subprocess.Popen([os.path.join(SCRIPTS, "sway-waybar")],
+                             start_new_session=True,
+                             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            print("\nwritten, bar reloading.")
+
+
+_lock = only_one()
+main()

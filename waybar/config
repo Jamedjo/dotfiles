@@ -12,6 +12,11 @@
     {
         "layer": "top",
         "height": 31,
+        // Per-workspace icons live here, written by sway-ws-icon. waybar merges
+        // included objects key by key into this bar, and anything set here wins
+        // over the include -- so focused/default stay above, and a hand-written
+        // icon in this file would override a generated one.
+        "include": ["/home/james/.config/waybar/workspace-icons.json"],
         "modules-left": [
             "sway/workspaces",
             "sway/mode",
@@ -48,29 +53,8 @@
             "all-outputs": true,
             "format": "{index} {icon}{name}</span>",
             "format-icons": {
-            // Checked before any name, so the focused workspace shows its name
-            // in full while every other one stays an icon -- you always know
-            // where you are without hovering. Capitalised via pango's
-            // text_transform (1.50+; 1.52 here) because GTK3 CSS has no
-            // text-transform -- that only arrived in GTK4.
             "focused":                "<span text_transform=\"capitalize\">",
-            "meetings":               "  <span size=\"1\">",  // video camera
-            "email":                  "  <span size=\"1\">",  // envelope
-            "slack":                  "  <span size=\"1\">",  // slack
-            "todos":                  "  <span size=\"1\">",  // task list
-            "dump":                   "  <span size=\"1\">",  // trash
-            "chief:v2-review":        "  <span size=\"1\">",  // code branch
-            "chief:api-v2":           "  <span size=\"1\">",  // server
-            "chief:api-planner":      "  <span size=\"1\">",  // calendar
-            "chief:ask-tool":         "  <span size=\"1\">",  // cogs
-            "chief:brand":            "  <span size=\"1\">",  // paint brush
-            "chief:stripe":           "  <span size=\"1\">",  // credit card
-            "chief:replace-llama":    "  <span size=\"1\">",  // microchip
-            "productivity:sway":      "  <span size=\"1\">",  // terminal
-            "productivity:new-phone": "  <span size=\"1\">",  // mobile
-            "chief:hubspot":          "  <span size=\"1\">",  // address card
-            "chief:llm-dump":         "  <span size=\"1\">",  // magic wand
-            "default": "<span>"
+            "default":                "<span>"
             }
         },
 

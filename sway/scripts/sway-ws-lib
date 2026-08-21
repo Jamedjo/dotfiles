@@ -65,6 +65,105 @@ ws_sanitize() {
 
 ws_clean() { ws_sanitize "$(ws_strip_icon "$1")"; }
 
+# Colons in a name separate the keyboard slot, the project, and what the
+# project is for: "2:chief:v2-review". The menu breaks that apart -- slot in
+# its own column, a chevron where the colons were, words title-cased -- because
+# a column of raw "chief:" prefixes buries the part being read for.
+WS_SEP=' › '
+WAYBAR_CONFIG=/home/james/.config/waybar/config
+WAYBAR_ICONS=/home/james/.config/waybar/workspace-icons.json
+
+# Icon entries as "<label>\t<value>", straight out of waybar's own config.
+# That file is JSON with comments, so jq cannot read it.
+ws_config_icon_entries() {
+    awk '
+        /"format-icons"[[:space:]]*:[[:space:]]*\{/ { inmap = 1; next }
+        inmap && /^[[:space:]]*\}/ { exit }
+        inmap { if (split($0, f, "\"") >= 4) print f[2] "\t" f[4] }
+    ' "$WAYBAR_CONFIG"
+}
+
+# The bar's icons as "<label>\t<glyph>". They sit in two files because waybar
+# reads two: sway-ws-icon generates workspace-icons.json, and the tracked
+# config holds the hand-written ones, which win over the include. Reading them
+# in that order gives the menu the same precedence, since ws_display_map keeps
+# the last entry seen for a label. A value whose first token is markup rather
+# than a glyph ("focused", "default") is the format branch, not an icon.
+ws_icon_map() {
+    {
+        [ -r "$WAYBAR_ICONS" ] && jq -r '
+            ."sway/workspaces"."format-icons" // {}
+            | to_entries[] | "\(.key)\t\(.value)"' "$WAYBAR_ICONS"
+        [ -r "$WAYBAR_CONFIG" ] && ws_config_icon_entries
+    } | awk -F'\t' '
+        {
+            glyph = $2
+            sub(/^[[:space:]]+/, "", glyph)
+            sub(/[[:space:]].*$/, "", glyph)
+            if (glyph != "" && glyph !~ /^</) print $1 "\t" glyph
+        }'
+}
+
+# Each line becomes "<display>\t<raw name>", so a pick can be mapped back.
+ws_display_map() {
+    _icons=$(mktemp) || return 1
+    ws_icon_map > "$_icons"
+    awk -v sep="$WS_SEP" -v iconfile="$_icons" '
+        # Words that read as shouted initialisms, not names: "API V2 Planner"
+        # rather than "Api V2 Planner".
+        BEGIN {
+            split("ai api cd ci cli cpu css csv db dns gpu html http" \
+                  " https id ios json llm ml os pdf pr rss sql ssh tv ui url" \
+                  " ux vpn", a, / /)
+            for (i in a) acronym[a[i]] = 1
+            while ((getline line < iconfile) > 0) {
+                t = index(line, "\t")
+                if (t) icon[substr(line, 1, t - 1)] = substr(line, t + 1)
+            }
+            close(iconfile)
+        }
+
+        # Title-case, dashes and underscores as word breaks. Only an ASCII
+        # lower-case initial is touched, which leaves the legacy icon labels
+        # alone rather than slicing a multi-byte glyph in half.
+        function titleize(s,   n, i, w, c, out) {
+            gsub(/[_-]+/, " ", s)
+            n = split(s, w, / +/)
+            out = ""
+            for (i = 1; i <= n; i++) {
+                if (w[i] == "") continue
+                c = substr(w[i], 1, 1)
+                if (tolower(w[i]) in acronym) w[i] = toupper(w[i])
+                else if (c ~ /^[a-z]$/) w[i] = toupper(c) substr(w[i], 2)
+                out = (out == "" ? w[i] : out " " w[i])
+            }
+            return out
+        }
+        {
+            raw = $0
+            n = split(raw, part, ":")
+            slot = ""; first = 1
+            if (part[1] ~ /^[0-9]+$/) { slot = part[1]; first = 2 }
+
+            key = ""; label = ""
+            for (i = first; i <= n; i++) {
+                key = (key == "" ? part[i] : key ":" part[i])
+                label = (label == "" ? titleize(part[i]) : label sep titleize(part[i]))
+            }
+            # A space where an icon would be, so the names stay in one column.
+            glyph = (key in icon) ? icon[key] : " "
+
+            if (label == "") display = slot
+            else if (slot == "") display = glyph "  " label
+            else display = sprintf("%2s  %s  %s", slot, glyph, label)
+            printf "%s\t%s\n", display, raw
+        }
+    '
+    rm -f "$_icons"
+}
+
+# Show the pretty form, hand back the real workspace name. Text that matched
+# nothing is the user naming a new workspace, so it comes back as typed.
 ws_pick() {
     ws_menu_list | fuzzel --dmenu --prompt="$1" --config="$FUZZEL_CONFIG"
 }
