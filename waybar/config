@@ -55,7 +55,7 @@
             "meetings":               "  <span size=\"1\">",  // video camera
             "email":                  "  <span size=\"1\">",  // envelope
             "slack":                  "  <span size=\"1\">",  // slack
-            "todos":                  "  <span size=\"1\">",  // task list
+            "todos":                  "  <span size=\"1\">",  // task list
             "dump":                   "  <span size=\"1\">",  // trash
             "chief:v2-review":        "  <span size=\"1\">",  // code branch
             "chief:api-v2":           "  <span size=\"1\">",  // server
@@ -66,8 +66,8 @@
             "chief:replace-llama":    "  <span size=\"1\">",  // microchip
             "productivity:sway":      "  <span size=\"1\">",  // terminal
             "productivity:new-phone": "  <span size=\"1\">",  // mobile
-            "chief:hubspot":          "  <span size=\"1\">",  // address card
-            "chief:llm-dump":         "  <span size=\"1\">",  // robot
+            "chief:hubspot":          "  <span size=\"1\">",  // address card
+            "chief:llm-dump":         "  <span size=\"1\">",  // magic wand
             "default": "<span>"
             }
         },

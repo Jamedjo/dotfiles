@@ -1,0 +1,10 @@
+#!/bin/sh
+# Start waybar, replacing any running copy.
+#
+# waybar used to be started by `bar { swaybar_command waybar }`. As a sway bar
+# subprocess it ignored SIGUSR2 -- config edits only ever appeared after a full
+# sway reload restarted it, which made every waybar change look like it had
+# silently failed. Launched as a plain exec_always it restarts on reload like
+# anything else, and this script can be run by hand to reload the bar alone.
+pkill -x waybar
+exec waybar

@@ -497,9 +497,9 @@ bindsym $mod+Alt+c exec grim -g "$(slurp -p)" -t ppm - | convert - -format '%[pi
 # Status Bar:
 #
 # Read `man 5 sway-bar` for more information about this section.
-bar {
-    swaybar_command waybar
-}
+# waybar is launched directly rather than through swaybar_command, so that it
+# can be restarted without reloading sway. See sway/scripts/sway-waybar.
+exec_always $ws_scripts/sway-waybar
 
 # See: https://github.com/Alexays/Waybar/issues/63
 for_window [app_id="waybar" floating] {
