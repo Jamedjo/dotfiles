@@ -11,5 +11,5 @@ sel=$(ws_pick 'move window to: ') || exit 0
 if ws_json | jq -e --arg n "$sel" '.[] | select(.name == $n)' >/dev/null; then
     swaymsg move container to workspace "$sel"
 else
-    swaymsg move container to workspace "$(ws_free_num):$sel"
+    swaymsg move container to workspace "$(ws_free_num):$(ws_decorate "$sel")"
 fi

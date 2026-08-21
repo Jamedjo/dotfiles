@@ -50,6 +50,39 @@ ws_menu_list() {
     rm -f "$live"
 }
 
+ICONS=/home/james/.config/sway/scripts/ws-icons
+
+# Longest matching prefix from ws-icons, empty if none matches. Lives here
+# rather than in the rename script because workspaces are created by the
+# pickers too, and an icon that depended on which key made the workspace would
+# just look broken.
+ws_icon() {
+    [ -f "$ICONS" ] || return 0
+    _icon=; _best=0
+    while IFS=' 	' read -r _prefix _glyph; do
+        case "$_prefix" in ''|'#'*) continue ;; esac
+        case "$1" in
+            "$_prefix"*)
+                if [ ${#_prefix} -gt $_best ]; then _best=${#_prefix}; _icon=$_glyph; fi ;;
+        esac
+    done < "$ICONS"
+    printf '%s' "$_icon"
+}
+
+# Strip a leading icon so a label never accumulates them. Matched as
+# "non-alphanumeric run then space", so a name like "new sync work" keeps its
+# first word.
+ws_strip_icon() {
+    printf '%s' "$1" | sed 's/^[^[:alnum:][:space:]]\{1,\} //'
+}
+
+# Label with its icon applied, ready to follow a number into a workspace name.
+ws_decorate() {
+    _label=$(ws_strip_icon "$1")
+    _i=$(ws_icon "$_label")
+    if [ -n "$_i" ]; then printf '%s %s' "$_i" "$_label"; else printf '%s' "$_label"; fi
+}
+
 ws_pick() {
     ws_menu_list | fuzzel --dmenu --prompt="$1" --config="$FUZZEL_CONFIG"
 }

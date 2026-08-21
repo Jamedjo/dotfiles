@@ -10,5 +10,5 @@ sel=$(ws_pick 'workspace: ') || exit 0
 if ws_json | jq -e --arg n "$sel" '.[] | select(.name == $n)' >/dev/null; then
     swaymsg workspace "$sel"
 else
-    swaymsg workspace "$(ws_free_num):$sel"
+    swaymsg workspace "$(ws_free_num):$(ws_decorate "$sel")"
 fi
