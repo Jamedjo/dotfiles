@@ -213,9 +213,12 @@ def main():
         log("%s -> %s (U+%04x)" % (label, pick, names[pick]))
         print("%-24s %s  %s (U+%04x)" % (label, glyph, pick, names[pick]))
         if not dry:
-            # The trailing unclosed span is what hides the name behind the icon;
-            # waybar's format string closes it. See waybar/config.
-            icons[label] = ' %s <span size="1">' % glyph
+            # The glyph closes the span waybar's format opens around the
+            # number and opens a plain one for the name, which format closes.
+            # That second span is the half style.css shrinks away unless the
+            # workspace is focused: icon everywhere, icon and name where you
+            # are. See waybar/config.
+            icons[label] = ' %s</span><span text_transform="capitalize"> ' % glyph
             changed = True
 
     if changed:

@@ -14,7 +14,7 @@
         "height": 31,
         // Per-workspace icons live here, written by sway-ws-icon. waybar merges
         // included objects key by key into this bar, and anything set here wins
-        // over the include -- so focused/default stay above, and a hand-written
+        // over the include -- so "default" stays above, and a hand-written
         // icon in this file would override a generated one.
         "include": ["/home/james/.config/waybar/workspace-icons.json"],
         "modules-left": [
@@ -35,23 +35,31 @@
         // {index} is sway's workspace number; {name} is the label with the
         // number already stripped.
         //
-        // The dangling </span> is deliberate. waybar renders each label as
-        // pango markup, and format-icons values are arbitrary strings, so an
-        // icon that ends with an unclosed <span size="1"> shrinks the name
-        // that follows it to nothing -- which is how a workspace shows its
-        // icon INSTEAD of its name. "default" opens a plain span, so anything
-        // without an icon renders normally. format itself cannot branch per
-        // workspace; this is the branch.
+        // The unbalanced spans are deliberate. A button is one pango string,
+        // and format cannot branch per workspace, so the icon/name split is
+        // spliced together here: format opens a span that pins {index} and the
+        // icon at 11520 (11.25pt, the 15px the bar is set in), and every icon
+        // in workspace-icons.json closes it and opens a plain span for the
+        // name, which format's trailing </span> closes. That second span is
+        // the only part inheriting the button's CSS font-size -- style.css
+        // shrinks it to nothing unless the button is .focused, so the focused
+        // workspace reads "15  icon Name" and the rest are their icon alone.
+        // "default" closes and re-pins instead, so a workspace with no icon
+        // still shows its name from anywhere.
         //
-        // Adding an icon means adding a line here and `pkill -SIGUSR2 waybar`.
+        // CSS has to carry the focused/unfocused branch because format-icons
+        // cannot: it matches "focused" ahead of any workspace name, so a
+        // "focused" entry here would mean the focused workspace could not also
+        // have an icon of its own -- which is exactly what we want it to have.
+        //
+        // Adding an icon means adding a line there and `pkill -SIGUSR2 waybar`.
         // Names are matched exactly -- no prefixes -- so each workspace gets
         // its own icon rather than sharing one per project.
         "sway/workspaces": {
             "all-outputs": true,
-            "format": "{index} {icon}{name}</span>",
+            "format": "<span size=\"11520\">{index} {icon}{name}</span>",
             "format-icons": {
-            "focused":                "<span text_transform=\"capitalize\">",
-            "default":                "<span>"
+            "default":                "</span><span size=\"11520\" text_transform=\"capitalize\"> "
             }
         },
 
@@ -71,12 +79,6 @@
         "idle_inhibitor": {
             "format": "{icon}",
             "format-icons": {
-            // Checked before any name, so the focused workspace shows its name
-            // in full while every other one stays an icon -- you always know
-            // where you are without hovering. Capitalised via pango's
-            // text_transform (1.50+; 1.52 here) because GTK3 CSS has no
-            // text-transform -- that only arrived in GTK4.
-            "focused":                "<span text_transform=\"capitalize\">",
                 "activated": "",
                 "deactivated": ""
             }
@@ -139,12 +141,6 @@
             "format-bluetooth": "{volume}% {icon}",
             "format-muted": "",
             "format-icons": {
-            // Checked before any name, so the focused workspace shows its name
-            // in full while every other one stays an icon -- you always know
-            // where you are without hovering. Capitalised via pango's
-            // text_transform (1.50+; 1.52 here) because GTK3 CSS has no
-            // text-transform -- that only arrived in GTK4.
-            "focused":                "<span text_transform=\"capitalize\">",
                 "headphones": "",
                 "handsfree": "",
                 "headset": "",
@@ -169,12 +165,6 @@
             "return-type": "json",
             "max-length": 40,
             "format-icons": {
-            // Checked before any name, so the focused workspace shows its name
-            // in full while every other one stays an icon -- you always know
-            // where you are without hovering. Capitalised via pango's
-            // text_transform (1.50+; 1.52 here) because GTK3 CSS has no
-            // text-transform -- that only arrived in GTK4.
-            "focused":                "<span text_transform=\"capitalize\">",
                 "spotify": "",
                 "default": "🎜"
             },

@@ -109,6 +109,36 @@ window#waybar.hidded {
     transition: all 0.2s ease; /* --transition-default */
 }
 
+/* The icon-or-name branch, not a size preference. A button is one pango string:
+   the number and the icon carry their own size inside that markup (see
+   waybar/config), which leaves the name as the only part still inheriting from
+   CSS. Taking the size away here is what leaves an unfocused workspace as its
+   icon alone, and giving it back is what makes the focused one read
+   "11  icon Sway". 0.001px rather than 0 because pango rounds it to the same
+   1/1024pt the old markup used to hide a run.
+
+   It must select the label, not the button: the sheet's `*` rule sets a
+   font-size on every widget, the label included, and a rule that matches the
+   label directly beats one inherited from its button. The 0.85em this replaces
+   had been a no-op for that reason. */
+#workspaces button label {
+    font-size: 0.001px;
+}
+
+#workspaces button.focused label,
+#workspaces button.visible label {
+    font-size: 1em;
+}
+
+#workspaces button {
+    opacity: 0.75;
+}
+
+#workspaces button.focused,
+#workspaces button.visible {
+    opacity: 1;
+}
+
 #workspaces button:hover {
     background: rgba(74, 158, 255, 0.1);
     color: #ffffff;

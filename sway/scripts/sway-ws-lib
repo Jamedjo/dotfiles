@@ -87,8 +87,9 @@ ws_config_icon_entries() {
 # reads two: sway-ws-icon generates workspace-icons.json, and the tracked
 # config holds the hand-written ones, which win over the include. Reading them
 # in that order gives the menu the same precedence, since ws_display_map keeps
-# the last entry seen for a label. A value whose first token is markup rather
-# than a glyph ("focused", "default") is the format branch, not an icon.
+# the last entry seen for a label. An entry is "<glyph> then pango markup", so
+# the glyph is whatever precedes the first space or "<"; a value that is markup
+# from the start ("default") is the format branch, not an icon.
 ws_icon_map() {
     {
         [ -r "$WAYBAR_ICONS" ] && jq -r '
@@ -99,8 +100,8 @@ ws_icon_map() {
         {
             glyph = $2
             sub(/^[[:space:]]+/, "", glyph)
-            sub(/[[:space:]].*$/, "", glyph)
-            if (glyph != "" && glyph !~ /^</) print $1 "\t" glyph
+            sub(/[[:space:]<].*$/, "", glyph)
+            if (glyph != "") print $1 "\t" glyph
         }'
 }
 
