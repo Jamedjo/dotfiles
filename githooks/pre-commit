@@ -1,0 +1,18 @@
+#!/bin/sh
+# Block commits containing secret-shaped strings.
+# Wired up with: git config core.hooksPath githooks
+
+if ! command -v gitleaks >/dev/null 2>&1; then
+    echo "pre-commit: gitleaks not installed, skipping secret scan" >&2
+    echo "pre-commit: install from https://github.com/gitleaks/gitleaks/releases" >&2
+    exit 0
+fi
+
+gitleaks git --pre-commit --staged --redact --no-banner
+status=$?
+if [ $status -ne 0 ]; then
+    echo "" >&2
+    echo "pre-commit: gitleaks found a possible secret in your staged changes." >&2
+    echo "pre-commit: if it is a false positive, commit with --no-verify" >&2
+    exit $status
+fi
