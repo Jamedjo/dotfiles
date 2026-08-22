@@ -485,8 +485,13 @@ bindsym $mod+d exec pkill -USR1 wlsunset
 
 # Sunlight mode: dark-on-light foot palette + midtone lift, same key to undo
 bindsym $mod+Shift+d exec /home/james/.config/sway/scripts/sway-sunlight
-bindsym Print exec grim -g "$(slurp)" /home/james/Screenshots/$(date +'screenshot_%F-%H_%M_%S.png')
-bindsym Alt+Print exec grim -c /home/james/Screenshots/$(date +'screenshot_%F-%T.png')
+# Ctrl copies, Alt is all of the screen, Shift is the moving kind. Print alone
+# freezes the screen and crops out of the still, so a menu or hover survives
+# being selected; Ctrl+Alt is the unfrozen selection, wanted least often.
+bindsym Print exec cropshot --freeze --cursor
+bindsym Ctrl+Print exec cropshot --freeze --cursor --clipboard
+bindsym Ctrl+Alt+Print exec cropshot
+bindsym Alt+Print exec cropshot --screen
 bindsym Shift+Print exec /home/james/Scripts/screencap_tray.py
 
 #
