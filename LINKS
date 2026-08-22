@@ -28,6 +28,7 @@ ln ~/browser-chooser.sh
 ln ~/.config/alacritty/alacritty.yml
 ln ~/.config/alacritty/alacritty.toml
 ln ~/.config/foot/foot.ini
+ln ~/.config/user-dirs.dirs
 
 mkdir sway && ln ~/.config/sway/* sway/
 mkdir sway/config.d && ln ~/.config/sway/config.d/* sway/config.d/
