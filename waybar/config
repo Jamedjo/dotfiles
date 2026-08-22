@@ -23,9 +23,6 @@
             "sway/scratchpad",
             "custom/media"
         ],
-        "modules-center": [
-            "sway/window"
-        ],
         "modules-right": [
             "group/system",
             "wireplumber",
@@ -70,10 +67,6 @@
             ],
             "tooltip": true,
             "tooltip-format": "{app}: {title}"
-        },
-        "sway/window": {
-            "tooltip": false,
-            "max-length": 90
         },
         "idle_inhibitor": {
             "format": "{icon}",
@@ -212,9 +205,21 @@
         "modules-left": [
             "custom/focuslock"
         ],
+        // The window title lives here, not in the nav card above. It is
+        // context rather than status -- what you are looking at, next to what
+        // you meant to be doing -- so it belongs beside focuslock and todoist
+        // rather than among the readouts. style.css gives it a capsule so it
+        // does not read as a third sentence on a bar of prose.
+        "modules-center": [
+            "sway/window"
+        ],
         "modules-right": [
             "custom/todoist"
         ],
+        "sway/window": {
+            "tooltip": false,
+            "max-length": 90
+        },
         "custom/focuslock": {
             "tooltip": false,
             "max-length": 140,

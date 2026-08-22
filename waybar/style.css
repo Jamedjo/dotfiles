@@ -8,11 +8,11 @@
  * built the way the site builds one:
  *
  *   - .drop, the nav's floating dropdown card, is the shape: --nav-ground under
- *     a 1px --nav-border hairline. The top bar is three of them — workspaces,
- *     the window title, the status readouts — rather than one full-width slab,
- *     and the title's drops its chrome when there is no title to hold. The
- *     footer is the other half of the site's pairing: .site-footer runs edge to
- *     edge under a rule, so the bottom bar does too.
+ *     a 1px --nav-border hairline. The top bar is two of them — workspaces and
+ *     the status readouts — rather than one full-width slab, with open ground
+ *     between. The footer is the other half of the site's pairing: .site-footer
+ *     runs edge to edge under a rule, so the bottom bar does too, and it is
+ *     where the window title lives now.
  *   - .site-header's 135deg white glass wash sits on the ground. The site keeps
  *     .9 alpha under it only so its backdrop-filter has something to blur, and
  *     paints an opaque --nav-ground behind that; waybar has no blur to feed, so
@@ -61,11 +61,10 @@ window#waybar.hidded {
     opacity: 0.2;
 }
 
-/* The cards. All three wear .drop; the title's is the one that can be empty,
-   and an empty card is just a scar in the middle of the bar, so it drops its
-   chrome when waybar marks the bar .empty and the gap closes over it. */
+/* The cards. Both wear .drop. The centre box gets no card: on the top bar it is
+   childless, and GTK still allocates border and padding for an empty box, which
+   is a stub capsule sitting in the middle of the nav with nothing in it. */
 .modules-left,
-.modules-center,
 .modules-right {
     background-color: @nav-ground;
     background-image: linear-gradient(135deg,
@@ -92,13 +91,6 @@ window#waybar.hidded {
                                       rgba(255, 255, 255, 0.04) 50%,
                                       rgba(255, 255, 255, 0.02) 100%),
                       linear-gradient(90deg, @nav-ground 0%, @nav-elevated 100%);
-}
-
-window#waybar.empty .modules-center {
-    background: transparent;
-    border-color: transparent;
-    margin: 0;
-    padding: 0;
 }
 
 /* Workspaces. Capsules, not underlines: the card is already a rounded shape and
@@ -155,12 +147,30 @@ window#waybar.empty .modules-center {
     color: rgba(255, 255, 255, 0.72);
 }
 
+/* The title is the one thing on the footer that is not prose. focuslock and
+   todoist are sentences you wrote; this is the machine reporting where you are,
+   so it gets a capsule to sit in, at the clock's geometry so the two round
+   shapes on the screen are the same shape.
+
+   No hairline on it, unlike the nav's cards. A .drop border works up there
+   because the card floats clear of the desktop and the line is its edge; here
+   the pill sits on the footer's own ground, where the same line reads as an
+   outline drawn round the text. Fill alone has to carry the shape, so it takes
+   --navy-twilight -- the clock's colour, two steps up the ramp from the footer
+   ground rather than the one step --bg-elevated gives, which a borderless pill
+   was too faint to hold. */
 #window {
-    color: rgba(255, 255, 255, 0.5);
+    background: @twilight;
+    color: rgba(255, 255, 255, 0.85);
     font-weight: 400;
-    padding: 0 8px;
+    border-radius: 999px;
+    padding: 0 12px;
+    margin: 3px 0;
 }
 
+/* No title, no capsule -- an empty pill is the stub the footer cards were
+   dropped to avoid. waybar puts .empty on the bar when sway/window has nothing
+   to show. */
 window#waybar.empty #window {
     background: transparent;
 }
