@@ -1,0 +1,102 @@
+#!/bin/sh
+# Sunlight mode: flip every running foot terminal to a dark-on-light palette
+# and lift midtones globally, so the desktop stays readable in direct sun.
+# The same key again undoes both.
+#
+# Terminals are recoloured in place with OSC escapes rather than restarted,
+# so nothing running inside them is lost. foot keeps no per-window colour
+# history, but OSC 104/110/111 reset to whatever foot.ini specifies, which is
+# the config every terminal started from.
+#
+# Requires two binaries that Ubuntu does not package, both built into
+# ~/.local/bin, which must precede /usr/bin on PATH so the wlsunset here
+# shadows the archive's. Without them the failure is quiet: a missing
+# wl-gammactl loses the midtone lift but still recolours terminals, and a
+# missing wlsunset 0.4.0 leaves $mod+d hitting the 0.3.0 in /usr/bin, which
+# has no SIGUSR1 handler and dies on the signal instead of cycling modes.
+#
+#   wlsunset 0.4.0  (0.3.0 in noble predates SIGUSR1 mode cycling)
+#     git clone -b 0.4.0 https://git.sr.ht/~kennylevinsen/wlsunset
+#     cd wlsunset && meson setup build --prefix="$HOME/.local"
+#     ninja -C build install
+#     # needs meson, ninja, libwayland-dev; scdoc >=1.9.7 only for the man page
+#
+#   wl-gammactl  (not packaged at all)
+#     git clone https://github.com/mischw/wl-gammactl
+#     cd wl-gammactl && meson setup build && ninja -C build
+#     install -m755 build/wl-gammactl "$HOME/.local/bin/"
+#     # needs meson, ninja, libgtk-3-dev, wayland-scanner, wlroots (pkg-config)
+set -u
+
+STATE="${XDG_RUNTIME_DIR:-/tmp}/sway-sunlight.on"
+GAMMACTL="$HOME/.local/bin/wl-gammactl"
+WLSUNSET="wlsunset -l 51.7527 -L -0.3394"
+
+# Midtone lift for everything that is not a terminal: waybar, browser, chat.
+# Deliberately mild -- the terminals are near-white in sunlight mode and a
+# hard lift would only wash them out. Contrast and brightness stay at 1
+# because wl-gammactl's "contrast" is a gain and its "brightness" an offset:
+#   val = contrast * pow(val, 1/gamma) + (brightness - 1)
+# Gain clips highlights and the offset lifts blacks; neither helps here.
+GAMMA_ARGS="-c 1.0 -b 1.0 -g 1.35"
+
+BG="f7f3e9"
+FG="1c1c1c"
+
+# Dark-on-light palette, colours 0-15 in order. The bright half is kept dark
+# too: on a near-white background the usual bright variants are the least
+# readable thing on screen, and bright white would vanish entirely.
+PALETTE="000000 a00000 005f00 6b5300 00008b 8b008b 006b6b 3f3f3f
+         6b6b6b c00000 007000 7a5c00 0000c0 a000a0 007a7a 000000"
+
+# Every pts owned by a running foot, found via the shell foot spawned.
+foot_ptys() {
+    for f in $(pgrep -x foot); do
+        for c in $(pgrep -P "$f"); do
+            t=$(ps -o tty= -p "$c" 2>/dev/null | tr -d ' ')
+            case "$t" in pts/*) echo "/dev/$t" ;; esac
+        done
+    done | sort -u
+}
+
+# A terminal can close between listing and writing, so write failures are
+# expected and ignored rather than aborting the sweep.
+apply_light() {
+    for t in $(foot_ptys); do
+        {
+            printf '\033]11;#%s\007' "$BG"
+            printf '\033]10;#%s\007' "$FG"
+            i=0
+            for c in $PALETTE; do
+                printf '\033]4;%d;#%s\007' "$i" "$c"
+                i=$((i + 1))
+            done
+        } >"$t" 2>/dev/null || true
+    done
+}
+
+apply_reset() {
+    for t in $(foot_ptys); do
+        # 104 palette, 110 foreground, 111 background -- all back to foot.ini.
+        printf '\033]104\007\033]110;\007\033]111;\007' >"$t" 2>/dev/null || true
+    done
+}
+
+if [ -e "$STATE" ]; then
+    rm -f "$STATE"
+    pkill -x wl-gammactl 2>/dev/null
+    apply_reset
+    # wlsunset and wl-gammactl cannot both hold wlr-gamma-control, so wlsunset
+    # was stopped on the way in. Let the gamma table settle before it grabs it.
+    sleep 1
+    pgrep -x wlsunset >/dev/null || swaymsg exec "$WLSUNSET" >/dev/null 2>&1
+    notify-send -t 3000 "Sunlight mode off" "terminals and gamma restored"
+else
+    pkill -x wlsunset 2>/dev/null
+    pkill -x wl-gammactl 2>/dev/null
+    sleep 1
+    $GAMMACTL $GAMMA_ARGS >/dev/null 2>&1 &
+    apply_light
+    touch "$STATE"
+    notify-send -t 3000 "Sunlight mode on" "light terminals + midtone lift"
+fi

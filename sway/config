@@ -482,6 +482,9 @@ bindsym XF86MonBrightnessDown exec sudo brightnessctl set 5%-
 bindsym XF86MonBrightnessUp exec sudo brightnessctl set +5%
 bindsym $mod+p exec wdisplays
 bindsym $mod+d exec pkill -USR1 wlsunset
+
+# Sunlight mode: dark-on-light foot palette + midtone lift, same key to undo
+bindsym $mod+Shift+d exec /home/james/.config/sway/scripts/sway-sunlight
 bindsym Print exec grim -g "$(slurp)" /home/james/Screenshots/$(date +'screenshot_%F-%H_%M_%S.png')
 bindsym Alt+Print exec grim -c /home/james/Screenshots/$(date +'screenshot_%F-%T.png')
 bindsym Shift+Print exec /home/james/Scripts/screencap_tray.py
