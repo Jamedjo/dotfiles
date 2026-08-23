@@ -222,11 +222,33 @@ window#waybar.empty #window {
     border-radius: 999px;
 }
 
+/* The tray pads its items, not itself.
+ *
+ * Padding on the container is paid whether or not anything is in it, so an
+ * empty tray was leaving a hole between the battery and the notification
+ * handle. Moving it onto the children means an empty tray is genuinely zero
+ * pixels wide, and a tray with three things in it is three times the padding
+ * rather than a fixed slab -- which is the behaviour flex gives you for free
+ * and GTK3 does not.
+ *
+ * `> widget` is the item node: waybar wraps each StatusNotifierItem in one,
+ * and gives it .passive or .needs-attention as the item's status changes.
+ *
+ * There is no :empty rule here on purpose. GTK3 has no :empty pseudo-class,
+ * and an unknown one is not ignored -- it fails the whole stylesheet, which
+ * takes the bar down with it. Zeroing the container is what makes an empty
+ * tray free; nothing needs to detect the empty case. */
 #tray {
-    padding: 0 7px;
+    padding: 0;
+    margin: 0;
     color: rgba(255, 255, 255, 0.72);
     background: transparent;
 }
+
+#tray > widget {
+    padding: 0 6px;
+}
+
 
 #cpu:hover,
 #network:hover,

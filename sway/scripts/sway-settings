@@ -1,0 +1,24 @@
+#!/bin/sh
+# Pick a settings app.
+#
+# These four used to be a dropdown in swaync's menubar, which costs a whole row
+# of the panel for one cog -- a menubar is always its own row, there is no way
+# to sit it beside anything. As a fuzzel menu the cog becomes an ordinary
+# action button in the row with the others, and the picker is the same one the
+# workspace switcher and the browser chooser already use.
+set -u
+. /home/james/.config/sway/scripts/sway-ws-lib
+
+sel=$(printf '%s\n' \
+    'Network' \
+    'Bluetooth' \
+    'Audio' \
+    'Displays' \
+    | fuzzel --dmenu --prompt='settings: ' --config="$FUZZEL_CONFIG") || exit 0
+
+case "$sel" in
+    Network)   exec nm-connection-editor ;;
+    Bluetooth) exec blueman-manager ;;
+    Audio)     exec pavucontrol ;;
+    Displays)  exec wdisplays ;;
+esac

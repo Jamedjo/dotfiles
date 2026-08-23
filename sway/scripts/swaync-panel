@@ -1,0 +1,134 @@
+#!/bin/sh
+# swaync's control center, with the machine's vitals in it.
+#
+# cpu, memory and temperature used to live in waybar behind a hover drawer.
+# They are readouts you look at rather than glance at, so they moved here --
+# but swaync widgets are static config and cannot read anything, so the
+# numbers are written into a runtime copy of config.json and swaync is told to
+# reload just before the panel opens. `toggle` does both, and is what waybar's
+# bell calls. The tracked config is only ever read.
+#
+# That trick needs swaync 0.11: 0.9.0 re-read the config on --reload-config but
+# kept the widgets it had built at startup, so nothing changed on screen.
+set -u
+
+SCRIPTS=/home/james/.config/sway/scripts
+BASE=/home/james/.config/swaync/config.json
+STYLE=/home/james/.config/swaync/style.css
+RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/swaync"
+RUNTIME="$RUNTIME_DIR/config.json"
+
+# coretemp Package id 0, pinned by device path rather than thermal zone: zone 0
+# is INT3400, a policy device reporting a fixed 20C, and zone and hwmon
+# numbering shuffle between boots. The same path waybar used.
+TEMP_GLOB=/sys/devices/platform/coretemp.0/hwmon/hwmon*/temp1_input
+
+# Busy percentage across a short window. /proc/stat counts jiffies since boot,
+# so a single reading is the average since power-on and useless; two readings a
+# fifth of a second apart are what the bar was showing.
+cpu_percent() {
+    set -- $(awk '/^cpu /{print $2+$3+$4+$6+$7+$8, $5}' /proc/stat)
+    busy1=$1 idle1=$2
+    sleep 0.2
+    set -- $(awk '/^cpu /{print $2+$3+$4+$6+$7+$8, $5}' /proc/stat)
+    busy2=$1 idle2=$2
+
+    total=$(( (busy2 - busy1) + (idle2 - idle1) ))
+    [ "$total" -gt 0 ] || { echo 0; return; }
+    echo $(( (busy2 - busy1) * 100 / total ))
+}
+
+# Used as the kernel means it: MemAvailable already accounts for reclaimable
+# cache, which "free minus buffers" does not.
+mem_percent() {
+    awk '/^MemTotal:/{t=$2} /^MemAvailable:/{a=$2}
+         END { if (t > 0) printf "%d", (t - a) * 100 / t; else print 0 }' /proc/meminfo
+}
+
+temp_celsius() {
+    for f in $TEMP_GLOB; do
+        [ -r "$f" ] || continue
+        awk '{ printf "%d", ($1 + 500) / 1000 }' "$f"
+        return
+    done
+    echo 0
+}
+
+# Every toggle's state as one JSON object, for jq to fold in below.
+#
+# swaync draws a toggle button as a plain button -- there is no switch widget
+# to style, and CSS cannot add one, GTK3 having no pseudo-elements. So the
+# switch is drawn in the label: the subject's glyph, then a slide-toggle glyph
+# that is the on one or the off one. That only works because the whole config
+# is rewritten before the panel opens; a static config could never show state.
+toggle_states() {
+    printf '{'
+    sep=""
+    for t in wifi bluetooth sunlight night dnd; do
+        state=$("$SCRIPTS/swaync-toggle" "$t" status 2>/dev/null)
+        case "$state" in true|false) ;; *) state=false ;; esac
+        printf '%s"%s":%s' "$sep" "$t" "$state"
+        sep=","
+    done
+    printf '}'
+}
+
+build() {
+    mkdir -p "$RUNTIME_DIR"
+    jq --argjson toggles "$(toggle_states)" \
+       --arg on "" --arg off "" \
+       --arg cpu "龍  $(cpu_percent)%" \
+       --arg mem "  $(mem_percent)%" \
+       --arg cog "" \
+       --arg temp "  $(temp_celsius)°C" \
+       '# The vitals go in after the menubar rather than at the front, so the
+        # settings cog stays the very top row.
+        .widgets = (.widgets | if .[0] == "menubar"
+                               then [.[0], "buttons-grid#system"] + .[1:]
+                               else ["buttons-grid#system"] + . end)
+        | .["widget-config"]["buttons-grid#toggles"].actions |= map(
+              (.command | capture("swaync-toggle (?<name>[a-z]+)").name) as $name
+              | ($toggles[$name] // false) as $lit
+              | .active = $lit
+              # The switch goes on a line of its own under the subject icon: a
+              # GtkLabel honours a newline, which is the only way to get two
+              # lines out of a swaync button. Side by side they read as two
+              # icons rather than as one thing and its state.
+              | .label = (.label | split("\n")[0] | split("  ")[0]) + "\n"
+                         + (if $lit then $on else $off end)
+          )
+        | .["widget-config"]["buttons-grid#system"] = {
+              actions: [
+                  {label: $cpu,  command: "foot -e htop"},
+                  {label: $mem,  command: "foot -e htop"},
+                  {label: $temp, command: "foot -e htop"},
+                  {label: $cog,  command: "/home/james/.config/sway/scripts/sway-settings"}
+              ]
+          }' "$BASE" > "$RUNTIME.tmp" || { rm -f "$RUNTIME.tmp"; return 1; }
+    mv "$RUNTIME.tmp" "$RUNTIME"
+}
+
+case "${1:-toggle}" in
+    build)
+        build
+        ;;
+    # Rebuild before showing, so the numbers are from now rather than from
+    # whenever the session started.
+    toggle)
+        build && swaync-client --reload-config --skip-wait
+        swaync-client --toggle-panel --skip-wait
+        ;;
+    open)
+        build && swaync-client --reload-config --skip-wait
+        swaync-client --open-panel --skip-wait
+        ;;
+    # How sway starts the daemon.
+    start)
+        build
+        exec swaync -c "$RUNTIME" -s "$STYLE"
+        ;;
+    *)
+        echo "usage: ${0##*/} [build|toggle|open|start]" >&2
+        exit 64
+        ;;
+esac

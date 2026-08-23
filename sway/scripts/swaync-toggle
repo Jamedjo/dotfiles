@@ -1,0 +1,70 @@
+#!/bin/sh
+# The control center's toggles: one entry point for both halves of a toggle.
+#
+#   swaync-toggle <name> status    -> prints true or false, for update-command
+#   swaync-toggle <name> <state>   -> makes it so, for command
+#
+# swaync sets $SWAYNC_TOGGLE_STATE to the state the button has just moved to,
+# so `command` is "swaync-toggle wifi $SWAYNC_TOGGLE_STATE" and there is never
+# a quote in the config. That matters: swaync assembles its command as
+# `/bin/sh -c "<command>"` and shell-parses the result (functions.vala), so a
+# double quote in the config closes the wrapper and the command is shredded.
+# Everything that needs quoting lives here instead.
+#
+# update-command runs every time the panel opens, so a mode turned on by
+# keybinding rather than by its button still reads correctly.
+set -u
+
+SUNLIGHT_STATE="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/sway-sunlight.on"
+SCRIPTS=/home/james/.config/sway/scripts
+
+say() { [ "$1" = 0 ] && echo true || echo false; }
+
+case "${1:-}" in
+    wifi)
+        case "${2:-status}" in
+            status) nmcli radio wifi | grep -q enabled; say $? ;;
+            true)   nmcli radio wifi on ;;
+            *)      nmcli radio wifi off ;;
+        esac
+        ;;
+    bluetooth)
+        case "${2:-status}" in
+            status) bluetoothctl show | grep -q 'Powered: yes'; say $? ;;
+            true)   bluetoothctl power on ;;
+            *)      bluetoothctl power off ;;
+        esac
+        ;;
+    # Sunlight and night light are toggles of their own -- the scripts flip
+    # whichever way they are currently set -- so the requested state is only
+    # used to decide whether flipping is needed at all. Without that check a
+    # panel reopened after an update-command resync would flip them back.
+    sunlight)
+        case "${2:-status}" in
+            status) [ -e "$SUNLIGHT_STATE" ]; say $? ;;
+            true)   [ -e "$SUNLIGHT_STATE" ] || "$SCRIPTS/sway-sunlight" ;;
+            *)      [ -e "$SUNLIGHT_STATE" ] && "$SCRIPTS/sway-sunlight" || true ;;
+        esac
+        ;;
+    # Do not disturb is swaync's own state, so it is asked and told through
+    # swaync-client rather than through anything of ours. -d toggles and prints
+    # the new state; -D just prints.
+    dnd)
+        case "${2:-status}" in
+            status) swaync-client -D -sw ;;
+            true)   [ "$(swaync-client -D -sw)" = true ] || swaync-client -dn -sw >/dev/null ;;
+            *)      [ "$(swaync-client -D -sw)" = true ] && swaync-client -df -sw >/dev/null || true ;;
+        esac
+        ;;
+    night)
+        case "${2:-status}" in
+            status) pgrep -x wlsunset >/dev/null; say $? ;;
+            true)   pgrep -x wlsunset >/dev/null || "$SCRIPTS/sway-nightlight" ;;
+            *)      pgrep -x wlsunset >/dev/null && "$SCRIPTS/sway-nightlight" || true ;;
+        esac
+        ;;
+    *)
+        echo "usage: ${0##*/} <wifi|bluetooth|sunlight|night|dnd> [status|true|false]" >&2
+        exit 64
+        ;;
+esac

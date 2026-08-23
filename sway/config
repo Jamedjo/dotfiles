@@ -610,11 +610,12 @@ for_window [class=zoom title=Settings] floating enable
 #exec autocutsel
 
 # Notifications. swaync rather than mako: it keeps a history, and its control
-# center is where the quick toggles and the grouped workspace menus live.
-# Started through swaync-ws-menu so the runtime config -- this repo's
-# config.json with the generated menus folded in -- exists before the daemon
-# reads it. mako's config is still in the repo if this needs backing out.
-exec swaync
+# center is where the quick toggles and the machine's vitals live. Started
+# through swaync-panel, which writes cpu, memory and temperature into a runtime
+# copy of the config -- swaync widgets are static and cannot read anything, so
+# the numbers have to be baked in and refreshed before the panel opens.
+# mako's config is still in the repo if this needs backing out.
+exec /home/james/.config/sway/scripts/swaync-panel start
 exec swaynag-battery --interval 10s
 
 # Night light (blue light filter) for St. Albans, UK

@@ -1,16 +1,48 @@
 /* swaync in the chief-site palette, so the control center reads as the nav
  * card's drawer rather than a second design.
  *
- * Two things about swaync's CSS that are not obvious:
+ * The panel is four kinds of thing stacked, and each kind is drawn a different
+ * way rather than all of them being tiles of the same weight:
+ *
+ *   readout   recessed. cpu/ram/temp sit in a well cut into the panel ground,
+ *             mono and dim, with no edge of their own. Nothing in a well is
+ *             pressable-looking; the well is also the slider trough's colour,
+ *             so "sunk" means "the machine is telling you something".
+ *   state     raised and filled. The five toggles are the only band allowed a
+ *             colour fill, because they are the only band whose appearance has
+ *             to survive the panel being closed and reopened.
+ *   control   outlined, unfilled. The cog and the five actions are hairline
+ *             ghosts that only take a fill under the pointer -- a thing you
+ *             press and let go of, not a thing that holds.
+ *   content   below a rule. The notification list is separated from the chrome
+ *             by the panel's one full-width line, and its cards are the only
+ *             elevated surfaces down there.
+ *
+ * Three things about swaync's CSS that are not obvious:
  *
  *   1. cssPriority in config.json must be "application", not "user". The names
  *      are backwards from how they read: GTK's USER priority sits *below* the
  *      application stylesheet, so "user" means the shipped /etc/xdg theme wins
- *      and none of this file takes effect.
+ *      and none of this file takes effect. At application priority every rule
+ *      here beats the shipped theme regardless of specificity, which is why
+ *      short selectors are enough almost everywhere below.
  *   2. Each notification card has a `.notification-default-action` button
  *      inside it -- the click target for the body -- and the shipped theme
  *      fills it grey. Left alone it paints a slab inside every card, so it is
  *      flattened below and the card is one surface again.
+ *   3. There is deliberately no `* { font-size: ... }` rule. `*` matches the
+ *      GtkLabel inside every button, and a declaration a node owns beats one it
+ *      inherits from its parent no matter how weak the selector -- so a global
+ *      `*` size silently pins every label and makes per-button font-size and
+ *      font-family no-ops. The base type goes on the two top-level surfaces
+ *      instead and reaches the labels by inheritance, which the button rules
+ *      can then override.
+ *
+ * Every value has to be GTK3-legal. GTK stops parsing at the first value it
+ * cannot read and drops the rest of the file, so one CSS3-only value greys out
+ * the whole control center rather than failing to draw one widget. No
+ * four-value background-position, no :empty, no pseudo-elements, no content:,
+ * no gap, no custom properties.
  *
  * Colours are the same ones waybar/style.css names, kept in step by hand.
  */
@@ -23,7 +55,14 @@
 @define-color gold         #f0b35e;  /* .badge-early */
 @define-color danger       #ff4a4a;
 
-* {
+/* The two structural greys, named because they carry the hierarchy: `hairline`
+ * is the edge every raised thing wears, `recess` is the hole every sunk thing
+ * is cut into. */
+@define-color hairline     rgba(74, 158, 255, 0.22);
+@define-color recess       rgba(0, 0, 0, 0.3);
+
+.control-center,
+.floating-notifications {
     font-family: "Inter", "Ubuntu Nerd Font", Helvetica, Arial, sans-serif;
     font-size: 14px;
 }
@@ -39,8 +78,25 @@
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
 }
 
+/* The card is .notification-background; .notification is a box inside it, and
+   the shipped theme gives that box 6px 12px of margin and a three-layer
+   box-shadow whose first layer is a 1px black ring. Both have to be cleared
+   here or every card draws a second outline just inside its own border and
+   loses 24px of the 418 to margins that are not doing anything. */
 .notification-row .notification-background .notification {
     padding: 10px 12px;
+    margin: 0;
+    background: transparent;
+    box-shadow: none;
+    border-radius: 10px;
+}
+
+/* The shipped theme paints the whole row grey on hover, which shows as a halo
+   around the card rather than as feedback on it. The card and the body button
+   below do the hovering instead. */
+.notification-row,
+.notification-row:hover,
+.notification-row:focus {
     background: transparent;
 }
 
@@ -67,14 +123,29 @@
     border-left: 3px solid @danger;
 }
 
-.summary { color: #ffffff; font-weight: 600; }
-.body    { color: rgba(255, 255, 255, 0.72); }
-.time    { color: rgba(255, 255, 255, 0.45); font-size: 12px; }
+.summary {
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 14px;
+    font-feature-settings: "liga=0";
+}
+
+/* Ligatures off on the two prose nodes, for the same reason waybar turns them
+   off on the title: Inter does not cover the Nerd glyphs, pango falls through
+   per-glyph, and the fallback face turns "fi" into a telephone. */
+.body {
+    color: rgba(255, 255, 255, 0.68);
+    font-size: 13px;
+    font-feature-settings: "liga=0";
+}
+
+.time { color: rgba(255, 255, 255, 0.42); font-size: 12px; }
 
 .notification-row .notification-background .close-button {
     background: transparent;
-    color: rgba(255, 255, 255, 0.5);
-    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.45);
+    border: none;
+    border-radius: 999px;
     margin: 6px;
     padding: 2px;
 }
@@ -84,34 +155,50 @@
     color: #ffffff;
 }
 
+/* Actions offered by the sending app read as controls, so they take the same
+   outlined-ghost treatment as the panel's own action row. */
 .notification-action {
-    background: @nav-elevated;
-    color: rgba(255, 255, 255, 0.85);
-    border: 1px solid rgba(74, 158, 255, 0.25);
+    background: transparent;
+    color: rgba(255, 255, 255, 0.8);
+    border: 1px solid @hairline;
     border-radius: 8px;
     margin: 4px;
+    padding: 5px 10px;
+    font-size: 13px;
 }
 
-.notification-action:hover { background: @twilight; color: #ffffff; }
+.notification-action:hover {
+    background: @twilight;
+    border-color: @blue;
+    color: #ffffff;
+}
 
-/* --- control center ----------------------------------------------------- */
+/* --- the panel ----------------------------------------------------------- */
 
+/* The bar's card, at panel scale: opaque --nav-ground under the site header's
+   135deg glass wash, inside a --nav-border hairline. Same two layers and the
+   same angle waybar's .modules-* boxes use, so the drawer is visibly cut from
+   the card it hangs off. Over 720px of height the wash also does structural
+   work -- the controls at the top sit in the lit corner and the notification
+   list falls away into the dark one.
+
+   Padding is asymmetric: 14px of air above the cog, but only 4px at the foot,
+   because the notification list scrolls and a large gap under the last card
+   reads as the list having ended when it has not. */
 .control-center {
-    background: @nav-ground;
+    background-color: @nav-ground;
+    background-image: linear-gradient(135deg,
+                                      rgba(255, 255, 255, 0.08) 0%,
+                                      rgba(255, 255, 255, 0.04) 50%,
+                                      rgba(255, 255, 255, 0.02) 100%);
     border: 1px solid @nav-border;
-    border-radius: 14px;
+    border-radius: 16px;
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
-    padding: 12px;
+    padding: 14px 14px 4px 14px;
+    color: rgba(255, 255, 255, 0.72);
 }
 
-.control-center .notification-row .notification-background {
-    background: @nav-elevated;
-    border: 1px solid rgba(74, 158, 255, 0.18);
-    border-radius: 10px;
-    margin: 4px 0;
-}
-
-/* --- menubar: workspaces and settings ------------------------------------
+/* --- menubar: the settings cog ------------------------------------------
  *
  * Not a popover. menubar.vala builds each dropdown as a Gtk.Revealer holding a
  * vertical box, and adds every revealer to a container *below* the button row
@@ -119,157 +206,309 @@
  * styling `.popover` was styling something that does not exist here.
  *
  * The rows are plain Gtk.Buttons with no class of their own, so they are
- * reached by targeting every button in the widget; the chips in the top row
- * are then taken back by the longer, more specific selector below them, which
- * wins on CSS specificity the same as anywhere else.
+ * reached by targeting every button in the widget; the cog in the top row is
+ * then taken back by the longer, more specific selector below, which wins on
+ * CSS specificity the same as anywhere else.
  *
  * The revealer box does carry a class -- whatever follows the # in the config
- * key, so "menu#settings" is .settings -- but the generated keys are
- * menu#ws-<project>, one class per project, and a new project would arrive
- * unstyled. So the ground is put on the revealer's child box by node name
- * instead, which covers every dropdown including ones that do not exist yet.
+ * key, so "menu#settings" is .settings -- but the ground is put on the
+ * revealer's child box by node name instead, so a dropdown added to the config
+ * later arrives already styled.
  */
 
-/* Dropdown rows. Flat and full-width, so an open menu reads as a list rather
-   than as more chips. */
+/* Dropdown rows. Flat, full-width, and hung off a left rail that only colours
+   on hover -- the rail is transparent rather than absent so the label does not
+   step sideways when the pointer arrives. */
 .widget-menubar button {
     background: transparent;
     color: rgba(255, 255, 255, 0.78);
     border: none;
-    border-radius: 8px;
+    border-left: 2px solid transparent;
+    border-radius: 0 8px 8px 0;
     margin: 1px 6px;
     padding: 9px 12px;
     font-size: 14px;
 }
 
 .widget-menubar button:hover {
-    background: rgba(74, 158, 255, 0.18);
+    background: rgba(74, 158, 255, 0.16);
+    border-left-color: @blue;
     color: #ffffff;
 }
 
 /* The open dropdown sits in the panel rather than over it, so it needs a
-   ground of its own to separate it from the widgets it pushes down. */
+   ground of its own to separate it from the widgets it pushes down. Sunk
+   rather than raised: it is a hole opened in the panel, and the recess says
+   that better than another elevated card would. */
 .widget-menubar revealer > box {
-    background: @nav-ground;
-    border: 1px solid rgba(74, 158, 255, 0.25);
+    background: @recess;
+    border: 1px solid rgba(74, 158, 255, 0.14);
     border-radius: 12px;
-    margin: 4px 2px 8px 2px;
+    margin: 6px 0 12px 0;
     padding: 4px 0;
 }
 
-/* The chips in the top row. More specific than the rule above, so it wins. */
+/* The cog. It borrows waybar's status-pill fill verbatim -- white at .06, a
+   999px capsule, .72 white -- so the handle that opens the panel and the first
+   thing inside it are the same object. Quiet on purpose: it is a control, and
+   the toggles below are the only band that gets to be loud. */
 .widget-menubar > box > .menu-button-bar > button {
-    background: @nav-elevated;
-    color: rgba(255, 255, 255, 0.85);
-    border: 1px solid rgba(74, 158, 255, 0.3);
-    border-radius: 10px;
-    margin: 2px;
-    padding: 8px 14px;
-    font-size: 14px;
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.72);
+    border: none;
+    border-radius: 999px;
+    margin: 0 0 12px 0;
+    padding: 6px 14px;
+    font-size: 15px;
 }
 
 .widget-menubar > box > .menu-button-bar > button:hover {
-    background: @blue-deep;
+    background: rgba(255, 255, 255, 0.14);
     color: #ffffff;
 }
 
-/* --- quick toggles and readouts ------------------------------------------ */
+/* --- grids: shared geometry ---------------------------------------------
+ *
+ * baseWidget.vala adds a widget's #suffix as a style class, so
+ * `buttons-grid#toggles` is reachable here as .toggles and each grid can be
+ * drawn as its own kind of thing. This block only carries what all three
+ * share; every rule after it is prefixed .control-center so that it outranks
+ * this one whatever order GTK settles on.
+ */
 
 .widget-buttons-grid {
     background: transparent;
     padding: 0;
-    margin: 8px 0;
+    margin: 0;
 }
 
-/* Icon-only tiles, the way every swaync config that fits a row of six does
-   it. Square padding so the glyph sits centred rather than being pushed off
-   by label spacing. */
 .widget-buttons-grid > flowbox > flowboxchild > button {
-    background: @nav-elevated;
+    background: transparent;
     color: rgba(255, 255, 255, 0.78);
-    border: 1px solid rgba(74, 158, 255, 0.2);
-    border-radius: 10px;
-    margin: 3px;
-    padding: 10px 14px;
-    font-size: 17px;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    margin: 0 2px;
+    padding: 8px 4px;
 }
 
-.widget-buttons-grid > flowbox > flowboxchild > button:hover {
-    background: @twilight;
+/* --- the vitals: readouts ------------------------------------------------
+ *
+ * cpu, memory and temperature, written into the config by swaync-panel and
+ * refreshed each time the panel opens. They are not controls -- the only thing
+ * a click does is open htop -- so they get no fill, no border and no rounding
+ * of their own, and the widget itself becomes a well cut into the panel: the
+ * same black the slider troughs use, which is this sheet's one signal for
+ * "sunk, therefore information".
+ *
+ * The three readouts are a machine-voice line and read as one, so they take
+ * the mono face and a size below the panel's base -- small enough that the
+ * numbers do not compete with the state above them, mono so a percentage
+ * changing from 9% to 10% does not shuffle the row.
+ */
+
+.control-center .widget-buttons-grid.system {
+    background: @recess;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 10px;
+    padding: 2px;
+    margin: 0 0 14px 0;
+}
+
+.control-center .widget-buttons-grid.system > flowbox > flowboxchild > button {
+    /* A third of the panel each. The usable width inside the control center's
+       padding is about 418px, so the floor has to leave room for three plus
+       their margins -- 128 left room for two, and the flowbox stretched them
+       to fill the line. Four now, the settings cog having joined them: it is
+       chrome like they are, and it was taking a labelled slot in the row of
+       things you came here to do. */
+    min-width: 78px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    margin: 0;
+    padding: 7px 4px;
+    font-family: "IBM Plex Mono", "Ubuntu Nerd Font", monospace;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.control-center .widget-buttons-grid.system > flowbox > flowboxchild > button:hover {
+    background: rgba(255, 255, 255, 0.07);
     color: #ffffff;
 }
 
-/* --- toggles ------------------------------------------------------------
+/* --- toggles: state ------------------------------------------------------
  *
- * A toggle has to look like a toggle, not a tile that happens to be lit, so
- * these are pills where the action buttons below are rounded rectangles --
- * the same shape language GNOME's quick settings use -- and they fill when on.
+ * Five in a row: Wi-Fi, Bluetooth, sunlight, night light, do not disturb. Do
+ * not disturb used to be swaync's own `dnd` widget -- a real GtkSwitch on a
+ * row of its own -- which made it the only piece of state in the panel that
+ * did not look like the others. It is a toggle button now like the rest, and
+ * swaync-toggle asks swaync-client for its state the same way it asks nmcli
+ * for Wi-Fi's.
  *
- * Two things make this reachable. baseWidget.vala adds a widget's #suffix as
- * a style class, so `buttons-grid#toggles` is .toggles here and the action
- * grid is left alone. And the state is :checked, not .active -- swaync's
- * schema says toggle buttons "receive the .active css class", but
- * toggleButton.vala subclasses Gtk.ToggleButton and never adds a class, so
- * styling .active silently matches nothing.
+ * Each label is two glyphs: the subject, then a slide-switch drawn in its on
+ * or its off form, chosen by swaync-panel when it rewrites the config just
+ * before the panel opens. That glyph is now the literal switch, which is why
+ * the old lit rail along the bottom edge is gone -- two state signals on one
+ * tile, one of them a colour and one of them a drawing of a switch, was the
+ * tile saying the same thing twice and neither saying it clearly.
  *
- * Keep every value in here GTK3-legal. GTK stops parsing a stylesheet at the
- * first value it cannot read and drops everything after it, so one CSS3-only
- * value -- `background-position: right 10px center`, say -- greys out the
- * whole control center rather than just failing to draw one switch.
+ * So the tile carries state the only other way that survives a glance: fill.
+ * Off is sunk -- black at .18, hairline barely there, text at half white. On is
+ * the site's filled CTA, --color-primary-deep with white on it, the same pair
+ * the focused workspace wears on the bar, plus an inset top highlight so the
+ * lit tile has a lip and reads as physically raised out of the row. These are
+ * the only filled things above the notification list; nothing else in the
+ * panel is allowed to look like this.
+ *
+ * State is :checked, not .active -- swaync's schema says toggle buttons
+ * "receive the .active css class", but toggleButton.vala subclasses
+ * Gtk.ToggleButton and never adds a class, so .active matches nothing at all.
  */
 
-.widget-buttons-grid.toggles > flowbox > flowboxchild > button {
-    border-radius: 999px;
-    min-width: 78px;
-    padding: 11px 4px;
-    background: transparent;
-    border: 1px solid rgba(74, 158, 255, 0.35);
-    color: rgba(255, 255, 255, 0.6);
+.control-center .widget-buttons-grid.toggles {
+    margin: 0 0 8px 0;
 }
 
-.widget-buttons-grid.toggles > flowbox > flowboxchild > button:hover {
+.control-center .widget-buttons-grid.toggles > flowbox > flowboxchild > button {
+    /* Five across ~418px of usable panel, margins included -- at 80 the fifth
+       wrapped onto a line of its own. */
+    min-width: 58px;
+    background: rgba(0, 0, 0, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 9px;
+    /* Two lines now -- the subject icon with its switch under it -- so the
+       vertical padding comes down to keep the row from doubling in height. */
+    margin: 0 1px;
+    padding: 7px 1px 6px 1px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.control-center .widget-buttons-grid.toggles > flowbox > flowboxchild > button:hover {
     background: @nav-elevated;
+    border-color: @hairline;
     color: rgba(255, 255, 255, 0.85);
 }
 
-.widget-buttons-grid.toggles > flowbox > flowboxchild > button:checked {
+.control-center .widget-buttons-grid.toggles > flowbox > flowboxchild > button:checked {
+    background: @blue-deep;
+    border-color: @blue;
+    color: #ffffff;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.control-center .widget-buttons-grid.toggles > flowbox > flowboxchild > button:checked:hover {
+    background: @blue;
+    color: #06121f;
+}
+
+/* --- actions: controls ---------------------------------------------------
+ *
+ * Shot, Colour, Focus, Rename, Lock. These fire and are done -- there is no
+ * state to come back to -- so they are outlined ghosts: a hairline, no fill,
+ * and a fill only while the pointer is on them. Against the filled toggles
+ * directly above, the row reads as "these five hold, these five happen".
+ *
+ * Each label is a glyph plus a word, so the type drops to 12px: at the 15px
+ * the toggles use, "Colour" and "Rename" push the row past five across. The
+ * smaller word is also the right hierarchy -- the toggles are the band you
+ * read, this one is the band you aim at.
+ */
+
+.control-center .widget-buttons-grid.actions {
+    margin: 0 0 14px 0;
+}
+
+.control-center .widget-buttons-grid.actions > flowbox > flowboxchild > button {
+    /* Room for the longest label, "Colour", at this size -- with 2px margins
+       five of these come to ~390px inside the ~418px line. */
+    /* Six labelled actions will not fit one line of a 418px panel, and five
+       plus a stray is worse than none. A floor of a third of the width makes
+       it two full rows of three. */
+    min-width: 104px;
+    background: transparent;
+    border: 1px solid @hairline;
+    border-radius: 999px;
+    margin: 0 2px;
+    padding: 8px 2px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.72);
+}
+
+.control-center .widget-buttons-grid.actions > flowbox > flowboxchild > button:hover {
     background: @blue-deep;
     border-color: @blue;
     color: #ffffff;
 }
 
-.widget-buttons-grid.toggles > flowbox > flowboxchild > button:checked:hover {
+/* --- sliders: continuous controls ---------------------------------------
+ *
+ * No card round either of them. A slider is already a shape -- a rail with a
+ * knob on it -- and boxing it made two more rectangles in a panel that had
+ * plenty. The rail is cut into the panel with the readouts' black, so the
+ * sunk/raised split holds: troughs and the vitals well are the same hole.
+ *
+ * The scale rules are scoped to `scale` rather than left as bare `trough` and
+ * `slider` node selectors. Bare ones also match the slider inside any
+ * GtkSwitch in the panel, which is how the old sheet ended up needing a
+ * separate rule to take the dnd switch's knob back.
+ */
+
+.control-center .widget-volume,
+.control-center .widget-backlight {
+    background: transparent;
+    padding: 2px 4px;
+    margin: 0 0 4px 0;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 15px;
+}
+
+.control-center .widget-backlight {
+    margin-bottom: 10px;
+}
+
+.control-center scale trough {
+    background: @recess;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 999px;
+    min-height: 6px;
+    margin: 0 2px;
+}
+
+.control-center scale highlight {
     background: @blue;
-    color: #06121f;
+    border-radius: 999px;
+    min-height: 6px;
 }
 
-/* The action tiles keep their labels -- eight anonymous glyphs were harder to
-   read than six named ones -- and a floor on the width makes the flowbox break
-   at three, so both rows are full rather than leaving one tile stranded. */
-.widget-buttons-grid.actions > flowbox > flowboxchild > button {
-    min-width: 92px;
-    padding: 10px 6px;
-    font-size: 13px;
+/* GTK3 grows the slider from the trough's centre line, so a knob taller than
+   the rail has to be pulled back out with a negative margin or it thickens the
+   whole row. -6 is half the difference between 18 and 6. */
+.control-center scale slider {
+    background: #ffffff;
+    border: none;
+    border-radius: 999px;
+    min-width: 18px;
+    min-height: 18px;
+    margin: -6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
-.widget-volume,
-.widget-backlight {
-    background: @nav-elevated;
-    border-radius: 10px;
-    padding: 8px 12px;
-    margin-bottom: 8px;
-    color: rgba(255, 255, 255, 0.78);
+.control-center scale:hover slider {
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(74, 158, 255, 0.25);
 }
 
-trough    { background: rgba(255, 255, 255, 0.12); border-radius: 6px; }
-highlight { background: @blue; border-radius: 6px; }
-slider    { background: #ffffff; border-radius: 50%; }
-
+/* Kept for the mpris widget, which the config still carries a block for even
+   though it is not in the widget list. Same elevated card the notification
+   cards use, so adding it back does not need a new idea. */
 .widget-mpris {
     background: @nav-elevated;
+    border: 1px solid rgba(74, 158, 255, 0.18);
     border-radius: 10px;
     padding: 8px;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     color: #ffffff;
 }
 
@@ -277,46 +516,105 @@ slider    { background: #ffffff; border-radius: 50%; }
 .widget-mpris-title    { font-weight: 600; font-size: 14px; }
 .widget-mpris-subtitle { color: rgba(255, 255, 255, 0.55); font-size: 12px; }
 
-.widget-dnd {
-    background: @nav-elevated;
-    border-radius: 10px;
-    padding: 10px 12px;
-    margin-bottom: 8px;
-    color: rgba(255, 255, 255, 0.78);
-}
+/* --- title and notifications: content -----------------------------------
+ *
+ * The one full-width rule in the panel goes here, and it is the whole story of
+ * the layout: everything above it is chrome you operate, everything below it
+ * is content that arrived on its own. The bands above are separated by space
+ * alone -- 8px inside a band, 14px between bands -- so this single line does
+ * not have to compete with a stack of other lines.
+ *
+ * The heading is smaller and dimmer than a heading usually is, because the
+ * list under it is the loud thing and a 16px white "Notifications" over an
+ * empty list was the largest text in the panel announcing nothing.
+ */
 
-/* Gold rather than blue: do-not-disturb is the urgent-workspace colour in
- * sway's client.urgent, and it means the same thing here -- something is
- * being held back. */
-.widget-dnd > switch          { background: rgba(255, 255, 255, 0.15); border-radius: 12px; }
-.widget-dnd > switch:checked  { background: @gold; }
-.widget-dnd > switch slider   { background: #ffffff; border-radius: 50%; }
-
-.widget-title {
-    color: #ffffff;
-    font-size: 16px;
-    font-weight: 600;
-    margin: 4px 4px 10px 4px;
-}
-
-.widget-title > button {
-    background: @nav-elevated;
-    color: rgba(255, 255, 255, 0.72);
-    border: 1px solid rgba(74, 158, 255, 0.25);
-    border-radius: 8px;
-    padding: 4px 12px;
+.control-center .widget-title {
+    color: rgba(255, 255, 255, 0.55);
     font-size: 13px;
+    font-weight: 600;
+    border-top: 1px solid rgba(74, 158, 255, 0.16);
+    padding: 12px 2px 0 2px;
+    margin: 0 0 8px 0;
 }
 
-.widget-title > button:hover { background: @blue-deep; color: #ffffff; }
+/* Clear all is destructive and rarely wanted, so it is the quietest control on
+   the panel until the pointer is on it, and then it is the only red thing. */
+.control-center .widget-title > button {
+    background: transparent;
+    color: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 999px;
+    padding: 3px 12px;
+    font-size: 12px;
+    font-weight: 400;
+}
 
+.control-center .widget-title > button:hover {
+    background: rgba(255, 74, 74, 0.2);
+    border-color: rgba(255, 74, 74, 0.55);
+    color: #ffffff;
+}
+
+/* Cards in the list are elevated where everything above them is either flat or
+   sunk, which is what makes the list read as objects sitting in the panel
+   rather than as a fifth band of controls. They also get more air between them
+   than any two controls get, so the list has its own rhythm. */
+.control-center .notification-row .notification-background {
+    background: @nav-elevated;
+    border: 1px solid rgba(74, 158, 255, 0.16);
+    border-radius: 10px;
+    margin: 0 2px 6px 2px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+
+.control-center .notification-row .notification-background:hover {
+    border-color: @hairline;
+}
+
+/* Grouped cards, when swaync stacks several from one app: the group is not a
+   surface, only the cards inside it are. */
+.control-center .notification-group {
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+
+.control-center .notification-group-headers {
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 12px;
+    margin: 0 4px;
+}
+
+/* The label widget is not in the widget list, but the shipped theme sizes its
+   inner label node directly -- so if it is ever added, the size has to be
+   taken back on that same node and not on the widget. */
 .widget-label { color: rgba(255, 255, 255, 0.5); margin: 4px; }
+.widget-label > label { font-size: 13px; }
 
+/* "Nothing waiting". Dim enough to be a state rather than a message -- an
+   empty list should look empty, not look like it is telling you something. */
 .control-center-list-placeholder {
     color: rgba(255, 255, 255, 0.22);
-    opacity: 0.35;
+    font-size: 13px;
+    opacity: 0.4;
 }
 
 /* The click-catcher behind the panel. Left transparent so the desktop is not
  * dimmed when the control center opens. */
 .blank-window { background: transparent; }
+
+/* Tooltips fall outside both surfaces the base type is set on, so they name
+   the face themselves. Shape is .drop, the same card the panel wears. */
+tooltip {
+    background: @nav-ground;
+    border: 1px solid @nav-border;
+    border-radius: 14px;
+}
+
+tooltip label {
+    font-family: "Inter", "Ubuntu Nerd Font", Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    color: #e2eaf6;
+    padding: 2px;
+}

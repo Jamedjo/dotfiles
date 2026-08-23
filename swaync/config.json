@@ -27,44 +27,14 @@
   "hide-on-action": true,
   "script-fail-notify": true,
   "widgets": [
-    "dnd",
     "buttons-grid#toggles",
     "buttons-grid#actions",
-    "menubar",
     "volume",
     "backlight",
     "title",
     "notifications"
   ],
   "widget-config": {
-    "menubar": {
-      "menu#settings": {
-        "label": "  Settings",
-        "position": "right",
-        "animation-type": "slide_down",
-        "actions": [
-          {
-            "label": "  Network",
-            "command": "nm-connection-editor"
-          },
-          {
-            "label": "  Bluetooth",
-            "command": "blueman-manager"
-          },
-          {
-            "label": "  Audio",
-            "command": "pavucontrol"
-          },
-          {
-            "label": "  Displays",
-            "command": "wdisplays"
-          }
-        ]
-      }
-    },
-    "dnd": {
-      "text": "Do not disturb"
-    },
     "buttons-grid#toggles": {
       "actions": [
         {
@@ -90,6 +60,12 @@
           "type": "toggle",
           "command": "/home/james/.config/sway/scripts/swaync-toggle night $SWAYNC_TOGGLE_STATE",
           "update-command": "/home/james/.config/sway/scripts/swaync-toggle night status"
+        },
+        {
+          "label": "",
+          "type": "toggle",
+          "command": "/home/james/.config/sway/scripts/swaync-toggle dnd $SWAYNC_TOGGLE_STATE",
+          "update-command": "/home/james/.config/sway/scripts/swaync-toggle dnd status"
         }
       ]
     },
@@ -104,10 +80,6 @@
           "command": "/home/james/.config/sway/scripts/sway-colour"
         },
         {
-          "label": "  Switch",
-          "command": "/home/james/.config/sway/scripts/sway-ws-switch"
-        },
-        {
           "label": "  Focus",
           "command": "foot -e sh -c 'sleep 0.1; vim $HOME/.config/focuslock/current'"
         },
@@ -118,6 +90,10 @@
         {
           "label": "  Lock",
           "command": "swaylock"
+        },
+        {
+          "label": "  Settings",
+          "command": "/home/james/.config/sway/scripts/sway-settings"
         }
       ]
     },
