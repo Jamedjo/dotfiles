@@ -43,3 +43,5 @@ mkdir sway-cheatsheet && ln ~/.config/sway-cheatsheet/* sway-cheatsheet/
 
 
 mkdir fuzzel && ln ~/.config/fuzzel/* fuzzel/
+
+mkdir bin && ln ~/.local/bin/review bin/review

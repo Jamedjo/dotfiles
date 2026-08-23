@@ -1,0 +1,68 @@
+#!/bin/bash
+# Local code review in its own window.
+#
+# diffx serves a GitHub-style "Files changed" view of a git diff on localhost,
+# with viewed-ticks per file and comments per line. This wraps it so it behaves
+# like an application rather than yet another browser tab, and so the server
+# dies with the window instead of lingering:
+#
+#   review                 # uncommitted changes
+#   review --staged        # staged only
+#   review HEAD~3          # last three commits
+#   review master..sway    # a branch
+#
+# Everything after the command is handed straight to git diff.
+#
+# The non-obvious bits:
+#   - diffx already picks a random free port and prints the URL, so we parse
+#     that rather than guessing a port and racing whatever else wants it.
+#   - the chromium profile is a throwaway. A shared one would make a second
+#     `review` delegate to the first chromium process and exit immediately,
+#     pulling the server out from under the first window. Throwaway also means
+#     the ticks and comments die with the window, which is the point: the
+#     review is the session, not a document.
+#   - --class is X11-only, so under sway this lands with an app_id of
+#     chrome-127.0.0.1__-Default. Match that prefix in for_window rules.
+
+set -euo pipefail
+
+command -v diffx >/dev/null || {
+  echo "review: diffx is not installed (npm install -g diffx-cli)" >&2
+  exit 1
+}
+
+browser=
+for candidate in chromium google-chrome brave-browser chromium-browser; do
+  if command -v "$candidate" >/dev/null; then browser=$candidate; break; fi
+done
+[ -n "$browser" ] || { echo "review: no chromium-family browser found" >&2; exit 1; }
+
+git rev-parse --git-dir >/dev/null   # let git explain it if we are not in a repo
+
+profile=$(mktemp -d "${TMPDIR:-/tmp}/review-profile.XXXXXX")
+log=$(mktemp "${TMPDIR:-/tmp}/review-log.XXXXXX")
+server=
+
+cleanup() {
+  if [ -n "$server" ]; then kill "$server" 2>/dev/null || true; fi
+  rm -rf "$profile" "$log"
+}
+trap cleanup EXIT INT TERM
+
+if [ $# -gt 0 ]; then
+  diffx --no-open -- "$@" >"$log" 2>&1 &
+else
+  diffx --no-open >"$log" 2>&1 &
+fi
+server=$!
+
+url=
+for _ in $(seq 100); do
+  url=$(grep -om1 'http://127\.0\.0\.1:[0-9]*' "$log" || true)
+  if [ -n "$url" ]; then break; fi
+  if ! kill -0 "$server" 2>/dev/null; then cat "$log" >&2; exit 1; fi
+  sleep 0.1
+done
+[ -n "$url" ] || { echo "review: diffx never reported a URL" >&2; cat "$log" >&2; exit 1; }
+
+"$browser" --app="$url" --user-data-dir="$profile" >/dev/null 2>&1
