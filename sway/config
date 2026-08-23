@@ -60,6 +60,7 @@ output "Goldstar Company Ltd LG TV 0x00000101" resolution 4096x2160
 # resumed. It will also lock your screen before your computer goes to sleep.
 #bindsym $mod+Shift+x exec swaylock
 set $lock swaylock -f
+# Lock the screen
 bindsym $mod+l exec $lock
 exec swayidle -w timeout 300 '$lock' before-sleep '$lock' lock '$lock' timeout 600 'systemctl suspend'
 
@@ -135,16 +136,16 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
 #
 # Basics:
 #
-    # start a terminal
+    # Open a terminal
     bindsym $mod+Return exec $term
 
-    # start a browser
+    # Open a browser
     bindsym $mod+Shift+Return exec $browser
 
-    # kill focused window
+    # Close the focused window
     bindsym $mod+q kill
 
-    # start your launcher
+    # Open the app launcher
     bindsym $mod+space exec $menu
 
     # Drag floating windows by holding down $mod and left mouse button.
@@ -154,7 +155,7 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
     # mouse button for dragging.
     floating_modifier $mod normal
 
-    # reload the configuration file
+    # Reload the sway config
     bindsym $mod+Shift+c reload
 
 #
@@ -166,9 +167,14 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
     #bindsym $mod+$up focus up
     #bindsym $mod+$right focus right
     # or use $mod+[up|down|left|right]
+
+    # Focus a window
     bindsym $mod+Left focus left
+    # Focus the window below
     bindsym $mod+Down focus down
+    # Focus the window above
     bindsym $mod+Up focus up
+    # Focus the window to the right
     bindsym $mod+Right focus right
 
     # _move_ the focused window with the same, but add Shift
@@ -177,9 +183,14 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
     #bindsym $mod+Shift+$up move up
     #bindsym $mod+Shift+$right move right
     # ditto, with arrow keys
+
+    # Move the window
     bindsym $mod+Shift+Left move left
+    # Move the window down
     bindsym $mod+Shift+Down move down
+    # Move the window up
     bindsym $mod+Shift+Up move up
+    # Move the window right
     bindsym $mod+Shift+Right move right
 #
 # Workspaces:
@@ -210,7 +221,7 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
     set $web $workspace1
     set $chat $workspace8
 
-    # switch to workspace
+    # Switch to workspace 1-10
     bindsym $mod+1 workspace number $workspace1
     bindsym $mod+2 workspace number $workspace2
     bindsym $mod+3 workspace number $workspace3
@@ -221,6 +232,7 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
     bindsym $mod+8 workspace number $workspace8
     bindsym $mod+9 workspace number $workspace9
     bindsym $mod+0 workspace number $workspace10
+    # Switch to workspace 11-20
     bindsym $mod+Alt+1 workspace number $workspace11
     bindsym $mod+Alt+2 workspace number $workspace12
     bindsym $mod+Alt+3 workspace number $workspace13
@@ -231,7 +243,7 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
     bindsym $mod+Alt+8 workspace number $workspace18
     bindsym $mod+Alt+9 workspace number $workspace19
     bindsym $mod+Alt+0 workspace number $workspace20
-    # move focused container to workspace
+    # Send window to workspace 1-10
     bindsym $mod+Shift+1 move container to workspace number $workspace1
     bindsym $mod+Shift+2 move container to workspace number $workspace2
     bindsym $mod+Shift+3 move container to workspace number $workspace3
@@ -242,6 +254,7 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
     bindsym $mod+Shift+8 move container to workspace number $workspace8
     bindsym $mod+Shift+9 move container to workspace number $workspace9
     bindsym $mod+Shift+0 move container to workspace number $workspace10
+    # Send window to workspace 11-20
     bindsym $mod+Alt+Shift+1 move container to workspace number $workspace11
     bindsym $mod+Alt+Shift+2 move container to workspace number $workspace12
     bindsym $mod+Alt+Shift+3 move container to workspace number $workspace13
@@ -272,6 +285,7 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
     # semicolon and would read everything after it as a sway command. Nothing
     # validates that until the key is pressed.
     for_window [title=fuzzy-tab] floating enable
+    # Pick a window by name
     bindsym $mod+Tab exec swaymsg -t get_tree | jq -r 'recurse(.nodes[]?) | select(.type == "con" and .name != null) | [.id, .app_id, .name] | @tsv' | tee /run/user/1000/sway-fuzzel-windows.tsv | cut -f2- | fuzzel --dmenu --prompt='window: ' --config=/home/james/.config/fuzzel/sway-menu.ini | awk 'NR == FNR { sel = $0; next } { row = $0; sub(/^[0-9]+\t/, "", row); if (row == sel) { print $1; exit } }' - /run/user/1000/sway-fuzzel-windows.tsv | xargs -r -I ID swaymsg '[con_id=ID]' focus
 
     # Workspace pickers. Scripts live in ~/.config/sway/scripts (linked into
@@ -288,17 +302,24 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
 
     # grave is where sway's default config puts it; backslash is where the key
     # sits on a UK layout.
+
+    # Switch to a workspace by name
     bindsym $mod+grave           exec $ws_scripts/sway-ws-switch
+    # Switch to a workspace by name
     bindsym $mod+backslash       exec $ws_scripts/sway-ws-switch
+    # Move a window to another workspace
     bindsym $mod+Shift+grave     exec $ws_scripts/sway-ws-move
+    # Move a window to another workspace
     bindsym $mod+Shift+backslash exec $ws_scripts/sway-ws-move
 
-    # Rename the current workspace, keeping its number.
+    # Rename the workspace, keeping its number
     bindsym $mod+n exec $ws_scripts/sway-ws-rename
 
     # Pull the current workspace into a slot, swapping with whatever is there.
     # Every slot, not just the shuffling ones -- pinned workspaces like
     # meetings, slack and todos get put in place the same way.
+
+    # Promote a workspace into slot 1-10
     bindsym $mod+Ctrl+1 exec $ws_scripts/sway-ws-promote 1
     bindsym $mod+Ctrl+2 exec $ws_scripts/sway-ws-promote 2
     bindsym $mod+Ctrl+3 exec $ws_scripts/sway-ws-promote 3
@@ -310,6 +331,7 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
     bindsym $mod+Ctrl+9 exec $ws_scripts/sway-ws-promote 9
     bindsym $mod+Ctrl+0 exec $ws_scripts/sway-ws-promote 10
 
+    # Promote a workspace into slot 11-20
     bindsym $mod+Alt+Ctrl+1 exec $ws_scripts/sway-ws-promote 11
     bindsym $mod+Alt+Ctrl+2 exec $ws_scripts/sway-ws-promote 12
     bindsym $mod+Alt+Ctrl+3 exec $ws_scripts/sway-ws-promote 13
@@ -324,15 +346,17 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
     # Move workspace to another screen with fzf
     # fzf's --select-1 auto-picked a lone output; fuzzel has no equivalent, so a
     # single candidate still needs Enter.
+
+    # Move workspace to another screen
     bindsym $mod+Shift+w exec swaymsg -t get_outputs | jq -r '.[] | select(.focused != true) | [.name, .make, .model] | @tsv' | fuzzel --dmenu --prompt='move workspace to: ' --config=/home/james/.config/fuzzel/sway-menu.ini | awk '{print $1}' | xargs -r swaymsg move workspace to
 
-    # Move workspace to next screen/output
+    # Move workspace to the next screen
     bindsym $mod+Alt+w exec swaymsg -t get_outputs | jq '.[] | .name' | sed -n "1p;/`swaymsg -t get_outputs | jq '.[] | select(.focused==true) | .name'`/{n;p;}" | tail -n1 | xargs swaymsg move workspace to
 
     for_window [class='Xmessage'] floating enable
     for_window [class='Xmessage'] sticky enable
 
-    # Rotate current workspace
+    # Rotate the screen 90 degrees
     bindsym $mod+Shift+r output - transform 90 clockwise
 
 # Window assignments
@@ -355,6 +379,7 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
 
     exec swaymsg workspace number $web
 
+    # Open the FocusLock note
     bindsym $mod+Shift+f exec $term_run 'sleep 0.1 && cd /home/james/.config/focuslock && vim current'
 #
 # Layout stuff:
@@ -362,18 +387,25 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
     # You can "split" the current object of your focus with
     # $mod+b or $mod+v, for horizontal and vertical splits
     # respectively.
+
+    # Split horizontally or vertically
     bindsym $mod+b splith
+    # Split vertically
     bindsym $mod+v splitv
 
     # Switch the current container between different layout styles
+
+    # Stacking layout
     bindsym $mod+s layout stacking
+    # Tabbed layout
     bindsym $mod+w layout tabbed
+    # Toggle split direction
     bindsym $mod+e layout toggle split
 
-    # Make the current focus fullscreen
+    # Fullscreen the window
     bindsym $mod+f fullscreen
 
-    # Toggle the current focus between tiling and floating mode
+    # Toggle floating
     bindsym $mod+t floating toggle
 
     # Nearly fullscreen: float the window and size it to the workspace, which is
@@ -403,9 +435,11 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
     # This replaced `focus mode_toggle`, which swapped focus between the tiling
     # and floating layers. That is only worth a key when several windows float
     # at once; one floating window at a time is reached by clicking it.
+
+    # Nearly fullscreen, bars still visible
     bindsym $mod+Shift+t floating enable, resize set 98 ppt 97 ppt, move position center, move position center
 
-    # move focus to the parent container
+    # Focus the parent container
     bindsym $mod+a focus parent
 #
 # Scratchpad:
@@ -413,11 +447,13 @@ exec libinput-gestures-setup stop && libinput-gestures-setup start
     # Sway has a "scratchpad", which is a bag of holding for windows.
     # You can send windows there and get them back later.
 
-    # Move the currently focused window to the scratchpad
+    # Send window to the scratchpad
     bindsym $mod+Shift+minus move scratchpad
 
     # Show the next scratchpad window or hide the focused scratchpad window.
     # If there are multiple scratchpad windows, this command cycles through them.
+
+    # Cycle the scratchpad
     bindsym $mod+minus scratchpad show
 #
 # Resizing containers:
@@ -442,8 +478,11 @@ mode "resize" {
     bindsym Return mode "default"
     bindsym Escape mode "default"
 }
+# Enter resize mode
 bindsym $mod+r mode "resize"
+# Narrow or widen the window
 bindsym $mod+bracketleft resize shrink width 10px
+# Grow the window
 bindsym $mod+bracketright resize grow width 10px
 
 Set $mode_system System: (l) lock, (e) logout, (s) suspend, (r) reboot, (S) shutdown, (R) UEFI
@@ -460,6 +499,7 @@ mode "$mode_system" {
     bindsym Return mode "default"
     bindsym Escape mode "default"
 }
+# Lock, logout, suspend, reboot
 bindsym $mod+Shift+e mode "$mode_system"
 
 # exit sway (logs you out of your Wayland session)
@@ -480,24 +520,46 @@ bindsym XF86AudioPrev exec playerctl previous
 #bindsym XF86AudioMicMute exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
 bindsym XF86MonBrightnessDown exec sudo brightnessctl set 5%-
 bindsym XF86MonBrightnessUp exec sudo brightnessctl set +5%
+# Display settings
 bindsym $mod+p exec wdisplays
+# Cycle night light
 bindsym $mod+d exec pkill -USR1 wlsunset
 
 # Sunlight mode: dark-on-light foot palette + midtone lift, same key to undo
+
+# Toggle sunlight mode
 bindsym $mod+Shift+d exec /home/james/.config/sway/scripts/sway-sunlight
 # Ctrl copies, Alt is all of the screen, Shift is the moving kind. Print alone
 # freezes the screen and crops out of the still, so a menu or hover survives
 # being selected; Ctrl+Alt is the unfrozen selection, wanted least often.
+
+# Crop a screenshot to a file
 bindsym Print exec cropshot --freeze --cursor
+# Crop a screenshot to the clipboard
 bindsym Ctrl+Print exec cropshot --freeze --cursor --clipboard
+# Crop without freezing the screen
 bindsym Ctrl+Alt+Print exec cropshot
+# Screenshot the whole screen
 bindsym Alt+Print exec cropshot --screen
+# Screenshot to the tray
 bindsym Shift+Print exec /home/james/Scripts/screencap_tray.py
 
 #
 # Custom scripts
 #
+# Pick a colour from the screen
 bindsym $mod+Alt+c exec $ws_scripts/sway-colour
+
+# ? is Shift+/, so holding shift sends `question` and not holding it sends
+# `slash`. All three open it; the sheet prints only the first, being the one
+# worth remembering. The blank line below matters: sway-cheatsheet takes the
+# comment line touching a binding as its description, and a paragraph would
+# put its last sentence there.
+
+# Keyboard help
+bindsym $mod+question exec sway-cheatsheet
+bindsym $mod+slash exec sway-cheatsheet
+bindsym $mod+Shift+slash exec sway-cheatsheet
 #bindsym $mod+Alt+d exec
 # Ideas: Connect bluetooth headset, toggle gaps, ...
 
@@ -599,6 +661,18 @@ client.urgent           #f0b35e   #0f1f38   #f0b35e #f0b35e   #f0b35e
 # ULauncher listens from a background process
 exec GDK_BACKEND=wayland ulauncher --hide-window
 for_window [app_id="ulauncher"] floating enable, border none
+
+# The keyboard cheatsheet is a reference rather than a menu -- something you
+# may want beside the thing you are doing -- so it is an ordinary window and
+# not a layer-shell overlay. Tiled it would shove your work aside, so it comes
+# up floating, at a size that fits its three columns, in the middle.
+# The border is its own rule on purpose. Bundled into the line below -- after
+# `floating enable` and before `resize set` -- sway ignored it and the window
+# came up with a titlebar anyway; on its own it takes. The sheet draws its own
+# rounded card, so a titlebar would be a second frame around one thing, and
+# there is nothing to read in it.
+for_window [app_id="dev.jamedjo.sway-cheatsheet"] border none
+for_window [app_id="dev.jamedjo.sway-cheatsheet"] floating enable, resize set 1400 900, move position center
 
 # Android Remote Control/transfer
 exec /usr/lib/x86_64-linux-gnu/libexec/kdeconnectd

@@ -92,8 +92,8 @@
           "command": "swaylock"
         },
         {
-          "label": "  Settings",
-          "command": "/home/james/.config/sway/scripts/sway-settings"
+          "label": "  Keys",
+          "command": "sway-cheatsheet"
         }
       ]
     },

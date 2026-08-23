@@ -1,0 +1,78 @@
+# How the cheatsheet sorts these bindings into groups.
+#
+# The program ships a default covering only what sway's example configuration
+# binds, since anything past that is somebody's particular setup. This is that
+# somebody: half the words below are the names of scripts in sway/scripts, and
+# they would mean nothing on another machine.
+#
+# Order is both the order groups are tried in and the order they are printed
+# in, which is why the specific ones come first. "move workspace to next
+# screen" is about screens, "move container to workspace" is about workspaces,
+# and "move focus to the parent container" is about neither -- whichever
+# matches first wins, so the general tests have to sit at the bottom.
+
+fallback = "Other"
+
+# Matching order is below, most specific first. Reading order is this: the
+# window you are in, then the workspace, then the things you reach for a few
+# times a day, then the ones you reach for once.
+order = [
+    "Focus", "Move", "Size", "Layout", "Windows",
+    "Find", "Workspaces", "Send to workspace", "Manage workspaces",
+    "Displays", "Launch", "Capture", "Session",
+]
+
+[[group]]
+name = "Find"
+keywords = ["sway-ws-switch", "sway-fuzzel-windows", "get_tree"]
+
+[[group]]
+name = "Displays"
+keywords = [
+    "get_outputs", "move workspace to", "transform", "wdisplays",
+    "brightness", "wlsunset", "sunlight", "next screen", "another screen",
+]
+
+[[group]]
+name = "Manage workspaces"
+keywords = ["rename", "promote", "sway-ws-move"]
+
+[[group]]
+name = "Send to workspace"
+keywords = ["move container", "move focused container"]
+
+[[group]]
+name = "Workspaces"
+keywords = ["workspace", "switchboard"]
+
+[[group]]
+name = "Capture"
+keywords = ["cropshot", "grim", "slurp", "screencap", "sway-colour"]
+
+[[group]]
+name = "Session"
+keywords = ["swaylock", "systemctl", "exit", "reload", "pkill"]
+
+[[group]]
+name = "Size"
+keywords = ["resize"]
+
+[[group]]
+name = "Layout"
+keywords = ["split", "layout", "tabbed", "stacking", "fullscreen", "floating", "scratchpad"]
+
+[[group]]
+name = "Windows"
+keywords = ["kill", "sticky", "border"]
+
+[[group]]
+name = "Focus"
+keywords = ["focus"]
+
+[[group]]
+name = "Move"
+keywords = ["move", "swap"]
+
+[[group]]
+name = "Launch"
+command_starts_with = "exec"

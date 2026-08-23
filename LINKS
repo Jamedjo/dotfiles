@@ -39,6 +39,7 @@ mkdir swaylock && ln ~/.config/swaylock/config swaylock/config
 mkdir mako && ln ~/.config/mako/* mako/
 mkdir swaync && ln ~/.config/swaync/* swaync/
 mkdir switchboard && ln ~/.config/switchboard/* switchboard/
+mkdir sway-cheatsheet && ln ~/.config/sway-cheatsheet/* sway-cheatsheet/
 
 
 mkdir fuzzel && ln ~/.config/fuzzel/* fuzzel/
