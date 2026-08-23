@@ -205,7 +205,7 @@ window#waybar.empty #window {
     background: transparent;
 }
 
-/* Status modules sit on the ramp and add no fill of their own. */
+/* A pill each, so an icon reads with the number it labels. */
 #cpu,
 #memory,
 #temperature,
@@ -215,7 +215,14 @@ window#waybar.empty #window {
 #battery,
 #idle_inhibitor,
 #backlight,
-#custom-notification,
+#custom-notification {
+    padding: 0 8px;
+    margin: 3px 2px;
+    color: rgba(255, 255, 255, 0.72);
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 999px;
+}
+
 #tray {
     padding: 0 7px;
     color: rgba(255, 255, 255, 0.72);
@@ -226,8 +233,10 @@ window#waybar.empty #window {
 #network:hover,
 #pulseaudio:hover,
 #wireplumber:hover,
-#battery:hover {
+#battery:hover,
+#custom-notification:hover {
     color: #ffffff;
+    background: rgba(255, 255, 255, 0.12);
 }
 
 /* The bell. Blue when something is waiting -- the same accent the focused
@@ -253,11 +262,7 @@ window#waybar.empty #window {
 }
 
 /* The drawer. cpu is the face; memory and temperature ink down while stowed so
-   the reveal is a brightening rather than an appearance. cpu takes no divider
-   of its own — it opens the card, where a hairline would sit on the corner. */
-#cpu {
-    padding-left: 9px;
-}
+   the reveal is a brightening rather than an appearance. */
 
 #memory.drawer-child,
 #temperature.drawer-child {
