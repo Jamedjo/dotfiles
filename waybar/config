@@ -25,7 +25,6 @@
         ],
         "modules-right": [
             "group/system",
-            "wireplumber",
             "pulseaudio",
             "network",
             "battery",
@@ -100,6 +99,11 @@
             "format": " {}%"
         },
         "temperature": {
+            // coretemp Package id 0. Pinned by device path, not by
+            // thermal-zone: zone 0 is INT3400, which is a policy device
+            // reporting a fixed 20C, and zone/hwmon numbering shuffles.
+            "hwmon-path-abs": "/sys/devices/platform/coretemp.0/hwmon",
+            "input-filename": "temp1_input",
             "critical-threshold": 80,
             "format": "{temperatureC}°C "
         },
@@ -154,12 +158,8 @@
                     "墳"
                 ]
             },
-            "on-click": "pavucontrol"
-        },
-        "wireplumber": {
-            "format": "{volume}%",
-            "format-muted": "婢",
-            "on-click": "helvum"
+            "on-click": "pavucontrol",
+            "on-click-right": "helvum"
         },
         "custom/media": {
             "format": "{icon} {}",
