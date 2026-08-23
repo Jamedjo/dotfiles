@@ -48,4 +48,7 @@ mkdir -p ulauncher/user-themes/nightbar
 ln ~/.config/ulauncher/settings.json ulauncher/settings.json
 ln ~/.config/ulauncher/user-themes/nightbar/* ulauncher/user-themes/nightbar/
 
+mkdir btop && ln ~/.config/btop/btop.conf btop/
+mkdir btop/themes && ln ~/.config/btop/themes/nightbar.theme btop/themes/
+
 mkdir bin && ln ~/.local/bin/review bin/review

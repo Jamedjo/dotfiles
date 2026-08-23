@@ -1,0 +1,86 @@
+# Nightbar for btop — Vale's palette, on foot's Deep Navy ground
+# Ground #0a1628 (foot), accent #2f7ff0, lit #5aa6ff, warn amber #ffb14d
+
+# Main background, empty for terminal default
+theme[main_bg]="#0a1628"
+
+# Main text color
+theme[main_fg]="#dce9fb"
+
+# Title color for boxes
+theme[title]="#f2f7ff"
+
+# Highlight color for keyboard shortcuts
+theme[hi_fg]="#5aa6ff"
+
+# Background color of selected item in processes box
+theme[selected_bg]="#2f7ff0"
+
+# Foreground color of selected item in processes box
+theme[selected_fg]="#ffffff"
+
+# Color of inactive/disabled text
+theme[inactive_fg]="#5f769a"
+
+# Color of text appearing on top of graphs
+theme[graph_text]="#94abcd"
+
+# Background color of the percentage meters
+theme[meter_bg]="#182f52"
+
+# Misc colors for processes box (tree branches, details)
+theme[proc_misc]="#5aa6ff"
+
+# Box outline colors — one frame colour, Nightbar has one accent, not four
+theme[cpu_box]="#3f5375"
+theme[mem_box]="#3f5375"
+theme[net_box]="#3f5375"
+theme[proc_box]="#3f5375"
+
+# Divider lines inside boxes
+theme[div_line]="#263c60"
+
+# Temperature graph: accent blue -> warn amber -> alarm red
+theme[temp_start]="#2f7ff0"
+theme[temp_mid]="#ffb14d"
+theme[temp_end]="#ff4a4a"
+
+# CPU graph: the blue ramp brightens with load, amber stays a warning colour
+theme[cpu_start]="#2f7ff0"
+theme[cpu_mid]="#5aa6ff"
+theme[cpu_end]="#8fc2ff"
+
+# Mem/Disks free meter: dim slate
+theme[free_start]="#3f5375"
+theme[free_mid]="#5f769a"
+theme[free_end]="#7f96b8"
+
+# Mem/Disks cached meter: lit blue
+theme[cached_start]="#5aa6ff"
+theme[cached_mid]="#8fb4e4"
+theme[cached_end]="#cfe4ff"
+
+# Mem/Disks available meter: accent blue
+theme[available_start]="#2f7ff0"
+theme[available_mid]="#3d8ef7"
+theme[available_end]="#5aa6ff"
+
+# Mem/Disks used meter: amber, going red only when full
+theme[used_start]="#ffb14d"
+theme[used_mid]="#ffc169"
+theme[used_end]="#ff4a4a"
+
+# Download graph: deep blue -> lit
+theme[download_start]="#1c5ab8"
+theme[download_mid]="#2f7ff0"
+theme[download_end]="#5aa6ff"
+
+# Upload graph: amber, the second hue
+theme[upload_start]="#b87c3a"
+theme[upload_mid]="#ffb14d"
+theme[upload_end]="#ffc169"
+
+# Process box gradient: idle blue, hot process goes amber
+theme[process_start]="#2f7ff0"
+theme[process_mid]="#5aa6ff"
+theme[process_end]="#ffb14d"
