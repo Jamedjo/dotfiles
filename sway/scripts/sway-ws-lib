@@ -73,6 +73,48 @@ WS_SEP=' › '
 WAYBAR_CONFIG=/home/james/.config/waybar/config
 WAYBAR_ICONS=/home/james/.config/waybar/workspace-icons.json
 
+# Words that read as shouted initialisms, not names: "API V2 Planner" rather
+# than "Api V2 Planner". Out here rather than inside ws_display_map because
+# swaync-ws-menu cases group names with the same list, and a second copy of it
+# would drift the moment one gained a word.
+WS_ACRONYMS="ai api cd ci cli cpu css csv db dns gpu html http https id ios
+json llm ml os pdf pr rss sql ssh tv ui url ux vpn"
+
+# The title-caser as awk source, for prepending to whichever program needs it.
+# awk reads its program from a single argument, and adjacent shell words with
+# no space between them are one word, so `awk "$WS_TITLEIZE_AWK"'{ ... }'`
+# compiles the two halves together. Callers must pass -v acronyms="$WS_ACRONYMS";
+# the BEGIN here runs before any the caller adds, so titleize() is ready by the
+# time their own BEGIN needs it.
+WS_TITLEIZE_AWK='
+    BEGIN {
+        split(acronyms, _acr, /[[:space:]]+/)
+        for (_i in _acr) acronym[_acr[_i]] = 1
+    }
+
+    # Title-case, dashes and underscores as word breaks. Only an ASCII
+    # lower-case initial is touched, which leaves the legacy icon labels
+    # alone rather than slicing a multi-byte glyph in half.
+    function titleize(s,   n, i, w, c, out) {
+        gsub(/[_-]+/, " ", s)
+        n = split(s, w, / +/)
+        out = ""
+        for (i = 1; i <= n; i++) {
+            if (w[i] == "") continue
+            c = substr(w[i], 1, 1)
+            if (tolower(w[i]) in acronym) w[i] = toupper(w[i])
+            else if (c ~ /^[a-z]$/) w[i] = toupper(c) substr(w[i], 2)
+            out = (out == "" ? w[i] : out " " w[i])
+        }
+        return out
+    }
+'
+
+# Title-case each line of stdin the way workspace labels are cased.
+ws_titleize() {
+    awk -v acronyms="$WS_ACRONYMS" "$WS_TITLEIZE_AWK"'{ print titleize($0) }'
+}
+
 # Icon entries as "<label>\t<value>", straight out of waybar's own config.
 # That file is JSON with comments, so jq cannot read it.
 ws_config_icon_entries() {
@@ -109,36 +151,14 @@ ws_icon_map() {
 ws_display_map() {
     _icons=$(mktemp) || return 1
     ws_icon_map > "$_icons"
-    awk -v sep="$WS_SEP" -v iconfile="$_icons" '
-        # Words that read as shouted initialisms, not names: "API V2 Planner"
-        # rather than "Api V2 Planner".
+    awk -v sep="$WS_SEP" -v iconfile="$_icons" -v acronyms="$WS_ACRONYMS" \
+        "$WS_TITLEIZE_AWK"'
         BEGIN {
-            split("ai api cd ci cli cpu css csv db dns gpu html http" \
-                  " https id ios json llm ml os pdf pr rss sql ssh tv ui url" \
-                  " ux vpn", a, / /)
-            for (i in a) acronym[a[i]] = 1
             while ((getline line < iconfile) > 0) {
                 t = index(line, "\t")
                 if (t) icon[substr(line, 1, t - 1)] = substr(line, t + 1)
             }
             close(iconfile)
-        }
-
-        # Title-case, dashes and underscores as word breaks. Only an ASCII
-        # lower-case initial is touched, which leaves the legacy icon labels
-        # alone rather than slicing a multi-byte glyph in half.
-        function titleize(s,   n, i, w, c, out) {
-            gsub(/[_-]+/, " ", s)
-            n = split(s, w, / +/)
-            out = ""
-            for (i = 1; i <= n; i++) {
-                if (w[i] == "") continue
-                c = substr(w[i], 1, 1)
-                if (tolower(w[i]) in acronym) w[i] = toupper(w[i])
-                else if (c ~ /^[a-z]$/) w[i] = toupper(c) substr(w[i], 2)
-                out = (out == "" ? w[i] : out " " w[i])
-            }
-            return out
         }
         {
             raw = $0

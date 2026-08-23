@@ -30,6 +30,7 @@
             "network",
             "battery",
             "tray",
+            "custom/notification",
             "clock"
         ],
         // {index} is sway's workspace number; {name} is the label with the
@@ -170,6 +171,39 @@
             },
             "escape": true,
             "exec": "$HOME/.config/waybar/mediaplayer.py 2> /dev/null"
+        },
+        // The panel handle. It opens swaync's control center: the workspace
+        // groupings swaync-ws-menu writes, the quick toggles, the sliders, and
+        // the notification history. Sliders rather than a bell because the
+        // panel is mostly not notifications -- and it turns into a struck bell
+        // only under do-not-disturb, where that glyph means exactly one thing.
+        // The click goes through that script rather than straight at
+        // swaync-client because the menus are static config and have to be
+        // rebuilt from sway before the panel is shown.
+        //
+        // -swb is a subscription, not a poll -- it prints a line when a
+        // notification arrives or do-not-disturb flips -- so the bell fills
+        // and empties with no interval set -- the colour carries the unread
+        // state, see #custom-notification in style.css. Right-click toggles DND.
+        "custom/notification": {
+            "tooltip": true,
+            "format": "{icon}",
+            "format-icons": {
+                "none": "",
+                "notification": "",
+                "dnd-none": "",
+                "dnd-notification": "",
+                "inhibited-none": "",
+                "inhibited-notification": "",
+                "dnd-inhibited-none": "",
+                "dnd-inhibited-notification": ""
+            },
+            "return-type": "json",
+            "exec": "swaync-client -swb",
+            "exec-if": "which swaync-client",
+            "on-click": "swaync-client -t -sw",
+            "on-click-right": "swaync-client -d -sw",
+            "escape": true
         },
         "spacing": 0,
         "reload_style_on_change": true,

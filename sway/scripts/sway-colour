@@ -1,0 +1,13 @@
+#!/bin/sh
+# Pick a screen colour and put its hex on the clipboard.
+#
+# Same pipeline $mod+Alt+c has always run, lifted out of sway/config so the
+# control center button and the keybinding cannot drift apart -- and so the
+# double quotes survive, which they do not inside swaync's config (see
+# sway-shot for why).
+set -eu
+colour=$(grim -g "$(slurp -p)" -t ppm - \
+    | convert - -format '%[pixel:p{0,0}]' txt:- \
+    | tail -n 1 | cut -d ' ' -f 4)
+printf '%s' "$colour" | wl-copy
+notify-send -t 3000 "Colour copied" "$colour"

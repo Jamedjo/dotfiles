@@ -215,6 +215,7 @@ window#waybar.empty #window {
 #battery,
 #idle_inhibitor,
 #backlight,
+#custom-notification,
 #tray {
     padding: 0 7px;
     color: rgba(255, 255, 255, 0.72);
@@ -226,6 +227,28 @@ window#waybar.empty #window {
 #pulseaudio:hover,
 #wireplumber:hover,
 #battery:hover {
+    color: #ffffff;
+}
+
+/* The bell. Blue when something is waiting -- the same accent the focused
+   workspace takes, so "unread" reads as attention rather than alarm -- and
+   gold with a strike through it while do-not-disturb holds things back, which
+   is the colour sway's client.urgent uses for the same idea. The class comes
+   straight from swaync-client -swb, which combines the dnd and inhibited
+   states into one name, so each combination is listed rather than nested. */
+#custom-notification.notification,
+#custom-notification.inhibited-notification {
+    color: @blue;
+}
+
+#custom-notification.dnd-none,
+#custom-notification.dnd-notification,
+#custom-notification.dnd-inhibited-none,
+#custom-notification.dnd-inhibited-notification {
+    color: @gold;
+}
+
+#custom-notification:hover {
     color: #ffffff;
 }
 

@@ -1,0 +1,34 @@
+#!/bin/sh
+# Night light on and off: the blue-light filter, not the sunlight palette.
+#
+# These two are easy to confuse from the bar, so they are deliberately kept
+# apart. sway-sunlight makes the screen readable in *direct sun* -- cream
+# terminals plus a midtone lift -- and this toggles wlsunset, which warms the
+# whole display after dusk. A sun and a moon, doing opposite things.
+#
+# They cannot both run: wlr-gamma-control has one client, and sway-sunlight
+# takes it for wl-gammactl, stopping wlsunset on its way in and restarting it
+# on its way out. So if sunlight mode holds the gamma this says so and stops,
+# rather than starting a wlsunset that would fail silently or fight it.
+set -u
+
+# Must stay in step with the copies in sway/config and sway/scripts/sway-sunlight.
+# St. Albans, UK.
+WLSUNSET="wlsunset -l 51.7527 -L -0.3394"
+SUNLIGHT_STATE="${XDG_RUNTIME_DIR:-/tmp}/sway-sunlight.on"
+
+if [ -e "$SUNLIGHT_STATE" ]; then
+    notify-send -t 4000 "Night light unavailable" \
+        "Sunlight mode is holding the gamma. Turn it off first."
+    exit 0
+fi
+
+if pgrep -x wlsunset >/dev/null; then
+    pkill -x wlsunset
+    notify-send -t 3000 "Night light off" "display back to its own colour"
+else
+    # Launched through sway so it outlives this script and is owned by the
+    # session, the same way sway-sunlight restarts it.
+    swaymsg exec "$WLSUNSET" >/dev/null 2>&1
+    notify-send -t 3000 "Night light on" "warming after dusk"
+fi

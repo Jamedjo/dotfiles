@@ -1,0 +1,322 @@
+/* swaync in the chief-site palette, so the control center reads as the nav
+ * card's drawer rather than a second design.
+ *
+ * Two things about swaync's CSS that are not obvious:
+ *
+ *   1. cssPriority in config.json must be "application", not "user". The names
+ *      are backwards from how they read: GTK's USER priority sits *below* the
+ *      application stylesheet, so "user" means the shipped /etc/xdg theme wins
+ *      and none of this file takes effect.
+ *   2. Each notification card has a `.notification-default-action` button
+ *      inside it -- the click target for the body -- and the shipped theme
+ *      fills it grey. Left alone it paints a slab inside every card, so it is
+ *      flattened below and the card is one surface again.
+ *
+ * Colours are the same ones waybar/style.css names, kept in step by hand.
+ */
+@define-color nav-ground   #0f1f38;  /* --bg-section / --nav-ground */
+@define-color nav-elevated #1a2d4f;  /* --bg-elevated */
+@define-color twilight     #2b4470;  /* theme.css --navy-twilight */
+@define-color nav-border   rgba(74, 158, 255, 0.4);
+@define-color blue         #4a9eff;  /* --color-primary */
+@define-color blue-deep    #256aba;  /* --color-primary-deep */
+@define-color gold         #f0b35e;  /* .badge-early */
+@define-color danger       #ff4a4a;
+
+* {
+    font-family: "Inter", "Ubuntu Nerd Font", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+}
+
+/* --- toasts ------------------------------------------------------------- */
+
+.floating-notifications .notification-row .notification-background {
+    background: @nav-ground;
+    border: 1px solid @nav-border;
+    border-radius: 12px;
+    margin: 8px;
+    padding: 0;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
+}
+
+.notification-row .notification-background .notification {
+    padding: 10px 12px;
+    background: transparent;
+}
+
+.notification-row .notification-background .notification .notification-content {
+    background: transparent;
+    padding: 2px;
+}
+
+/* The grey slab inside each card. See the header note. */
+.notification-default-action {
+    background: transparent;
+    border: none;
+    border-radius: 10px;
+    padding: 4px;
+}
+
+.notification-default-action:hover {
+    background: rgba(74, 158, 255, 0.12);
+}
+
+/* Critical keeps its own rail rather than a second border colour, so a card
+ * that matters is legible out of the corner of an eye. */
+.notification-row .notification-background .notification.critical {
+    border-left: 3px solid @danger;
+}
+
+.summary { color: #ffffff; font-weight: 600; }
+.body    { color: rgba(255, 255, 255, 0.72); }
+.time    { color: rgba(255, 255, 255, 0.45); font-size: 12px; }
+
+.notification-row .notification-background .close-button {
+    background: transparent;
+    color: rgba(255, 255, 255, 0.5);
+    border-radius: 8px;
+    margin: 6px;
+    padding: 2px;
+}
+
+.notification-row .notification-background .close-button:hover {
+    background: rgba(255, 74, 74, 0.25);
+    color: #ffffff;
+}
+
+.notification-action {
+    background: @nav-elevated;
+    color: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(74, 158, 255, 0.25);
+    border-radius: 8px;
+    margin: 4px;
+}
+
+.notification-action:hover { background: @twilight; color: #ffffff; }
+
+/* --- control center ----------------------------------------------------- */
+
+.control-center {
+    background: @nav-ground;
+    border: 1px solid @nav-border;
+    border-radius: 14px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+    padding: 12px;
+}
+
+.control-center .notification-row .notification-background {
+    background: @nav-elevated;
+    border: 1px solid rgba(74, 158, 255, 0.18);
+    border-radius: 10px;
+    margin: 4px 0;
+}
+
+/* --- menubar: workspaces and settings ------------------------------------
+ *
+ * Not a popover. menubar.vala builds each dropdown as a Gtk.Revealer holding a
+ * vertical box, and adds every revealer to a container *below* the button row
+ * -- so opening one pushes the panel down. An accordion, not a menu, and
+ * styling `.popover` was styling something that does not exist here.
+ *
+ * The rows are plain Gtk.Buttons with no class of their own, so they are
+ * reached by targeting every button in the widget; the chips in the top row
+ * are then taken back by the longer, more specific selector below them, which
+ * wins on CSS specificity the same as anywhere else.
+ *
+ * The revealer box does carry a class -- whatever follows the # in the config
+ * key, so "menu#settings" is .settings -- but the generated keys are
+ * menu#ws-<project>, one class per project, and a new project would arrive
+ * unstyled. So the ground is put on the revealer's child box by node name
+ * instead, which covers every dropdown including ones that do not exist yet.
+ */
+
+/* Dropdown rows. Flat and full-width, so an open menu reads as a list rather
+   than as more chips. */
+.widget-menubar button {
+    background: transparent;
+    color: rgba(255, 255, 255, 0.78);
+    border: none;
+    border-radius: 8px;
+    margin: 1px 6px;
+    padding: 9px 12px;
+    font-size: 14px;
+}
+
+.widget-menubar button:hover {
+    background: rgba(74, 158, 255, 0.18);
+    color: #ffffff;
+}
+
+/* The open dropdown sits in the panel rather than over it, so it needs a
+   ground of its own to separate it from the widgets it pushes down. */
+.widget-menubar revealer > box {
+    background: @nav-ground;
+    border: 1px solid rgba(74, 158, 255, 0.25);
+    border-radius: 12px;
+    margin: 4px 2px 8px 2px;
+    padding: 4px 0;
+}
+
+/* The chips in the top row. More specific than the rule above, so it wins. */
+.widget-menubar > box > .menu-button-bar > button {
+    background: @nav-elevated;
+    color: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(74, 158, 255, 0.3);
+    border-radius: 10px;
+    margin: 2px;
+    padding: 8px 14px;
+    font-size: 14px;
+}
+
+.widget-menubar > box > .menu-button-bar > button:hover {
+    background: @blue-deep;
+    color: #ffffff;
+}
+
+/* --- quick toggles and readouts ------------------------------------------ */
+
+.widget-buttons-grid {
+    background: transparent;
+    padding: 0;
+    margin: 8px 0;
+}
+
+/* Icon-only tiles, the way every swaync config that fits a row of six does
+   it. Square padding so the glyph sits centred rather than being pushed off
+   by label spacing. */
+.widget-buttons-grid > flowbox > flowboxchild > button {
+    background: @nav-elevated;
+    color: rgba(255, 255, 255, 0.78);
+    border: 1px solid rgba(74, 158, 255, 0.2);
+    border-radius: 10px;
+    margin: 3px;
+    padding: 10px 14px;
+    font-size: 17px;
+}
+
+.widget-buttons-grid > flowbox > flowboxchild > button:hover {
+    background: @twilight;
+    color: #ffffff;
+}
+
+/* --- toggles ------------------------------------------------------------
+ *
+ * A toggle has to look like a toggle, not a tile that happens to be lit, so
+ * these are pills where the action buttons below are rounded rectangles --
+ * the same shape language GNOME's quick settings use -- and they fill when on.
+ *
+ * Two things make this reachable. baseWidget.vala adds a widget's #suffix as
+ * a style class, so `buttons-grid#toggles` is .toggles here and the action
+ * grid is left alone. And the state is :checked, not .active -- swaync's
+ * schema says toggle buttons "receive the .active css class", but
+ * toggleButton.vala subclasses Gtk.ToggleButton and never adds a class, so
+ * styling .active silently matches nothing.
+ *
+ * Keep every value in here GTK3-legal. GTK stops parsing a stylesheet at the
+ * first value it cannot read and drops everything after it, so one CSS3-only
+ * value -- `background-position: right 10px center`, say -- greys out the
+ * whole control center rather than just failing to draw one switch.
+ */
+
+.widget-buttons-grid.toggles > flowbox > flowboxchild > button {
+    border-radius: 999px;
+    min-width: 78px;
+    padding: 11px 4px;
+    background: transparent;
+    border: 1px solid rgba(74, 158, 255, 0.35);
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.widget-buttons-grid.toggles > flowbox > flowboxchild > button:hover {
+    background: @nav-elevated;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.widget-buttons-grid.toggles > flowbox > flowboxchild > button:checked {
+    background: @blue-deep;
+    border-color: @blue;
+    color: #ffffff;
+}
+
+.widget-buttons-grid.toggles > flowbox > flowboxchild > button:checked:hover {
+    background: @blue;
+    color: #06121f;
+}
+
+/* The action tiles keep their labels -- eight anonymous glyphs were harder to
+   read than six named ones -- and a floor on the width makes the flowbox break
+   at three, so both rows are full rather than leaving one tile stranded. */
+.widget-buttons-grid.actions > flowbox > flowboxchild > button {
+    min-width: 92px;
+    padding: 10px 6px;
+    font-size: 13px;
+}
+
+.widget-volume,
+.widget-backlight {
+    background: @nav-elevated;
+    border-radius: 10px;
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    color: rgba(255, 255, 255, 0.78);
+}
+
+trough    { background: rgba(255, 255, 255, 0.12); border-radius: 6px; }
+highlight { background: @blue; border-radius: 6px; }
+slider    { background: #ffffff; border-radius: 50%; }
+
+.widget-mpris {
+    background: @nav-elevated;
+    border-radius: 10px;
+    padding: 8px;
+    margin-bottom: 8px;
+    color: #ffffff;
+}
+
+.widget-mpris-player   { padding: 4px; }
+.widget-mpris-title    { font-weight: 600; font-size: 14px; }
+.widget-mpris-subtitle { color: rgba(255, 255, 255, 0.55); font-size: 12px; }
+
+.widget-dnd {
+    background: @nav-elevated;
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    color: rgba(255, 255, 255, 0.78);
+}
+
+/* Gold rather than blue: do-not-disturb is the urgent-workspace colour in
+ * sway's client.urgent, and it means the same thing here -- something is
+ * being held back. */
+.widget-dnd > switch          { background: rgba(255, 255, 255, 0.15); border-radius: 12px; }
+.widget-dnd > switch:checked  { background: @gold; }
+.widget-dnd > switch slider   { background: #ffffff; border-radius: 50%; }
+
+.widget-title {
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 4px 4px 10px 4px;
+}
+
+.widget-title > button {
+    background: @nav-elevated;
+    color: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(74, 158, 255, 0.25);
+    border-radius: 8px;
+    padding: 4px 12px;
+    font-size: 13px;
+}
+
+.widget-title > button:hover { background: @blue-deep; color: #ffffff; }
+
+.widget-label { color: rgba(255, 255, 255, 0.5); margin: 4px; }
+
+.control-center-list-placeholder {
+    color: rgba(255, 255, 255, 0.22);
+    opacity: 0.35;
+}
+
+/* The click-catcher behind the panel. Left transparent so the desktop is not
+ * dimmed when the control center opens. */
+.blank-window { background: transparent; }
