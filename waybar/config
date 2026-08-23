@@ -30,6 +30,7 @@
         // control center and the bar kept the things worth a glance --
         // sound, network, battery, tray, notifications, the time.
         "modules-right": [
+            "custom/switchboard",
             "pulseaudio",
             "network",
             "battery",
@@ -59,7 +60,7 @@
         // its own icon rather than sharing one per project.
         "sway/workspaces": {
             "all-outputs": true,
-            "format": "<span size=\"11520\">{index} {icon}{name}</span>",
+            "format": "<span size=\"11520\">{index} {icon}</span>",
             "format-icons": {
             "default":                "</span><span size=\"11520\" text_transform=\"capitalize\"> "
             }
@@ -160,6 +161,22 @@
             },
             "escape": true,
             "exec": "$HOME/.config/waybar/mediaplayer.py 2> /dev/null"
+        },
+        // Opens sway-switchboard, the cascading workspace menu, and says where
+        // you are while it waits: "Chief > V2 Review", cased and chevroned the
+        // same way the menu and the fuzzel picker do it. waybar-ws-current
+        // subscribes to sway rather than polling, so this costs nothing
+        // between workspace switches.
+        //
+        // It is the one place a workspace name still appears in the bar. The
+        // buttons gave theirs up when the menu started showing every name.
+        "custom/switchboard": {
+            "tooltip": true,
+            "return-type": "json",
+            "format": "  {}",
+            "max-length": 42,
+            "exec": "$HOME/.config/sway/scripts/waybar-ws-current",
+            "on-click": "sway-switchboard"
         },
         // The panel handle. It opens swaync's control center: the quick
         // toggles, the sliders, and the notification history. Sliders rather

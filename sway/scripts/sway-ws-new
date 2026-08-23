@@ -1,0 +1,32 @@
+#!/bin/sh
+# Make a workspace, asking what to call it.
+#
+# Takes an optional prefix, which sway-switchboard passes as the path of the
+# panel the row was clicked in: "New in chief:api" opens the prompt with
+# "chief:api:" already typed, so naming the new one is typing the last segment
+# and nothing else. With no argument it prompts bare, which is what the top
+# panel's row and a keybinding both want.
+#
+# The naming rules live in sway-ws-lib rather than here: the free slot comes
+# from ws_free_num, so a new workspace parks at 11+ where $mod+Alt+N can still
+# reach it, and the label goes through ws_clean, which strips a leading icon
+# and turns & and <> into something waybar's pango markup can render.
+set -u
+. /home/james/.config/sway/scripts/sway-ws-lib
+
+prefix="${1:-}"
+[ -z "$prefix" ] || prefix="$prefix:"
+
+# An empty list, because there is nothing to pick from -- fuzzel's dmenu mode
+# prints unmatched input as typed, which is the whole mechanism here.
+label=$(printf '' | fuzzel --dmenu --prompt='new workspace: ' \
+    --search="$prefix" --config="$FUZZEL_CONFIG") || exit 0
+
+# Trailing colons come from accepting the prefilled prefix unchanged. A
+# workspace called "chief:api:" would sort and group as though it had a final
+# empty segment, so they come off.
+label=$(printf '%s' "$label" | sed 's/:*$//')
+label=$(ws_clean "$label")
+[ -n "$label" ] || exit 0
+
+swaymsg workspace "$(ws_free_num):$label" >/dev/null

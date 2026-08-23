@@ -1,0 +1,44 @@
+#!/bin/sh
+# The current workspace, for the bar: "Chief › V2 Review".
+#
+# The workspace buttons stopped carrying names when sway-switchboard took over
+# showing them, so the name lives here instead -- beside the button that opens
+# the menu, which is the one place it is still worth a glance. The chevrons are
+# the same WS_SEP the fuzzel picker uses, and the casing is sway-ws-lib's, so
+# all three read the same.
+#
+# A subscription rather than a poll: swaymsg -t subscribe prints a line when the
+# focus moves, and waybar keeps this running for the session. Nothing here wakes
+# up on a timer.
+set -u
+. /home/james/.config/sway/scripts/sway-ws-lib
+
+emit() {
+    name=$(ws_focused_name)
+    [ -n "$name" ] || return 0
+
+    display=$(ws_label "$name" | awk -v acronyms="$WS_ACRONYMS" -v sep="$WS_SEP" \
+        "$WS_TITLEIZE_AWK"'
+        {
+            n = split($0, part, ":")
+            out = ""
+            for (i = 1; i <= n; i++)
+                out = (out == "" ? titleize(part[i]) : out sep titleize(part[i]))
+            print out
+        }')
+
+    # jq builds the JSON so a name with a quote or a backslash in it cannot
+    # break the line waybar is parsing.
+    #
+    # A failed write is waybar having gone away -- it restarts often enough
+    # that a copy of this left running for every restart adds up. jq takes the
+    # SIGPIPE and dies non-zero, and this ends the loop rather than waiting for
+    # a workspace change that will never be delivered anywhere.
+    jq -cn --arg text "$display" --arg tooltip "$name" \
+        '{text: $text, tooltip: $tooltip, class: "workspace"}' || exit 0
+}
+
+emit
+swaymsg -t subscribe -m '["workspace"]' | while IFS= read -r _; do
+    emit
+done

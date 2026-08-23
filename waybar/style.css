@@ -214,6 +214,7 @@ window#waybar.empty #window {
 #battery,
 #idle_inhibitor,
 #backlight,
+#custom-switchboard,
 #custom-notification {
     padding: 0 8px;
     margin: 3px 2px;
@@ -254,6 +255,7 @@ window#waybar.empty #window {
 #network:hover,
 #pulseaudio:hover,
 #battery:hover,
+#custom-switchboard:hover,
 #custom-notification:hover {
     color: #ffffff;
     background: rgba(255, 255, 255, 0.12);
