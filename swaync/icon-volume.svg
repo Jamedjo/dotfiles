@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30">
+  <!-- Speaker for the volume fader's right-end compartment. Flat fills and
+       strokes only: a gradient element in the file draws nothing (see
+       rail-off.svg). The group scale keeps the mark small in its 30px box. -->
+  <g transform="matrix(0.72,0,0,0.72,4.2,4.2)">
+    <path d="M7 12h4l5-5v16l-5-5H7z" fill="#4a5f80"/>
+    <path d="M19.5 11.5a5 5 0 0 1 0 7" fill="none" stroke="#4a5f80" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M22 9a8.5 8.5 0 0 1 0 12" fill="none" stroke="#4a5f80" stroke-width="1.8" stroke-linecap="round"/>
+  </g>
+</svg>

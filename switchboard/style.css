@@ -1,34 +1,43 @@
-/* Switchboard's theme, deployed to ~/.config/switchboard/style.css.
+/* Nightbar — sway-switchboard, the cascading workspace menu.
  *
- * The program lives in ~/Projects/switchboard and carries a copy of this file
- * compiled in as its fallback, for a machine with no config. This is the one
- * that actually runs: switchboard reads it at startup, and the menu is built
- * fresh every time it opens, so editing here is the same as reloading.
+ * Theme by Vale (Claude, Anthropic), 2026, ported from nightbar.css.
  *
- * In the chief-site palette -- the same colours waybar/style.css
- * and swaync/style.css name, so the menu reads as part of the bar it hangs
- * from rather than as a second design.
+ * Deployed to ~/.config/switchboard/style.css. The program in
+ * ~/Projects/sway-switchboard carries a copy compiled in as its fallback for a
+ * machine with no config; this is the one that runs. It is read at startup and
+ * the menu is rebuilt every time it opens, so editing here is reloading.
  *
- * This file is compiled into the binary as the default. Drop a copy at
- * ~/.config/switchboard/style.css and that one wins instead; it is read at
- * startup, and the menu starts fresh every time it is opened, so editing it is
- * the same as reloading it.
+ * The menu hangs off the bar, so it is made of the bar's materials: no
+ * outline, a top-lit ground, a raised pill for anything you can press, and the
+ * accent fill on the one row that says where you are.
  *
  * GTK4 CSS, not GTK3: no :checked on a plain button, no four-value
- * background-position, and one unreadable value drops the rest of the file --
- * so keep every value here boring.
+ * background-position, and one unreadable value drops the rest of the file.
+ *
+ * IBM Plex Mono is not installed on this machine -- the sheet this replaces
+ * named it in four places and silently got Noto Sans, losing the monospacing
+ * it asked for. Figures here are Inter with tabular numerals instead, which is
+ * what actually keeps a column of them from shifting.
  */
 
-@define-color nav-ground   #0f1f38;
-@define-color nav-elevated #1a2d4f;
-@define-color twilight     #2b4470;
-@define-color blue         #4a9eff;
-@define-color blue-deep    #256aba;
-@define-color gold         #f0b35e;
-@define-color danger       #ff4a4a;
+@define-color panel-lit  #163561;
+@define-color panel-mid  #0c1c36;
+@define-color panel-deep #081222;
 
-/* The window itself is only a carrier: layer-shell gives it the whole screen
-   edge, and anything painted here would paint over the desktop. */
+@define-color ink        #f2f7ff;
+@define-color ink-soft   #dce9fb;
+@define-color ink-dim    #94abcd;
+@define-color ink-mute   #7f96b8;
+@define-color ink-faint  #5f769a;
+@define-color ink-ghost  #3f5375;
+
+@define-color accent      #2f7ff0;
+@define-color accent-lit  #5aa6ff;
+@define-color accent-pale #a6c3e8;
+@define-color warn        #ffb14d;
+
+/* Layer-shell gives the window the whole screen edge; anything painted here
+   paints over the desktop. */
 window.switchboard {
     background: transparent;
 }
@@ -37,33 +46,47 @@ window.switchboard {
     margin: 0;
 }
 
+/* No hairline. A top-lit ground and a deep shadow separate the panel from the
+   desktop; the line made it read as a box. */
 .panel {
-    /* Wide enough for a name and a line of programs under it. The rows are
-       two-line cards now, so a narrow panel would wrap the chips. */
     min-width: 236px;
-    background: @nav-ground;
-    border: 1px solid alpha(@blue, 0.5);
-    border-radius: 11px;
-    padding: 6px;
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+    background-color: @panel-mid;
+    /* The control center's ground, not a ground of its own: a menu hanging off
+       the bar should be the same material as the panel hanging off it. */
+    background-image: radial-gradient(120% 90% at 50% 0%,
+                                      @panel-lit 0%,
+                                      @panel-mid 45%,
+                                      @panel-deep 100%);
+    border: none;
+    border-radius: 16px;
+    padding: 7px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07),
+                0 26px 60px rgba(0, 0, 0, 0.55);
 }
 
+/* Air under the heading instead of a rule: a heading belongs to the rows below
+   it, and the rule was the only line left on the panel. */
 .phead {
-    padding: 7px 10px 8px 10px;
-    margin-bottom: 4px;
-    border-bottom: 1px solid alpha(@blue, 0.22);
-    font-family: "IBM Plex Mono", monospace;
+    padding: 6px 10px 4px 10px;
+    margin-bottom: 6px;
+    border-bottom: none;
     font-size: 10px;
+    font-weight: 600;
     letter-spacing: 1.4px;
-    color: alpha(#e2eaf6, 0.42);
+    color: @ink-faint;
 }
 
+/* No capsule on the tally, though the design gives it one: the label is
+   hexpanded by the program and GTK4 CSS has no halign, so a fill stretches
+   the pill across the whole heading. Plain figure until the code sets it. */
 .phead .tally {
     letter-spacing: 0;
+    font-feature-settings: "tnum";
+    color: @ink-mute;
 }
 
 .divider {
-    background: alpha(@blue, 0.22);
+    background: rgba(255, 255, 255, 0.07);
     margin: 5px 8px;
     min-height: 1px;
 }
@@ -74,39 +97,41 @@ button.row {
     background: transparent;
     border: none;
     box-shadow: none;
-    border-radius: 7px;
+    border-radius: 9px;
     padding: 7px 10px;
     min-height: 0;
-    color: alpha(#e2eaf6, 0.72);
+    color: @ink-dim;
 }
 
 button.row:hover {
-    background: @nav-elevated;
-    color: #e2eaf6;
+    background: rgba(255, 255, 255, 0.1);
+    color: @ink;
 }
 
 button.row.trail {
-    background: alpha(@blue, 0.1);
-    color: #e2eaf6;
+    background: rgba(47, 127, 240, 0.16);
+    color: @ink-soft;
 }
 
-/* Where you are. The same fill the focused workspace takes in the bar, so the
-   two agree without having to be read. */
+/* Where you are: the fill and the glow the focused workspace takes on the bar,
+   so the two agree without having to be read. */
 button.row.here {
-    background: @blue-deep;
+    background-image: linear-gradient(180deg, #3d8ef7, @accent);
     color: #ffffff;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25),
+                0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 button.row.urgent {
-    box-shadow: inset 2px 0 0 @gold;
+    box-shadow: inset 2px 0 0 @warn;
 }
 
 button.row.new {
-    color: alpha(#e2eaf6, 0.42);
+    color: @ink-ghost;
 }
 
 button.row.new:hover {
-    color: #e2eaf6;
+    color: @ink-soft;
 }
 
 .name {
@@ -115,83 +140,90 @@ button.row.new:hover {
 }
 
 /* The second line of a row: what is running there, or the group's pips.
-   Indented to line up with the name rather than the icon, so the two lines
-   read as one block. */
+   Indented to the name rather than the icon, so the two read as one block. */
 .detail {
     margin-left: 26px;
 }
 
 .chip {
-    font-family: "IBM Plex Mono", monospace;
     font-size: 10px;
-    color: alpha(#e2eaf6, 0.34);
+    color: @ink-ghost;
 }
 
 button.row.here .chip,
 button.row:hover .chip {
-    color: alpha(#ffffff, 0.6);
+    color: rgba(255, 255, 255, 0.62);
 }
 
 .glyph {
     font-family: "Ubuntu Nerd Font", monospace;
     font-size: 14px;
+    color: @accent-pale;
 }
 
+button.row.here .glyph {
+    color: #ffffff;
+}
+
+/* Two figures on a row is one too many unless they line up: the slot is a
+   badge on the left, the window count a bare figure on the right, and tabular
+   numerals stop either shifting the name between rows. */
 .slot {
-    font-family: "IBM Plex Mono", monospace;
     font-size: 11px;
     font-weight: 600;
     font-feature-settings: "tnum";
-    color: alpha(#e2eaf6, 0.42);
-    background: alpha(#ffffff, 0.06);
-    border-radius: 4px;
+    color: @ink-mute;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 5px;
     padding: 1px 5px;
 }
 
 button.row.here .slot {
-    background: @gold;
-    color: #06121f;
+    background: rgba(255, 255, 255, 0.24);
+    color: #ffffff;
 }
 
-/* Two figures on a row is one too many unless they line up, so both are
-   monospaced with fixed widths: the slot as a badge on the left, the window
-   count as a bare figure on the right. Neither shifts the name between rows. */
 .count {
-    font-family: "IBM Plex Mono", monospace;
     font-size: 11px;
     font-feature-settings: "tnum";
-    color: alpha(#e2eaf6, 0.32);
+    color: @ink-ghost;
     padding: 0 2px;
 }
 
 button.row.here .count,
 button.row:hover .count {
-    color: alpha(#ffffff, 0.7);
+    color: rgba(255, 255, 255, 0.7);
 }
 
 .chev {
-    color: alpha(#e2eaf6, 0.42);
+    color: @ink-ghost;
     font-size: 13px;
 }
 
 button.row:hover .chev,
 button.row.trail .chev {
-    color: #e2eaf6;
+    color: @ink-soft;
+}
+
+button.row.here .chev {
+    color: #ffffff;
 }
 
 /* --- pips ---------------------------------------------------------------- */
+/* Three states, one hue: dim for an empty slot, accent for a busy one, and
+   full white for the one you are on. Amber is kept for urgent alone. */
 
 .pip {
     min-width: 4px;
     min-height: 4px;
     border-radius: 999px;
-    background: alpha(#ffffff, 0.2);
+    background: rgba(255, 255, 255, 0.2);
 }
 
 .pip.busy {
-    background: alpha(@blue, 0.6);
+    background: @accent-lit;
 }
 
 .pip.here {
-    background: @gold;
+    background: #ffffff;
 }

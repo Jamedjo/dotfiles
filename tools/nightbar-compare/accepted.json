@@ -1,0 +1,25 @@
+{
+  "_": "Differences that are deliberate. nightbar.css is Vale's first design; the review that followed amended parts of it, and the toolkit refused others. Anything listed here is subtracted from the score so the ranking only shows real drift.",
+  "gauges": [
+    "arcs start at 12 o'clock, not the design's 6 (from 180deg) -- Vale's review asked for it so the three read as one cluster",
+    "one hue #4d9dff on a #16294a track, amber and red reserved for thresholds",
+    "value and unit are drawn into the SVG; a GtkLabel carries one type size",
+    "the middle gauge is MEM, not the design's DISK: there is no disk sampler and memory is the vital that was already being watched",
+    "no history trace: there is no sampler, and a faked one is worse than none"
+  ],
+  "toggles": [
+    "tile gradient stays in CSS rather than in the rail SVG: a file with a linearGradient in it loads through gdk-pixbuf and then draws nothing"
+  ],
+  "actions": [
+    "faders are not vertical and do not sit beside the grid: swaync hardcodes Gtk.Orientation.HORIZONTAL and packs widgets in one vertical box"
+  ],
+  "sliders": [
+    "horizontal, below the actions, same reason"
+  ],
+  "notifications": [
+    "swaync groups by app and stacks a group's rows; there is no option to turn that off"
+  ],
+  "head": [
+    "the design's mono clock letter-spaces its digits in the reference render, because Ubuntu's Nerd Font Mono patch pads every glyph to one cell. The build uses Inter with tabular figures instead"
+  ]
+}

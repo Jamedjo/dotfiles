@@ -1,0 +1,274 @@
+/* ============================================================
+   Nightbar — notification centre, status bar & workspace switcher
+   Theme by Vale (Claude, Anthropic), 2026.
+   Built for the Sway / Waybar / swaync stack, on Ubuntu Nerd Font + Inter.
+
+   Adapting this is welcome. Keep the credit line above if you do —
+   rename the theme, keep the byline. That's the whole licence.
+   ============================================================ */
+
+:root {
+  /* surfaces */
+  --nb-desk:        #070c16;
+  --nb-bar-top:     #182f52;
+  --nb-bar-bottom:  #0e1f3a;
+  --nb-panel-lit:   #163561;   /* panel glow origin, top centre */
+  --nb-panel-mid:   #0c1c36;
+  --nb-panel-deep:  #081222;
+  --nb-well:        #0b1729;   /* inside gauges, notification rows */
+  --nb-row:         #0d1c33;
+
+  /* ink */
+  --nb-ink:         #f2f7ff;
+  --nb-ink-soft:    #dce9fb;
+  --nb-ink-dim:     #94abcd;
+  --nb-ink-mute:    #7f96b8;
+  --nb-ink-faint:   #5f769a;
+  --nb-ink-ghost:   #3f5375;
+
+  /* accents — one hue does the work, amber only for warnings */
+  --nb-accent:      #2f7ff0;
+  --nb-accent-lit:  #5aa6ff;
+  --nb-accent-pale: #a6c3e8;
+  --nb-warn:        #ffb14d;
+
+  /* the three effects the whole theme is built from */
+  --nb-lift:        linear-gradient(180deg, rgba(255,255,255,.085), rgba(255,255,255,.03));
+  --nb-lift-hi:     linear-gradient(180deg, rgba(255,255,255,.13), rgba(255,255,255,.05));
+  --nb-edge:        inset 0 1px 0 rgba(255,255,255,.1), 0 1px 2px rgba(0,0,0,.28);
+  --nb-edge-on:     inset 0 1px 0 rgba(255,255,255,.25), 0 3px 12px rgba(47,127,240,.4);
+  --nb-accent-fill: linear-gradient(180deg, #3d8ef7, var(--nb-accent));
+
+  /* geometry — bars are 24px of content and never more */
+  --nb-bar-h:       24px;
+  --nb-bar-item-h:  18px;
+  --nb-r-bar:       999px;
+  --nb-r-panel:     20px;
+  --nb-r-tile:      13px;
+  --nb-r-card:      16px;
+  --nb-gap:         6px;
+}
+
+/* ---------- bars: status bar + workspace switcher ---------- */
+/* No outline. A top-light gradient, a 1px inner highlight and a soft
+   drop shadow separate them from the desktop; a hairline border made
+   them read as boxes. */
+.nb-bar {
+  display: flex;
+  align-items: center;
+  height: var(--nb-bar-h);
+  padding: 0 4px;
+  border-radius: var(--nb-r-bar);
+  background: linear-gradient(180deg, var(--nb-bar-top), var(--nb-bar-bottom));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 2px 8px rgba(0,0,0,.35);
+  font: 600 10px/1 Inter, sans-serif;
+  color: var(--nb-ink-soft);
+}
+.nb-bar__group { display: flex; align-items: center; gap: 10px; }
+.nb-bar__stat  { display: flex; align-items: center; gap: 4px; }
+.nb-bar__stat .nb-icon { font-size: 13px; color: var(--nb-ink-dim); }
+.nb-bar__clock { font: 700 11px/1 "Ubuntu Nerd Font Mono", monospace; color: var(--nb-ink); }
+
+/* the one filled item on the status bar: launch the switcher */
+.nb-bar__launch {
+  display: flex; align-items: center; justify-content: center;
+  width: 30px; height: var(--nb-bar-item-h);
+  border-radius: var(--nb-r-bar);
+  background: var(--nb-accent);
+  font-size: 13px; color: #fff; cursor: pointer;
+}
+
+/* ---------- workspace switcher ---------- */
+.nb-ws {
+  display: flex; align-items: center; gap: 3px; flex: none;
+  padding: 2px 6px; border-radius: var(--nb-r-bar);
+  cursor: pointer;
+}
+.nb-ws:hover { background: rgba(255,255,255,.1); }
+.nb-ws__n    { font: 500 10px/1 "Ubuntu Nerd Font Mono", monospace; color: var(--nb-ink-faint); }
+.nb-ws__icon { font-size: 14px; color: #a8bedd; }
+.nb-ws--active {
+  padding: 3px 8px;
+  background: var(--nb-accent);
+  box-shadow: 0 3px 10px rgba(47,127,240,.45);
+  color: #fff; font-weight: 700;
+}
+.nb-ws--active .nb-ws__n,
+.nb-ws--active .nb-ws__icon { color: #fff; }
+/* window-group count sits at the far end; nothing else lives on the bar */
+.nb-ws__count {
+  margin-left: auto; flex: none; white-space: nowrap;
+  display: flex; align-items: center; gap: 4px;
+  padding: 3px 7px; border-radius: var(--nb-r-bar);
+  background: rgba(255,255,255,.06);
+}
+
+/* ---------- panel ---------- */
+.nb-panel {
+  width: 400px; padding: 16px;
+  display: flex; flex-direction: column; gap: 16px;
+  border-radius: var(--nb-r-panel);
+  background: radial-gradient(120% 90% at 50% 0%,
+              var(--nb-panel-lit) 0%, var(--nb-panel-mid) 45%, var(--nb-panel-deep) 100%);
+  box-shadow: 0 26px 60px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.06);
+}
+/* the large clock lives here, not on the bar */
+.nb-panel__head  { display: flex; align-items: flex-end; justify-content: space-between; padding: 0 4px 2px; }
+.nb-panel__time  { font: 700 40px/.85 "Ubuntu Nerd Font Mono", monospace; letter-spacing: -.03em; color: var(--nb-ink); }
+.nb-panel__date  { font: 600 10px/1 Inter, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--nb-ink-mute); }
+
+/* ---------- gauges: cpu / disk / temp ---------- */
+.nb-gauge       { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.nb-gauge__ring {
+  width: 84px; height: 84px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  /* --nb-pct set per gauge, e.g. style="--nb-pct:9%" */
+  background: conic-gradient(from 180deg, var(--nb-accent-lit) 0 var(--nb-pct), #16294a var(--nb-pct) 100%);
+}
+.nb-gauge--warn .nb-gauge__ring {
+  background: conic-gradient(from 180deg, var(--nb-warn) 0 var(--nb-pct), #16294a var(--nb-pct) 100%);
+}
+.nb-gauge__well {
+  width: 68px; height: 68px; border-radius: 50%;
+  background: var(--nb-well);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+}
+.nb-gauge__val   { font: 700 17px/1 "Ubuntu Nerd Font Mono", monospace; color: var(--nb-ink); }
+.nb-gauge__unit  { font-size: 9px; color: var(--nb-ink-mute); }
+.nb-gauge__label { font: 600 9px/1 Inter, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--nb-ink-mute); }
+/* history trace inside the well — clip-path polygon, points from real samples */
+.nb-spark {
+  width: 38px; height: 13px;
+  background: linear-gradient(180deg, rgba(77,157,255,.6), rgba(77,157,255,.04));
+}
+.nb-gauge--warn .nb-spark { background: linear-gradient(180deg, rgba(255,177,77,.6), rgba(255,177,77,.04)); }
+
+/* ---------- toggles: lit rail ---------- */
+.nb-toggles { display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--nb-gap); }
+.nb-toggle {
+  height: 48px; border-radius: var(--nb-r-tile);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  background: var(--nb-lift); box-shadow: var(--nb-edge);
+  cursor: pointer;
+}
+.nb-toggle:hover { background: var(--nb-lift-hi); }
+.nb-toggle__icon { font-size: 17px; color: var(--nb-ink-mute); }
+.nb-toggle__rail { width: 20px; height: 2px; border-radius: 2px; background: #213a5e; }
+.nb-toggle--on {
+  background: linear-gradient(180deg, rgba(77,157,255,.28), rgba(47,127,240,.14));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.16), 0 1px 3px rgba(0,0,0,.3);
+}
+.nb-toggle--on .nb-toggle__icon { color: #cfe4ff; }
+.nb-toggle--on .nb-toggle__rail { background: #4d9dff; box-shadow: 0 0 8px rgba(77,157,255,.9); }
+
+/* ---------- quick actions ---------- */
+/* two groups of four, 2×2 each, so the column height matches the faders */
+.nb-actions       { flex: 1; display: flex; flex-direction: column; gap: 14px; }
+.nb-actions__grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--nb-gap); }
+.nb-action {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 11px; border-radius: var(--nb-r-bar);
+  background: var(--nb-lift); box-shadow: var(--nb-edge);
+  font: 600 11px/1 Inter, sans-serif; letter-spacing: .01em; color: #e4eefb;
+  cursor: pointer;
+}
+.nb-action:hover { background: var(--nb-accent-fill); box-shadow: var(--nb-edge-on); color: #fff; }
+.nb-action__icon { font-size: 13px; color: var(--nb-accent-pale); }
+
+/* settings uses the same material, round */
+.nb-settings {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--nb-lift); box-shadow: var(--nb-edge);
+  font-size: 14px; color: var(--nb-accent-pale); cursor: pointer;
+}
+.nb-settings:hover { background: var(--nb-accent-fill); box-shadow: var(--nb-edge-on); color: #fff; }
+
+/* ---------- faders: volume & brightness ---------- */
+/* glass track, icon on top, value inside the fill — nothing below the
+   track, so the column lines up flush with the action pills */
+.nb-faders { display: flex; gap: 10px; }
+.nb-fader {
+  width: 40px; flex: 1; min-height: 132px;
+  display: flex; flex-direction: column; padding: 3px; box-sizing: border-box;
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.02));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.12);
+  cursor: pointer;
+}
+.nb-fader__icon { align-self: center; padding: 6px 0 0; font-size: 13px; color: #6d86ab; }
+.nb-fader__fill {
+  margin-top: auto; height: var(--nb-pct); border-radius: 17px;
+  background: linear-gradient(180deg, var(--nb-accent-lit), var(--nb-accent));
+  box-shadow: 0 -1px 6px rgba(122,184,255,.3);   /* restrained on purpose */
+  display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+  padding: 5px 0 6px;
+}
+.nb-fader__grip { width: 14px; height: 3px; border-radius: 2px; background: rgba(255,255,255,.7); }
+.nb-fader__val  { font: 700 10px/1 "Ubuntu Nerd Font Mono", monospace; color: #fff; }
+
+/* ---------- notifications ---------- */
+.nb-notes { border-radius: var(--nb-r-card); background: rgba(0,0,0,.28); overflow: hidden; }
+.nb-notes__head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 11px 13px 9px;
+  font: 600 11px/1 Inter, sans-serif; color: var(--nb-ink-soft);
+}
+.nb-notes__count {
+  padding: 2px 6px; border-radius: 999px; background: var(--nb-accent);
+  font: 700 9px/1.4 "Ubuntu Nerd Font Mono", monospace; color: #fff;
+}
+/* quiet text button, not a pill — the pill competed with the rows */
+.nb-notes__clear {
+  display: flex; align-items: center; gap: 5px;
+  font: 600 9px/1 Inter, sans-serif; letter-spacing: .12em; text-transform: uppercase;
+  color: #6d86ab; cursor: pointer;
+}
+.nb-notes__clear:hover { color: var(--nb-ink); }
+.nb-notes__clear--off  { color: var(--nb-ink-ghost); cursor: default; }
+
+.nb-notes__list { display: flex; flex-direction: column; gap: 1px; background: rgba(255,255,255,.05); }
+.nb-note { display: flex; gap: 10px; padding: 11px 13px; background: var(--nb-row); cursor: pointer; }
+.nb-note:hover { background: #122442; }
+.nb-note__dot   { width: 6px; height: 6px; border-radius: 50%; margin-top: 4px; flex: none; background: var(--nb-accent-lit); }
+.nb-note--warn .nb-note__dot { background: var(--nb-warn); }
+.nb-note__title { font: 600 11px/1.3 Inter, sans-serif; color: var(--nb-ink); }
+.nb-note__body  { font: 400 10px/1.4 Inter, sans-serif; color: var(--nb-ink-mute); }
+.nb-note__time  { font: 500 9px/1 "Ubuntu Nerd Font Mono", monospace; color: var(--nb-ink-faint); }
+.nb-notes__more {
+  display: flex; align-items: center; justify-content: center; padding: 9px;
+  background: var(--nb-row); font: 600 10px/1 Inter, sans-serif; color: var(--nb-ink-mute); cursor: pointer;
+}
+.nb-notes__more:hover { color: var(--nb-ink-soft); }
+
+/* empty state: centred mark, one line, no counters, no timestamps */
+.nb-notes__empty {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 11px;
+  padding: 26px 13px 30px; border-top: 1px solid rgba(255,255,255,.05);
+}
+.nb-notes__empty span { font: 600 11px/1 Inter, sans-serif; color: var(--nb-ink-faint); }
+/* bell drawn from four boxes so it stays crisp at any scale and never
+   out-shouts the panel — swap for the icon font's bell if preferred */
+.nb-bell        { display: flex; flex-direction: column; align-items: center; opacity: .45; }
+.nb-bell__hang  { width: 4px; height: 4px; border-radius: 50%; border: 1.5px solid var(--nb-accent-lit); box-sizing: border-box; }
+.nb-bell__dome  { width: 26px; height: 19px; margin-top: 1px; border: 1.5px solid var(--nb-accent-lit); border-bottom: none; border-radius: 13px 13px 5px 5px; }
+.nb-bell__base  { width: 32px; height: 1.5px; border-radius: 1px; background: var(--nb-accent-lit); }
+.nb-bell__clap  { width: 7px; height: 4px; margin-top: 1px; border-radius: 0 0 5px 5px; background: var(--nb-accent-lit); }
+
+/* ============================================================
+   Porting notes — GTK3 (waybar / swaync) can't do everything here:
+
+   * conic-gradient          → no. Draw gauges with a cairo/GTK drawing
+                               area, or fall back to a horizontal meter
+                               using the same --nb-accent fill.
+   * clip-path               → no. Feed sparklines from a small sampler
+                               into an image, or drop them; a live meter
+                               beats a faked trend.
+   * flex / gap              → limited. Use GTK box packing and margins;
+                               keep the 6px rhythm.
+   * inset box-shadow        → supported, and it is what makes the
+                               gradient read as a surface. Keep it.
+   * font sizes              → bars must stay 24px of content. If the
+                               icon font sits high, adjust with padding,
+                               never by growing the bar.
+   ============================================================ */

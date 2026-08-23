@@ -1,16 +1,100 @@
-inside-color=37344566
-ring-color=00000099
-key-hl-color=fecf3dff
+# swaylock, Nightbar
+# Theme by Vale (Claude, Anthropic), 2026. Keep the byline if you adapt this.
+#
+# Deploy to ~/.config/swaylock/config — swaylock reads it with no flags, so
+# `swaylock` and the Super+l binding both pick it up.
+#
+# Colours are RRGGBBAA (no leading #). Palette is the one waybar/style.css names:
+#   ground 0f1f38 · deep 0b1830 · twilight 2b4470 · blue 4a9eff · deep blue 256aba
+#   gold f0b35e · danger ff4a4a
 
-ring-wrong-color=d23c3dff
-inside-wrong-color=37344566
-text-wrong-color=ffffff
+# ---- image ------------------------------------------------------------------
+# Build this file with nightbar-wallpapers.sh. The rotated pass is the signed-off
+# one; swap in -bloom or -mosaic to taste.
+image=/home/james/Pictures/nightbar/20250630_000813-rotated.png
+scaling=fill
 
-ring-ver-color=fecf3dff
-inside-ver-color=37344566
-text-ver-color=ffffff
+# ---- the indicator ----------------------------------------------------------
+# A ring holding a state, not a progress meter. 52px radius, 6px stroke: at the
+# design's scale that is the same weight as the panel's gauges.
+indicator-radius=52
+indicator-thickness=6
 
-line-uses-inside
-indicator-thickness=20
+# Visible before you type, so the screen never looks like a dead wallpaper.
+indicator-idle-visible
 
-image=/home/james/Pictures/el-nido-roof.png
+# ---- states -----------------------------------------------------------------
+# inside = the disc, ring = the stroke, text = the glyph/label.
+# idle
+inside-color=0b1830d9
+ring-color=4a9effff
+text-color=8cc4ffff
+line-color=00000000
+
+# cleared field
+inside-clear-color=0b1830d9
+ring-clear-color=8cc4ffff
+text-clear-color=8cc4ffff
+line-clear-color=00000000
+
+# verifying — half-lit, matching the Enter cap's "checking" state
+inside-ver-color=0b1830d9
+ring-ver-color=256abaff
+text-ver-color=cfe4ffff
+line-ver-color=00000000
+
+# wrong
+inside-wrong-color=300e14b3
+ring-wrong-color=ff4a4aff
+text-wrong-color=ffd6d6ff
+line-wrong-color=00000000
+
+# caps lock — the palette's gold, same meaning as .badge-early on the bar
+inside-caps-lock-color=0b1830d9
+ring-caps-lock-color=f0b35eff
+text-caps-lock-color=f0b35eff
+caps-lock-key-hl-color=f0b35eff
+caps-lock-bs-hl-color=f0b35eff
+
+# ---- keypress feedback ------------------------------------------------------
+# swaylock draws ONE highlight arc of fixed size and jumps it to a new random
+# angle on each keypress - it does not accumulate, so 1 keypress and 12 look
+# identical and the ring never encodes the password length. Verified by
+# screenshotting a locked nested session at 1, 3 and 12 keys. Anyone close
+# enough to watch the arc move is close enough to watch the keyboard.
+key-hl-color=8cc4ffff
+bs-hl-color=256abaff
+separator-color=0b1830ff
+
+# ---- type -------------------------------------------------------------------
+font=Inter
+font-size=15
+
+# Layout name only appears if you actually switch layouts; keep it in palette.
+layout-bg-color=0f1f38e6
+layout-border-color=4a9eff66
+layout-text-color=e2eaf6c2
+
+# ---- behaviour --------------------------------------------------------------
+ignore-empty-password
+show-failed-attempts
+daemonize
+
+# ---- if swaylock-effects is installed ---------------------------------------
+# Check with:  swaylock --help | grep -c effect
+# 0 means stock swaylock and the lines below will refuse to start — leave them
+# commented. The wallpaper passes above already bake in the look, so nothing is
+# lost except the live-screenshot blur.
+#
+# screenshots
+# effect-blur=18x5
+# effect-vignette=0.45:0.6
+# effect-scale=0.4
+#
+# clock
+# timestr=%H:%M
+# datestr=%A %-d %B
+#
+# Note: swaylock-effects draws its clock INSIDE the indicator ring. The large
+# corner clock in the design is not reachable in either swaylock — that needs a
+# locker with real layout (gtklock takes GTK CSS, so nightbar.css mostly ports).

@@ -1,320 +1,258 @@
-/* Chief — a waybar theme wearing chief-site's nav.
+/* Nightbar — waybar.
  *
- * Sources: chief-site src/styles/components/site-nav.css and
- * src/styles/base/variables.css, with the state colours from chrome-chief
- * agent-v2-client styles/theme.css.
+ * Theme by Vale (Claude, Anthropic), 2026, ported from nightbar.css.
  *
- * The bar is not a strip with a blue tint on it. It is the site's nav bar,
- * built the way the site builds one:
- *
- *   - .drop, the nav's floating dropdown card, is the shape: --nav-ground under
- *     a 1px --nav-border hairline. The top bar is two of them — workspaces and
- *     the status readouts — rather than one full-width slab, with open ground
- *     between. The footer is the other half of the site's pairing: .site-footer
- *     runs edge to edge under a rule, so the bottom bar does too, and it is
- *     where the window title lives now.
- *   - .site-header's 135deg white glass wash sits on the ground. The site keeps
- *     .9 alpha under it only so its backdrop-filter has something to blur, and
- *     paints an opaque --nav-ground behind that; waybar has no blur to feed, so
- *     the ground is opaque here and the composite is identical. Nothing shows
- *     through either card.
- *   - The right card additionally rides the Deep Navy ramp — --bg-section into
- *     --bg-elevated, brightening left to right and terminating in the clock,
- *     which is --navy-twilight from the sidepanel's footer. That ramp is the
- *     one place the palette has a gradient in it, and the status side is where
- *     it earns its keep: it gives eight modules an order without eight fills.
- *   - The active workspace is the site's filled CTA — --color-primary-deep with
- *     white text, the pair that makes the button clear AA. Urgent is
- *     .badge-early verbatim: gold letter inside a gold hairline capsule.
- *
- * Compact by construction: 31px of reserved height carrying 25px capsules, at
- * 15px Inter on both bars. Inter has no Nerd glyphs, so pango falls through to
- * Ubuntu Nerd Font per-glyph — brand letterforms, icon coverage, one stack.
+ * The bars are not outlined. A top-lit vertical gradient, a 1px inner
+ * highlight and a soft drop shadow lift them off the desktop; the hairline
+ * this replaces made them read as boxes.
  */
 
-@define-color nav-ground   #0f1f38;  /* --bg-section / --nav-ground */
-@define-color nav-elevated #1a2d4f;  /* --bg-elevated */
-@define-color twilight     #2b4470;  /* theme.css --navy-twilight */
-@define-color nav-border   rgba(74, 158, 255, 0.4);   /* --nav-border, at fuzzel's 4a9eff66 */
-@define-color blue         #4a9eff;  /* --color-primary */
-@define-color blue-deep    #256aba;  /* --color-primary-deep, the filled CTA */
-@define-color gold         #f0b35e;  /* .badge-early */
-@define-color success      #7fba00;
-@define-color danger       #ff4a4a;
+@define-color bar-top     #182f52;
+@define-color bar-bottom  #0e1f3a;
+@define-color accent      #2f7ff0;
+@define-color accent-lit  #5aa6ff;
+@define-color warn        #ffb14d;
+@define-color ink         #f2f7ff;
+@define-color ink-soft    #dce9fb;
+@define-color ink-dim     #94abcd;
+@define-color ink-mute    #7f96b8;
+@define-color ink-faint   #5f769a;
+@define-color danger      #ff4a4a;
 
 * {
     border: none;
     border-radius: 0;
     font-family: "Inter", "Ubuntu Nerd Font", Helvetica, Arial, sans-serif;
-    font-size: 15px;
-    font-weight: 500;
+    font-size: 13px;
+    font-weight: 600;
     min-height: 0;
 }
 
-/* The window is only the gap between the cards. */
 window#waybar {
     background: transparent;
-    color: rgba(255, 255, 255, 0.72); /* .nav-link */
+    color: @ink-soft;
 }
 
 window#waybar.hidded {
     opacity: 0.2;
 }
 
-/* The cards. Both wear .drop. The centre box gets no card: on the top bar it is
-   childless, and GTK still allocates border and padding for an empty box, which
-   is a stub capsule sitting in the middle of the nav with nothing in it. */
+/* The cards. The centre box gets none: on the top bar it is childless, and
+   GTK still allocates padding for an empty box. */
 .modules-left,
-.modules-right {
-    background-color: @nav-ground;
-    background-image: linear-gradient(135deg,
-                                      rgba(255, 255, 255, 0.08) 0%,
-                                      rgba(255, 255, 255, 0.04) 50%,
-                                      rgba(255, 255, 255, 0.02) 100%);
-    /* Capsules rather than .drop's 14px. On a 21px card 14px is already most
-       of the way to a capsule, and GTK renders the two arcs of a capsule far
-       more cleanly than it renders four corners that nearly meet — the edge
-       was visibly stepped at 14. --nav-border also goes up from .2 to .4:
-       .2 is tuned for a hairline under a 75px header and thins out to nothing
-       at this size, and .4 is what fuzzel/fuzzel.ini already sets as this
-       desktop's hairline (border=4a9eff66). */
-    border: 1px solid @nav-border;
-    border-radius: 999px;
-    margin: 2px 6px;
-    padding: 0 5px;
-}
-
-/* The status card rides the ramp, with the glass wash still on top of it. */
-.modules-right {
-    background-image: linear-gradient(135deg,
-                                      rgba(255, 255, 255, 0.08) 0%,
-                                      rgba(255, 255, 255, 0.04) 50%,
-                                      rgba(255, 255, 255, 0.02) 100%),
-                      linear-gradient(90deg, @nav-ground 0%, @nav-elevated 100%);
-}
-
-/* Workspaces. Capsules, not underlines: the card is already a rounded shape and
-   a rule on its bottom edge fights the corners. */
-#workspaces {
-    padding: 0 2px;
-}
-
-#workspaces button {
-    padding: 0 5px;
-    margin: 3px 0;
-    background: transparent;
-    color: rgba(255, 255, 255, 0.52);
+#stats {
+    background-image: linear-gradient(180deg, @bar-top, @bar-bottom);
     border: none;
     border-radius: 999px;
-    transition: all 0.2s ease; /* --transition-default */
+    /* The blur has to fit in the margin. waybar's window is exactly the bar
+       height, so anything the card throws past its own margin is cropped by
+       the window edge and reads as a cut rather than a shadow. A shadow
+       reaches offset + blur/2 below the box: 2 + 3 is the 5px there is. */
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06),
+                0 2px 6px rgba(0, 0, 0, 0.35);
+    margin: 5px 8px;
+    padding: 0 4px;
 }
 
-/* The icon-or-name branch, not a size preference. A button is one pango string:
-   the number and the icon carry their own size inside that markup (see
-   waybar/config), which leaves the name as the only part still inheriting from
-   CSS. Taking the size away here is what leaves an unfocused workspace as its
-   icon alone, and giving it back is what makes the focused one read
-   "11  icon Sway". 0.001px rather than 0 because pango rounds it to the same
-   1/1024pt the old markup used to hide a run.
+#workspaces {
+    padding: 0;
+}
 
-   It must select the label, not the button: the sheet's `*` rule sets a
-   font-size on every widget, the label included, and a rule that matches the
-   label directly beats one inherited from its button. The 0.85em this replaces
-   had been a no-op for that reason. */
+/* This colour is the glyph's. The number beside it is the same colour at
+   55% in pango (see waybar/config), which lands on @ink-faint over the card
+   and stays legible on the accent fill, where CSS turns the pair white. Two
+   colours cannot come from CSS: a button is one label. */
+#workspaces button {
+    padding: 0 6px;
+    margin: 3px 0;
+    background: transparent;
+    color: #a8bedd;
+    border: none;
+    border-radius: 999px;
+    transition: all 0.2s ease;
+}
+
+/* Everything the button draws carries its own size inside the pango markup
+   (see waybar/config). What is left inheriting from here is the space the
+   format leaves after the icon, and at 13px that space padded every pill on
+   its right and nowhere else. The rule has to be on the label, not the
+   button: the `*` rule above sets a size on every widget, and a rule on the
+   label beats one inherited from its button. */
 #workspaces button label {
     font-size: 0.001px;
 }
 
-#workspaces button.focused label,
-#workspaces button.visible label {
-    font-size: 1em;
-}
-
-#workspaces button {
-    opacity: 0.75;
-}
-
-#workspaces button.focused,
-#workspaces button.visible {
-    opacity: 1;
-}
-
 #workspaces button:hover {
-    background: rgba(74, 158, 255, 0.1);
-    color: #ffffff;
+    background: rgba(255, 255, 255, 0.1);
+    color: @ink;
     box-shadow: none;
     text-shadow: none;
 }
 
-/* The site's filled CTA, white on --color-primary-deep. */
+/* The current workspace is 2px taller than the rest and lit. The glow is a
+   halo rather than the design's drop, because a drop would be cropped by the
+   window edge and the crop is what you would see; centred, the same 8px of
+   blur spends half its budget upwards, where the card has room. */
 #workspaces button.focused,
 #workspaces button.active {
-    background: @blue-deep;
+    margin: 2px 0;
+    background: @accent;
     color: #ffffff;
-    font-weight: 600;
+    font-weight: 700;
+    box-shadow: 0 0 8px rgba(47, 127, 240, 0.45);
 }
 
-/* .badge-early, verbatim. */
 #workspaces button.urgent {
     background: transparent;
-    color: @gold;
-    border: 1px solid rgba(240, 179, 94, 0.6);
+    color: @warn;
+    box-shadow: inset 0 0 0 1px rgba(255, 177, 77, 0.8);
     font-weight: 700;
 }
 
 #mode {
-    background: @blue;
-    color: #06121f;
+    background: @accent;
+    color: #ffffff;
     font-weight: 700;
     border-radius: 999px;
     padding: 0 9px;
     margin: 3px 2px;
 }
 
-#scratchpad,
-#custom-media {
+#scratchpad {
     padding: 0 7px;
-    color: rgba(255, 255, 255, 0.72);
+    color: @ink-dim;
 }
 
-/* The title is the one thing on the footer that is not prose. focuslock and
-   todoist are sentences you wrote; this is the machine reporting where you are,
-   so it gets a capsule to sit in, at the clock's geometry so the two round
-   shapes on the screen are the same shape.
-
-   No hairline on it, unlike the nav's cards. A .drop border works up there
-   because the card floats clear of the desktop and the line is its edge; here
-   the pill sits on the footer's own ground, where the same line reads as an
-   outline drawn round the text. Fill alone has to carry the shape, so it takes
-   --navy-twilight -- the clock's colour, two steps up the ramp from the footer
-   ground rather than the one step --bg-elevated gives, which a borderless pill
-   was too faint to hold. */
-#window {
-    background: @twilight;
-    color: rgba(255, 255, 255, 0.85);
-    font-weight: 400;
-    border-radius: 999px;
-    padding: 0 12px;
-    margin: 3px 0;
-}
-
-/* No title, no capsule -- an empty pill is the stub the footer cards were
-   dropped to avoid. waybar puts .empty on the bar when sway/window has nothing
-   to show. */
-window#waybar.empty #window {
-    background: transparent;
-}
-
-/* A pill each, so an icon reads with the number it labels. */
-#cpu,
-#memory,
-#temperature,
-#network,
+/* Readouts, not buttons. The design gives the status side no fills at all —
+   an icon in @ink-dim beside its figure — so the eye lands on the one filled
+   thing up there, which is the panel handle. */
 #pulseaudio,
+#network,
 #battery,
-#idle_inhibitor,
-#backlight,
-#custom-switchboard,
-#custom-notification {
-    padding: 0 8px;
-    margin: 3px 2px;
-    color: rgba(255, 255, 255, 0.72);
-    background: rgba(255, 255, 255, 0.06);
+#custom-switchboard {
+    padding: 0 5px;
+    margin: 3px 0;
+    color: @ink-soft;
+    background: transparent;
     border-radius: 999px;
 }
 
-/* The tray pads its items, not itself.
- *
- * Padding on the container is paid whether or not anything is in it, so an
- * empty tray was leaving a hole between the battery and the notification
- * handle. Moving it onto the children means an empty tray is genuinely zero
- * pixels wide, and a tray with three things in it is three times the padding
- * rather than a fixed slab -- which is the behaviour flex gives you for free
- * and GTK3 does not.
- *
- * `> widget` is the item node: waybar wraps each StatusNotifierItem in one,
- * and gives it .passive or .needs-attention as the item's status changes.
- *
- * There is no :empty rule here on purpose. GTK3 has no :empty pseudo-class,
- * and an unknown one is not ignored -- it fails the whole stylesheet, which
- * takes the bar down with it. Zeroing the container is what makes an empty
- * tray free; nothing needs to detect the empty case. */
+/* Both are label rather than figure -- the workspace you are on, and a
+   signal glyph with no number after it -- so they take the icon's ink. The
+   figures keep @ink-soft, and their icons are dimmed to this in pango. */
+#custom-switchboard,
+#network {
+    color: @ink-dim;
+}
+
+#pulseaudio:hover,
+#network:hover,
+#battery:hover,
+#custom-switchboard:hover {
+    color: @ink;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* The tray pads its items, not itself: padding on the container is paid
+   whether or not anything is in it. `> widget` is the item node. There is no
+   :empty rule on purpose — GTK3 has no such pseudo-class, and an unknown one
+   fails the whole sheet and takes the bar down with it. */
 #tray {
     padding: 0;
     margin: 0;
-    color: rgba(255, 255, 255, 0.72);
     background: transparent;
 }
 
 #tray > widget {
-    padding: 0 6px;
+    padding: 0 5px;
 }
 
-
-#cpu:hover,
-#network:hover,
-#pulseaudio:hover,
-#battery:hover,
-#custom-switchboard:hover,
-#custom-notification:hover {
-    color: #ffffff;
-    background: rgba(255, 255, 255, 0.12);
+#tray > .passive {
+    -gtk-icon-effect: dim;
 }
 
-/* The bell. Blue when something is waiting -- the same accent the focused
-   workspace takes, so "unread" reads as attention rather than alarm -- and
-   gold with a strike through it while do-not-disturb holds things back, which
-   is the colour sway's client.urgent uses for the same idea. The class comes
-   straight from swaync-client -swb, which combines the dnd and inhibited
-   states into one name, so each combination is listed rather than nested. */
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+}
+
+/* The panel handle. It fills only when it has something to say -- an accent
+   pill for unread, amber for do-not-disturb -- so a quiet bar has nothing lit
+   on it at all. The colour carries the state; the class names come straight
+   from swaync-client -swb, which folds dnd and inhibited into one name. */
+#custom-notification {
+    background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.085),
+                                              rgba(255, 255, 255, 0.03));
+    color: @ink-dim;
+    border-radius: 999px;
+    padding: 0 9px;
+    margin: 3px 0 3px 5px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
 #custom-notification.notification,
 #custom-notification.inhibited-notification {
-    color: @blue;
+    background-image: linear-gradient(180deg, #3d8ef7, @accent);
+    color: #ffffff;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25),
+                0 1px 3px rgba(47, 127, 240, 0.35);
 }
 
 #custom-notification.dnd-none,
 #custom-notification.dnd-notification,
 #custom-notification.dnd-inhibited-none,
 #custom-notification.dnd-inhibited-notification {
-    color: @gold;
+    background-image: linear-gradient(180deg, #ffc169, @warn);
+    color: #241403;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3),
+                0 1px 3px rgba(255, 177, 77, 0.3);
 }
 
 #custom-notification:hover {
-    color: #ffffff;
+    background-image: linear-gradient(180deg, @accent-lit, #3d8ef7);
 }
 
-/* The drawer. cpu is the face; memory and temperature ink down while stowed so
-   the reveal is a brightening rather than an appearance. */
+/* The clock steps outside the card and takes the height the bar has spare.
+   Nothing else up there is a figure you read from across the room, and moving
+   it out is what let the status card lose its own fill for the readouts.
 
-#memory.drawer-child,
-#temperature.drawer-child {
-    color: rgba(255, 255, 255, 0.55);
-}
-
-/* The clock terminates the ramp: --navy-twilight, one step past the card's
-   bright end, as a capsule. */
+   Tabular figures rather than a mono family: Ubuntu's Nerd Font Mono patch
+   pads every glyph to one cell, which letter-spaces the digits. */
 #clock {
-    background: @twilight;
-    color: #ffffff;
-    font-weight: 600;
-    border-radius: 999px;
-    padding: 0 10px;
-    margin: 3px 0 3px 4px;
+    background: transparent;
+    color: @ink;
+    font-size: 21px;
+    font-weight: 700;
+    font-feature-settings: "tnum";
+    letter-spacing: -0.02em;
+    padding: 0 2px 0 10px;
+    margin: 0;
 }
 
 #clock:hover {
-    background: #34528a;
+    color: #ffffff;
+}
+
+/* The card is on the group, not on the box that holds it. */
+#stats {
+    margin: 5px 2px;
+    padding: 0 4px;
+}
+
+.modules-right {
+    background: none;
+    box-shadow: none;
+    margin: 0 6px;
+    padding: 0;
 }
 
 #battery.warning:not(.charging) {
-    color: @gold;
+    color: @warn;
 }
 
 #battery.critical:not(.charging) {
     background: rgba(255, 74, 74, 0.25);
     color: #ffffff;
     border-radius: 999px;
-    margin: 3px 0;
     animation-name: blink;
     animation-duration: 0.9s;
     animation-timing-function: ease-in-out;
@@ -328,103 +266,85 @@ window#waybar.empty #window {
     }
 }
 
-#temperature.critical,
 #network.disconnected {
     color: @danger;
 }
 
 #pulseaudio.muted {
-    color: rgba(255, 255, 255, 0.3);
+    color: @ink-faint;
 }
 
-#idle_inhibitor.activated {
-    color: @blue;
-}
-
-#custom-media.custom-spotify {
-    color: @success;
-}
-
-#custom-media.custom-vlc {
-    color: @gold;
-}
-
-#tray > .passive {
-    -gtk-icon-effect: dim;
-}
-
-#tray > .needs-attention {
-    -gtk-icon-effect: highlight;
-}
-
-/* Text-heavy modules: disable ligatures to prevent Nerd Font glyph conflicts
-   (e.g. "fi" → telephone icon) on any glyph Inter does not cover. */
+/* Text-heavy modules: Inter has no Nerd glyphs, so pango falls through per
+   glyph, and "fi" would otherwise pick up a telephone. */
 #custom-focuslock,
 #custom-todoist,
 #window {
     font-feature-settings: "liga=0";
 }
 
-/* The footer carries no size of its own: both bars set type at the global
-   15px, so a sentence down here and a percentage up there are the same size.
- */
-/* On the footer the card goes on the module, not on the modules-* box. The box
-   keeps its card even when every child is hidden, and todoist hides itself
-   whenever the query comes back empty — which left a stub capsule sitting in
-   the corner with nothing in it. A module that hides takes its own card with
-   it. */
-/* The footer is one bar, not two cards.
- *
- * The status side is a set of readouts that each stand alone, so cards suit it;
- * the footer holds one line of prose at each end of the same thought, and
- * putting a capsule round each end made them look like two unrelated widgets
- * that happened to share a strip. As one ground they read as one line.
- *
- * It is also the shape the site gives a footer: .site-footer runs the full
- * width under a rule rather than floating clear of the edges. The rule goes on
- * top here, since that is the side the page is on. */
+/* The footer keeps its shape: one full-width slab, not two floating cards.
+   It takes the same top-lit ground, with the inner highlight standing in for
+   the hairline that used to divide it from the desktop. */
 window#waybar.focuslock {
-    background-color: @nav-ground;
-    background-image: linear-gradient(135deg,
-                                      rgba(255, 255, 255, 0.08) 0%,
-                                      rgba(255, 255, 255, 0.04) 50%,
-                                      rgba(255, 255, 255, 0.02) 100%);
-    border-top: 1px solid @nav-border;
+    background-image: linear-gradient(180deg, @bar-top, @bar-bottom);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
 }
 
 window#waybar.focuslock .modules-left,
 window#waybar.focuslock .modules-center,
 window#waybar.focuslock .modules-right {
     background: none;
-    border-color: transparent;
+    box-shadow: none;
     margin: 0;
     padding: 0;
 }
 
-/* 19px is where the first workspace label starts on the bar above: the card's
-   6px margin, its border, its 5px padding and the button's own 7px. The site
-   makes the nav and the page column read one --gutter so the wordmark lines up
-   with the headline under it; this is that, down the left edge of the screen. */
+/* 18px is where the first workspace number starts on the bar above: the
+   card's 8px margin, its 4px padding and the button's 6px. */
 #custom-focuslock,
 #custom-todoist {
-    padding: 0 19px;
+    padding: 0 18px;
+    font-weight: 500;
 }
 
 #custom-focuslock {
-    color: #ffffff;
+    color: @ink;
 }
 
 #custom-todoist {
-    color: rgba(255, 255, 255, 0.72);
+    color: @ink-mute;
+}
+
+/* The title is the machine reporting where you are, not a sentence you wrote,
+   so it gets the design's raised pill material to sit in. The margin holds it
+   to 19px, the height every pill on the bar above stands at. */
+#window {
+    background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.085),
+                                              rgba(255, 255, 255, 0.03));
+    color: @ink-soft;
+    font-weight: 500;
+    border-radius: 999px;
+    padding: 0 12px;
+    margin: 6px 0;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                0 1px 2px rgba(0, 0, 0, 0.28);
+}
+
+/* An empty title is a stub pill with nothing in it. waybar puts .empty on the
+   bar when sway/window has nothing to show. */
+window#waybar.empty #window {
+    background: none;
+    box-shadow: none;
 }
 
 tooltip {
-    background: @nav-ground;
-    border: 1px solid @nav-border;
-    border-radius: 14px; /* .drop */
+    background-color: @bar-bottom;
+    background-image: linear-gradient(180deg, @bar-top, @bar-bottom);
+    border-radius: 14px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 tooltip label {
-    color: #e2eaf6; /* .drop a */
+    color: @ink-soft;
     padding: 2px;
 }

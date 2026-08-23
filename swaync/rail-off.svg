@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="48" viewBox="0 0 80 48">
+  <!-- The rail under a toggle icon. Flat rects only, no gradient element: a
+       file with a linearGradient in it loads through gdk-pixbuf and then draws
+       nothing as a CSS background.
+       The position keyword must stay a plain center. With "center bottom" the
+       image is not drawn at all, which is what made this look impossible. -->
+  <rect x="30" y="40" width="20" height="2" rx="1" fill="#2a4a7a"/>
+</svg>

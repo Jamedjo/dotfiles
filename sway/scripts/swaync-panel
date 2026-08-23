@@ -10,9 +10,15 @@
 #
 # That trick needs swaync 0.11: 0.9.0 re-read the config on --reload-config but
 # kept the widgets it had built at startup, so nothing changed on screen.
+#
+# The rings around those numbers are the same idea one layer down. GTK3 has no
+# conic-gradient, so swaync-gauge draws each one into an SVG and the stylesheet
+# points a background-image at a fixed path; --reload-css is what makes GTK
+# re-read a file whose name has not changed.
 set -u
 
 SCRIPTS=/home/james/.config/sway/scripts
+GAUGE="$SCRIPTS/swaync-gauge"
 BASE=/home/james/.config/swaync/config.json
 STYLE=/home/james/.config/swaync/style.css
 RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/swaync"
@@ -54,6 +60,33 @@ temp_celsius() {
     echo 0
 }
 
+# The faders' readouts. swaync's scale draws no value, and a label cannot lie
+# across the fill -- GTK draws the scale after it -- so the figure is drawn
+# into an SVG the fill wears as its own background, the same rewrite-and-
+# reload as the gauges.
+volume_percent() {
+    pactl get-sink-volume @DEFAULT_SINK@ 2>/dev/null \
+        | awk -F/ 'NR == 1 { gsub(/[ %]/, "", $2); print $2; exit }'
+}
+
+backlight_percent() {
+    brightnessctl -m -d intel_backlight 2>/dev/null \
+        | awk -F, '{ gsub(/%/, "", $4); print $4 }'
+}
+
+# White on the accent, riding the fill's rounded left cap. When the fill is
+# shorter than the figure the tail clips, which the design accepts: the value
+# is only written at open, so it and a moved slider clash whatever happens.
+fader_readout() {
+    cat > "$RUNTIME_DIR/fader-$1.svg.tmp" <<SVG
+<svg xmlns="http://www.w3.org/2000/svg" width="46" height="24" viewBox="0 0 46 24">
+  <text x="14" y="16.5" fill="#ffffff" font-family="Inter"
+        font-size="11" font-weight="700">${2:-0}</text>
+</svg>
+SVG
+    mv "$RUNTIME_DIR/fader-$1.svg.tmp" "$RUNTIME_DIR/fader-$1.svg"
+}
+
 # Every toggle's state as one JSON object, for jq to fold in below.
 #
 # swaync draws a toggle button as a plain button -- there is no switch widget
@@ -75,37 +108,82 @@ toggle_states() {
 
 build() {
     mkdir -p "$RUNTIME_DIR"
+
+    cpu=$(cpu_percent); mem=$(mem_percent); temp=$(temp_celsius)
+
+    # Three levels, and the thresholds differ per metric because the numbers
+    # do. Memory runs high by design -- the kernel spends what it has -- so it
+    # has to be further along before it counts; a CPU pegged at 100 is a
+    # different thing from a warm one, and reads red rather than amber.
+    level() {
+        if [ "$1" -ge "$3" ]; then echo crit
+        elif [ "$1" -ge "$2" ]; then echo warn
+        else echo ok
+        fi
+    }
+    cpu_state=$(level "$cpu" 85 97)
+    mem_state=$(level "$mem" 90 97)
+    temp_state=$(level "$temp" 80 92)
+
+    # Temperature is drawn against a 100C full scale so the ring means the same
+    # thing as the two percentages beside it. The figure and its unit are drawn
+    # into the SVG rather than set as the button's label: a GtkLabel carries one
+    # type size, and these want 17px beside 9px on a shared baseline.
+    "$GAUGE" "$RUNTIME_DIR/gauge-cpu.svg"  "$cpu"  CPU  "$cpu"  "%" "$cpu_state"
+    "$GAUGE" "$RUNTIME_DIR/gauge-mem.svg"  "$mem"  MEM  "$mem"  "%" "$mem_state"
+    "$GAUGE" "$RUNTIME_DIR/gauge-temp.svg" "$temp" TEMP "$temp" "°" "$temp_state"
+
+    fader_readout volume    "$(volume_percent)"
+    fader_readout backlight "$(backlight_percent)"
+
     jq --argjson toggles "$(toggle_states)" \
-       --arg on "" --arg off "" \
-       --arg cpu "龍  $(cpu_percent)%" \
-       --arg mem "  $(mem_percent)%" \
-       --arg cog "" \
-       --arg temp "  $(temp_celsius)°C" \
-       '# The vitals go in after the menubar rather than at the front, so the
-        # settings cog stays the very top row.
-        .widgets = (.widgets | if .[0] == "menubar"
-                               then [.[0], "buttons-grid#system"] + .[1:]
-                               else ["buttons-grid#system"] + . end)
+       --arg clock "$(date +%H:%M)" \
+       --arg date "$(date '+%a %d %b' | tr '[:lower:]' '[:upper:]')" \
+       --arg cpu "$cpu%" \
+       --arg mem "$mem%" \
+       --arg temp "$temp°" \
+       '# The clock and the gauges go in front of whatever the tracked config
+        # lists, so the masthead is the top row and the vitals sit under it.
+        .widgets = (["buttons-grid#head", "buttons-grid#system"] + .widgets)
         | .["widget-config"]["buttons-grid#toggles"].actions |= map(
               (.command | capture("swaync-toggle (?<name>[a-z]+)").name) as $name
               | ($toggles[$name] // false) as $lit
               | .active = $lit
-              # The switch goes on a line of its own under the subject icon: a
-              # GtkLabel honours a newline, which is the only way to get two
-              # lines out of a swaync button. Side by side they read as two
-              # icons rather than as one thing and its state.
-              | .label = (.label | split("\n")[0] | split("  ")[0]) + "\n"
-                         + (if $lit then $on else $off end)
+              # Icon only. The tile used to carry a switch glyph on a second
+              # line as well, which is two indicators for one boolean; the
+              # state is the lit rail style.css paints under the icon.
+              | .label = (.label | split("\n")[0] | split("  ")[0])
           )
+        # Three cells of unequal width in one flowbox row; style.css gives the
+        # first the 40px figure and the last the round cog.
+        | .["widget-config"]["buttons-grid#head"] = {
+              actions: [
+                  {label: $clock, command: "foot -e calcurse"},
+                  {label: $date,  command: "foot -e calcurse"},
+                  {label: "",   command: "/home/james/.config/sway/scripts/sway-settings"}
+              ]
+          }
+        # Empty labels throughout: the rings, figures and captions are all in
+        # SVGs, and a blank label is also what unpacks the faders GtkLabel so
+        # the readout SVG can take its place on the fill.
+        | .["widget-config"].volume.label = ""
+        | .["widget-config"].backlight.label = ""
         | .["widget-config"]["buttons-grid#system"] = {
               actions: [
-                  {label: $cpu,  command: "foot -e htop"},
-                  {label: $mem,  command: "foot -e htop"},
-                  {label: $temp, command: "foot -e htop"},
-                  {label: $cog,  command: "/home/james/.config/sway/scripts/sway-settings"}
+                  {label: "", command: "foot -e htop"},
+                  {label: "", command: "foot -e htop"},
+                  {label: "", command: "foot -e htop"}
               ]
           }' "$BASE" > "$RUNTIME.tmp" || { rm -f "$RUNTIME.tmp"; return 1; }
     mv "$RUNTIME.tmp" "$RUNTIME"
+}
+
+# The sheet has to be reloaded as well as the config: the gauge rings are
+# url() backgrounds, and re-reading the sheet is what makes GTK pick up an SVG
+# whose path has not changed.
+reload() {
+    swaync-client --reload-config --skip-wait
+    swaync-client --reload-css --skip-wait
 }
 
 case "${1:-toggle}" in
@@ -114,12 +192,15 @@ case "${1:-toggle}" in
         ;;
     # Rebuild before showing, so the numbers are from now rather than from
     # whenever the session started.
+    # Three calls, not one with three flags: swaync-client takes a single
+    # command per invocation, so a second one on the same line is dropped --
+    # which showed up as the new widgets arriving in the old stylesheet.
     toggle)
-        build && swaync-client --reload-config --skip-wait
+        build && reload
         swaync-client --toggle-panel --skip-wait
         ;;
     open)
-        build && swaync-client --reload-config --skip-wait
+        build && reload
         swaync-client --open-panel --skip-wait
         ;;
     # How sway starts the daemon.

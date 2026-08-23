@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30">
+  <!-- The settings cog, disc and glyph in one file: a label's glyph centres in
+       the button's content box, which the flowbox stretches, so only a drawn
+       glyph stays put on the pinned disc. Flat fills only: a gradient element
+       in the file draws nothing through gdk-pixbuf (see rail-off.svg). -->
+  <circle cx="15" cy="15" r="15" fill="#20324e"/>
+  <g fill="#8fb4e4">
+    <circle cx="15" cy="15" r="5.4"/>
+    <rect x="13.8" y="7.2" width="2.4" height="4.2" rx="1"/>
+    <rect x="13.8" y="7.2" width="2.4" height="4.2" rx="1" transform="rotate(45 15 15)"/>
+    <rect x="13.8" y="7.2" width="2.4" height="4.2" rx="1" transform="rotate(90 15 15)"/>
+    <rect x="13.8" y="7.2" width="2.4" height="4.2" rx="1" transform="rotate(135 15 15)"/>
+    <rect x="13.8" y="7.2" width="2.4" height="4.2" rx="1" transform="rotate(180 15 15)"/>
+    <rect x="13.8" y="7.2" width="2.4" height="4.2" rx="1" transform="rotate(225 15 15)"/>
+    <rect x="13.8" y="7.2" width="2.4" height="4.2" rx="1" transform="rotate(270 15 15)"/>
+    <rect x="13.8" y="7.2" width="2.4" height="4.2" rx="1" transform="rotate(315 15 15)"/>
+  </g>
+  <circle cx="15" cy="15" r="2.3" fill="#20324e"/>
+</svg>

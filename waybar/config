@@ -11,7 +11,7 @@
 [
     {
         "layer": "top",
-        "height": 31,
+        "height": 34,
         // Per-workspace icons live here, written by sway-ws-icon. waybar merges
         // included objects key by key into this bar, and anything set here wins
         // over the include -- so "default" stays above, and a hand-written
@@ -20,8 +20,7 @@
         "modules-left": [
             "sway/workspaces",
             "sway/mode",
-            "sway/scratchpad",
-            "custom/media"
+            "sway/scratchpad"
         ],
         // The name of the workspace you are on leads the island, beside the
         // glyph that opens the menu it came from. cpu, memory and temperature
@@ -29,15 +28,25 @@
         // readouts you look at rather than glance at, so they moved into the
         // control center and the bar kept the things worth a glance --
         // sound, network, battery, tray, notifications, the time.
+        // The clock is out of the card. Everything that is a readout sits in
+        // group/stats, which is what wears the capsule; the time is the one
+        // figure on the bar worth reading from across the room, so it stands
+        // on the desktop at twice the size with nothing behind it.
         "modules-right": [
-            "custom/switchboard",
-            "pulseaudio",
-            "network",
-            "battery",
-            "tray",
-            "custom/notification",
+            "group/stats",
             "clock"
         ],
+        "group/stats": {
+            "orientation": "horizontal",
+            "modules": [
+                "custom/switchboard",
+                "pulseaudio",
+                "network",
+                "battery",
+                "tray",
+                "custom/notification"
+            ]
+        },
         // {index} is sway's workspace number; {name} is the label with the
         // number already stripped.
         //
@@ -49,20 +58,27 @@
         //
         // The spans are still unbalanced on purpose. A button is one pango
         // string and format cannot branch per workspace, so format opens a
-        // span pinning {index} and the icon at 11520 (11.25pt, the 15px the bar
-        // is set in), every icon in workspace-icons.json closes it and opens a
-        // second span, and format's trailing </span> closes that. The second
-        // span is empty now rather than holding a name -- keeping it is what
-        // lets workspace-icons.json stay exactly as sway-ws-icon writes it.
+        // span for {index} and a second for the glyph, every icon in
+        // workspace-icons.json closes that one and opens a third, and
+        // format's trailing </span> closes it. The third span is empty rather
+        // than holding a name -- keeping it is what lets
+        // workspace-icons.json stay exactly as sway-ws-icon writes it.
+        //
+        // The number and the glyph are a pair, not one string set twice: 7680
+        // is 7.5pt (10px) against the glyph's 10752 (10.5pt, 14px), and the
+        // number is drawn at 55% of the colour style.css gives the button,
+        // which lands on @ink-faint over the card. alpha rather than a
+        // foreground, because a foreground would survive onto the accent fill
+        // and the current workspace needs both halves to turn white.
         //
         // Adding an icon means adding a line there and `pkill -SIGUSR2 waybar`.
         // Names are matched exactly -- no prefixes -- so each workspace gets
         // its own icon rather than sharing one per project.
         "sway/workspaces": {
             "all-outputs": true,
-            "format": "<span size=\"11520\">{index} {icon}</span>",
+            "format": "<span size=\"7680\" weight=\"500\" alpha=\"55%\">{index}</span><span size=\"10752\"> {icon}</span>",
             "format-icons": {
-            "default":                "</span><span size=\"11520\" text_transform=\"capitalize\"> "
+            "default":                "</span><span size=\"10752\" text_transform=\"capitalize\"> "
             }
         },
 
@@ -110,8 +126,8 @@
                 "warning": 30,
                 "critical": 15
             },
-            "format": "{icon} {capacity}%",
-            "format-charging": " {capacity}%",
+            "format": "<span alpha=\"69%\">{icon}</span> {capacity}%",
+            "format-charging": "<span alpha=\"69%\"></span> {capacity}%",
             "format-icons": [
                 "",
                 "",
@@ -131,9 +147,12 @@
             "format-wifi": "直",
             "format-disconnected": "睊"
         },
+        // The icon is dimmed to @ink-dim and the figure left at @ink-soft,
+        // which is the design's status grammar. It has to happen here: the
+        // module is one label, so CSS can only colour both the same.
         "pulseaudio": {
-            "format": "{icon} {volume}%",
-            "format-bluetooth": "{volume}% {icon}",
+            "format": "<span alpha=\"69%\">{icon}</span> {volume}%",
+            "format-bluetooth": "{volume}% <span alpha=\"69%\">{icon}</span>",
             "format-muted": "婢",
             "format-icons": {
                 "headphones": "",
@@ -150,17 +169,6 @@
             },
             "on-click": "pavucontrol",
             "on-click-right": "helvum"
-        },
-        "custom/media": {
-            "format": "{icon} {}",
-            "return-type": "json",
-            "max-length": 40,
-            "format-icons": {
-                "spotify": "",
-                "default": "🎜"
-            },
-            "escape": true,
-            "exec": "$HOME/.config/waybar/mediaplayer.py 2> /dev/null"
         },
         // Opens sway-switchboard, the cascading workspace menu, and says where
         // you are while it waits: "Chief > V2 Review", cased and chevroned the

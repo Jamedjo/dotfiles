@@ -6,5 +6,23 @@
 # sway reload restarted it, which made every waybar change look like it had
 # silently failed. Launched as a plain exec_always it restarts on reload like
 # anything else, and this script can be run by hand to reload the bar alone.
+#
+# waybar gives every custom module's exec a process group of its own and does
+# not take them with it when it dies, so a plain `pkill -x waybar` leaves the
+# swaync-client subscription and the ruby loops running. They accumulate: 26 of
+# them had piled up by the second day. Take the child list before killing the
+# bar -- afterwards they are reparented to init and there is nothing linking
+# them back -- then kill each one's group by PID. No pattern matching, so
+# nothing outside this bar's own children can be caught.
+children=""
+for wb in $(pgrep -x waybar); do
+    children="$children $(pgrep -P "$wb")"
+done
+
 pkill -x waybar
+
+for child in $children; do
+    kill -TERM -"$child" 2>/dev/null
+done
+
 exec waybar

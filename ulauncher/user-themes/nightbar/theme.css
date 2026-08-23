@@ -1,0 +1,139 @@
+/* Nightbar — ulauncher.
+ *
+ * Theme by Vale (Claude, Anthropic), 2026, ported from nightbar.css.
+ *
+ * The launcher is the one surface on this desktop that is not fuzzel, so it
+ * has to be dressed separately to read as the same thing: the panel's ground,
+ * the accent as a filled selection, and no outline.
+ *
+ * extend_theme is "dark", so anything not named here falls back to Elementary
+ * Dark rather than to the light theme.
+ */
+
+@define-color panel_lit  #163561;
+@define-color panel_mid  #0c1c36;
+@define-color panel_deep #081222;
+
+@define-color ink        #f2f7ff;
+@define-color ink_soft   #dce9fb;
+@define-color ink_mute   #7f96b8;
+@define-color ink_faint  #5f769a;
+
+@define-color accent     #2f7ff0;
+@define-color accent_lit #5aa6ff;
+
+@define-color window_bg          @panel_mid;
+@define-color window_shadow      rgba(0, 0, 0, 0.55);
+@define-color window_border_color transparent;
+@define-color prefs_backgroud    rgba(255, 255, 255, 0.1);
+
+@define-color selected_bg_color  @accent;
+@define-color selected_fg_color  #ffffff;
+@define-color input_color        @ink;
+@define-color caret_color        @accent_lit;
+
+@define-color item_name          @ink_soft;
+@define-color item_text          @ink_mute;
+@define-color item_box_selected  @accent;
+@define-color item_name_selected #ffffff;
+@define-color item_text_selected rgba(255, 255, 255, 0.72);
+@define-color item_shortcut_color        @ink_faint;
+@define-color item_shortcut_shadow       transparent;
+@define-color item_shortcut_color_sel    rgba(255, 255, 255, 0.8);
+@define-color item_shortcut_shadow_sel   transparent;
+
+/* No hairline: a top-lit ground and a shadow separate the window from the
+   desktop, the way every other surface here is separated.
+
+   The shadow has to stay inside about 20px. ulauncher reserves that much
+   margin round the window for it -- see .no-window-shadow, which cancels it
+   with margin:-20px -- and anything larger is drawn outside the surface and
+   clipped against the screen edge. The panel's 26px/60px is too big here. */
+.app {
+    background-color: @panel_mid;
+    background-image: linear-gradient(180deg, @panel_lit, @panel_mid 55%, @panel_deep);
+    border: none;
+    border-radius: 16px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07),
+                0 2px 8px @window_shadow;
+}
+
+.input {
+    color: @ink;
+    caret-color: @accent_lit;
+    font-size: 170%;
+    padding: 10px 0 10px 14px;
+}
+
+.input *:selected,
+.input *:focus,
+*:selected:focus {
+    background-color: alpha(@accent, 0.9);
+    color: #ffffff;
+}
+
+.item-name {
+    color: @item_name;
+    font-size: 120%;
+}
+
+.item-text {
+    color: @item_text;
+}
+
+/* A shorter row. ulauncher's result count is hardcoded at 9 (SortedList's
+   limit, not a setting), so the only way to keep a full list off the bottom of
+   the screen is to make each row cost less height. GTK3 has no max-height, so
+   the window cannot simply be capped. */
+#item-box {
+    padding: 3px 6px;
+}
+
+#item-name {
+    font-size: 108%;
+}
+
+#item-descr {
+    font-size: 76%;
+}
+
+#item-icon {
+    margin-right: 4px;
+}
+
+/* The filled row, the same accent the focused workspace and switchboard's
+   current row take. The built-in themes carry the selection on a pair of side
+   borders; a fill needs none. */
+.selected.item-box {
+    background-image: linear-gradient(180deg, #3d8ef7, @accent);
+    border-left: none;
+    border-right: none;
+    border-radius: 10px;
+}
+
+.selected.item-box .item-name {
+    color: @item_name_selected;
+}
+
+.selected.item-box .item-text {
+    color: @item_text_selected;
+}
+
+.item-shortcut {
+    color: @item_shortcut_color;
+    text-shadow: none;
+}
+
+.selected.item-box .item-shortcut {
+    color: @item_shortcut_color_sel;
+    text-shadow: none;
+}
+
+.prefs-btn {
+    border-radius: 999px;
+    opacity: 0.7;
+}
+
+.prefs-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}

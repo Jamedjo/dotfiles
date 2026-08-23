@@ -28,9 +28,9 @@
   "script-fail-notify": true,
   "widgets": [
     "buttons-grid#toggles",
-    "buttons-grid#actions",
     "volume",
     "backlight",
+    "buttons-grid#actions",
     "title",
     "notifications"
   ],
@@ -38,31 +38,31 @@
     "buttons-grid#toggles": {
       "actions": [
         {
-          "label": "",
+          "label": "\uf1eb",
           "type": "toggle",
           "command": "/home/james/.config/sway/scripts/swaync-toggle wifi $SWAYNC_TOGGLE_STATE",
           "update-command": "/home/james/.config/sway/scripts/swaync-toggle wifi status"
         },
         {
-          "label": "",
+          "label": "\uf294",
           "type": "toggle",
           "command": "/home/james/.config/sway/scripts/swaync-toggle bluetooth $SWAYNC_TOGGLE_STATE",
           "update-command": "/home/james/.config/sway/scripts/swaync-toggle bluetooth status"
         },
         {
-          "label": "",
+          "label": "\uf185",
           "type": "toggle",
           "command": "/home/james/.config/sway/scripts/swaync-toggle sunlight $SWAYNC_TOGGLE_STATE",
           "update-command": "/home/james/.config/sway/scripts/swaync-toggle sunlight status"
         },
         {
-          "label": "",
+          "label": "\uf186",
           "type": "toggle",
           "command": "/home/james/.config/sway/scripts/swaync-toggle night $SWAYNC_TOGGLE_STATE",
           "update-command": "/home/james/.config/sway/scripts/swaync-toggle night status"
         },
         {
-          "label": "",
+          "label": "\uf59a",
           "type": "toggle",
           "command": "/home/james/.config/sway/scripts/swaync-toggle dnd $SWAYNC_TOGGLE_STATE",
           "update-command": "/home/james/.config/sway/scripts/swaync-toggle dnd status"
@@ -72,37 +72,45 @@
     "buttons-grid#actions": {
       "actions": [
         {
-          "label": "  Shot",
+          "label": "\uf030  Shot",
           "command": "cropshot --freeze --cursor --clipboard"
         },
         {
-          "label": "  Colour",
+          "label": "\uf1fb  Colour",
           "command": "/home/james/.config/sway/scripts/sway-colour"
         },
         {
-          "label": "  Focus",
+          "label": "\uf05b  Focus",
           "command": "foot -e sh -c 'sleep 0.1; vim $HOME/.config/focuslock/current'"
         },
         {
-          "label": "  Rename",
+          "label": "\uf044  Rename",
           "command": "/home/james/.config/sway/scripts/sway-ws-rename"
         },
         {
-          "label": "  Lock",
+          "label": "\uf11c  Keys",
+          "command": "sway-cheatsheet"
+        },
+        {
+          "label": "\uf108  Display",
+          "command": "wdisplays"
+        },
+        {
+          "label": "\uf023  Lock",
           "command": "swaylock"
         },
         {
-          "label": "  Keys",
-          "command": "sway-cheatsheet"
+          "label": "\uf186  Sleep",
+          "command": "systemctl suspend"
         }
       ]
     },
     "volume": {
-      "label": "",
+      "label": "",
       "show-per-app": false
     },
     "backlight": {
-      "label": "",
+      "label": "",
       "device": "intel_backlight"
     },
     "mpris": {
@@ -112,7 +120,7 @@
     "title": {
       "text": "Notifications",
       "clear-all-button": true,
-      "button-text": "Clear all"
+      "button-text": "CLEAR ALL"
     },
     "notifications": {
       "empty-list-label": "Nothing waiting"

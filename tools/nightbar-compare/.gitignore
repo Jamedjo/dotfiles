@@ -1,0 +1,11 @@
+# Everything the harness renders. Only the inputs are worth tracking.
+ref.html
+ref-raw.png
+ref.png
+impl.png
+sheet.png
+crop-*.png
+zoom-*.png
+bar.html
+bar-ref.png
+bar-sheet.png

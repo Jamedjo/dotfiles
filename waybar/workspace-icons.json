@@ -24,7 +24,9 @@
       "sway": " </span><span text_transform=\"capitalize\"> ",
       "test": " </span><span text_transform=\"capitalize\"> ",
       "test-2": " </span><span text_transform=\"capitalize\"> ",
-      "test 4": " </span><span text_transform=\"capitalize\"> "
+      "test 4": " </span><span text_transform=\"capitalize\"> ",
+      "sway:notification-bar": " </span><span text_transform=\"capitalize\"> ",
+      "sway:demo": " </span><span text_transform=\"capitalize\"> "
     }
   }
 }

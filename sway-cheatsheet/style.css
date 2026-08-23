@@ -1,43 +1,47 @@
-/* sway-cheatsheet in the chief-site palette, deployed to
- * ~/.config/sway-cheatsheet/style.css.
+/* Nightbar — sway-cheatsheet.
  *
- * The program ships sway's own border colours as its default, so it looks
- * like the desktop on a machine without these dotfiles. This is the copy that
- * makes it look like the bar and the control center instead -- the same
- * values waybar/style.css and swaync/style.css name, kept in step by hand.
+ * Theme by Vale (Claude, Anthropic), 2026, adapted from
+ * sway-cheatsheet-nightbar.css onto the nightbar palette the other three
+ * surfaces now share. Type is the machine's own stack, Inter with Ubuntu Nerd
+ * Font backfilling glyphs.
  *
- * Read at startup, and the sheet is rebuilt every time it opens, so editing
- * this is the same as reloading it.
+ * Read at startup and rebuilt each time the sheet opens, so editing this is
+ * reloading it. GTK4, not GTK3 -- and neither will do flex or gap, so spacing
+ * here is margins and padding only.
+ *
+ * The sheet is four lanes at the size sway floats it at, and the numbers below
+ * are what makes the longest lane end above the footer rather than under it.
+ * Tightening the type or loosening the padding puts it back into a scroll.
  */
 
-@define-color nav-ground   #0f1f38;
-@define-color nav-elevated #1a2d4f;
-@define-color twilight     #2b4470;
-@define-color blue         #4a9eff;
-@define-color blue-deep    #256aba;
-@define-color gold         #f0b35e;
+@define-color panel-lit  #163561;
+@define-color panel-mid  #0c1c36;
+@define-color panel-deep #081222;
 
-/* The window paints nothing at all.
- *
- * Deliberately not `window.cheatsheet`: this window is the whole screen, and
- * when the class went missing once the selector stopped matching and GTK
- * filled the display with Adwaita grey. Styling the bare node means the only
- * window this process owns cannot be left painting over the desktop by an
- * edit somewhere else. */
-window {
-    background: transparent;
-    background-color: transparent;
-}
+@define-color ink-soft   #dce9fb;
+@define-color ink-mute   #7f96b8;
+@define-color ink-faint  #5f769a;
 
-/* The backdrop is the rest of the screen, and it is there only to catch the
-   click that dismisses. It paints nothing: dimming would hide the thing you
-   opened the sheet to look at. See the rule above. */
+@define-color accent-lit  #5aa6ff;
+@define-color accent-deep #256aba;
+@define-color warn        #ffb14d;
 
-/* Everything between the window and the sheet paints nothing.
- *
- * GTK gives a scrolled window a viewport inside it and both take the theme's
- * background, so leaving either alone puts a slab of Adwaita grey wherever
- * the sheet does not reach. */
+/* Modifier tints. Super is deliberately the quietest thing on the sheet: it is
+   in over half the bindings, so colouring it would tint the whole page. */
+@define-color mod-super-fg rgba(226, 234, 246, 0.5);
+@define-color mod-ctrl-bg  rgba(43, 68, 112, 0.8);
+@define-color mod-ctrl-fg  rgba(176, 199, 235, 0.92);
+@define-color mod-alt-bg   rgba(47, 127, 240, 0.17);
+@define-color mod-alt-fg   rgba(158, 206, 255, 0.92);
+@define-color mod-shift-bg rgba(80, 206, 224, 0.15);
+@define-color mod-shift-fg rgba(124, 220, 234, 0.94);
+
+/* The window and everything between it and the sheet paint nothing: the
+   backdrop only catches the click that dismisses, and dimming would hide what
+   you opened the sheet to read. These are bare node selectors on purpose --
+   the code does add .cheatsheet, but if that class ever goes missing a
+   class-based rule stops matching and GTK fills the screen with Adwaita grey. */
+window,
 scrolledwindow,
 scrolledwindow > viewport,
 .backdrop {
@@ -45,69 +49,152 @@ scrolledwindow > viewport,
     background-color: transparent;
 }
 
+/* No hairline on the sheet. The border made it read as a box on the desktop;
+   a top-lit ground and a deep shadow separate it without drawing a line. */
 .sheet {
-    background: @nav-ground;
-    border: 1px solid alpha(@blue, 0.4);
-    border-radius: 16px;
-    padding: 24px 28px 26px 28px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
-    color: alpha(#e2eaf6, 0.78);
+    background-color: @panel-mid;
+    background-image: radial-gradient(120% 90% at 50% 0%,
+                                      @panel-lit 0%,
+                                      @panel-mid 52%,
+                                      @panel-deep 100%);
+    border: none;
+    border-radius: 20px;
+    /* Nothing at the sides or the bottom: the footer band runs the full
+       width and carries the sheet's bottom corners, so the 18px inset the
+       rest of the sheet keeps is on the header and the lanes instead. */
+    padding: 20px 0 0 0;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07),
+                0 26px 60px rgba(0, 0, 0, 0.6);
+    color: @ink-soft;
 }
 
 .sheet-head {
-    margin-bottom: 22px;
-    padding-bottom: 14px;
-    border-bottom: 1px solid alpha(@blue, 0.22);
+    margin: 0 18px 18px 18px;
+    padding-bottom: 0;
+    border-bottom: none;
 }
 
 .sheet-title {
-    font-size: 20px;
+    font-size: 34px;
     font-weight: 700;
     color: #ffffff;
 }
 
+.sheet-hint {
+    font-size: 12px;
+    color: @ink-faint;
+}
+
+/* The tally sits in the same capsule material as the caps, so the two things
+   on the sheet made of figures are made of the same stuff. It is the hint
+   beside it that takes the header's spare width now, not this, or the fill
+   would stretch the pill the width of the sheet. */
 .sheet-tally {
-    font-family: "IBM Plex Mono", monospace;
     font-size: 11px;
     letter-spacing: 1.4px;
-    color: alpha(#e2eaf6, 0.38);
+    font-feature-settings: "tnum";
+    color: @ink-mute;
+    background-image: linear-gradient(180deg,
+                                      rgba(255, 255, 255, 0.085),
+                                      rgba(255, 255, 255, 0.03));
+    border-radius: 999px;
+    padding: 5px 11px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                0 1px 2px rgba(0, 0, 0, 0.28);
 }
 
-/* Each group is one child of the flow box, so its own spacing is what keeps
-   the columns apart rather than a fixed lane width. */
+.columns {
+    padding: 0 18px;
+}
+
+/* Air above a heading, not below it: a heading belongs to the rows under it. */
 .group {
-    margin-bottom: 4px;
+    margin-bottom: 18px;
+    padding: 0 10px;
 }
 
-/* The mode a binding belongs to. "default" is the one you are in almost
-   always, so it reads as a quiet label rather than a shout. */
-/* A heading belongs to the rows under it, so nearly all the air goes above.
-   Sitting midway between two groups it read as a footer for the one before.
-   The first group in a column has nothing above it to be pushed away from,
-   but the margin is harmless there. */
 .section-head {
-    font-family: "IBM Plex Mono", monospace;
-    font-size: 11px;
-    letter-spacing: 1.6px;
+    font-size: 10px;
+    letter-spacing: 1.8px;
     text-transform: uppercase;
-    color: @gold;
-    margin-top: 20px;
-    margin-bottom: 3px;
+    color: @warn;
+    margin-top: 0;
+    margin-bottom: 8px;
 }
 
+/* A binding is two lines: what it does, then how to do it. The sentence goes
+   first -- you arrive at the sheet knowing what you want, not which key it is
+   -- so the eye runs down prose with the chords indented under it. */
 .binding {
-    padding: 2px 0;
+    padding: 4px 8px 5px 8px;
+    border-radius: 11px;
 }
 
-/* The chord. Fixed width, so the descriptions start at one place down the
-   whole column and the eye can run down either side. */
-.keys {
-    font-family: "IBM Plex Mono", monospace;
-    font-size: 13px;
-    color: @blue;
+.binding:hover {
+    background-color: rgba(255, 255, 255, 0.035);
 }
 
 .what {
-    font-size: 14px;
-    color: alpha(#e2eaf6, 0.72);
+    font-size: 12px;
+    color: @ink-soft;
+}
+
+.keys {
+    font-size: 11px;
+    color: @accent-lit;
+    margin-top: 5px;
+}
+
+/* ---- keycaps -----------------------------------------------------------
+   One cap per key. Modifiers stay quiet and tinted by which modifier they are;
+   the final key -- the one that actually does the thing -- takes the filled
+   accent, so a chord reads modifier-then-action at a glance.
+   ---------------------------------------------------------------------- */
+
+.keys .mod,
+.keys .key {
+    border-radius: 6px;
+    padding: 2px 6px;
+    margin-right: 3px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                0 1px 2px rgba(0, 0, 0, 0.28);
+}
+
+.keys .mod {
+    background-color: rgba(255, 255, 255, 0.07);
+    color: rgba(226, 234, 246, 0.7);
+}
+
+.keys .mod-super { background-color: rgba(255, 255, 255, 0.05); color: @mod-super-fg; }
+.keys .mod-ctrl  { background-color: @mod-ctrl-bg;  color: @mod-ctrl-fg; }
+.keys .mod-alt   { background-color: @mod-alt-bg;   color: @mod-alt-fg; }
+.keys .mod-shift { background-color: @mod-shift-bg; color: @mod-shift-fg; }
+
+.keys .key {
+    padding: 2px 7px;
+    background-image: linear-gradient(180deg, #3d8ef7, @accent-deep);
+    color: #ffffff;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22),
+                0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+/* "b / v" and "1 … 0" are two keys offered for one job: set the mark between
+   them back and give it air so it is not read as part of either key name. */
+.keys .sep {
+    color: rgba(255, 255, 255, 0.4);
+    padding: 0 4px;
+}
+
+/* Footer band. Carries the one thing worth saying twice -- how to get back
+   here -- as real caps rather than prose. */
+.sheet-foot {
+    margin-top: 16px;
+    padding: 10px 28px 12px 28px;
+    border-top: none;
+    background-image: linear-gradient(90deg,
+                                      rgba(255, 255, 255, 0.02),
+                                      rgba(255, 255, 255, 0.06));
+    border-radius: 0 0 20px 20px;
+    font-size: 11px;
+    color: @ink-faint;
 }

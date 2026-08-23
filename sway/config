@@ -623,44 +623,32 @@ for_window [app_id="google-chrome"] border pixel 1
 font pango:Inter Medium 10
 titlebar_padding 12 5
 
-# Chief, on waybar's palette rather than near it, and on waybar's grammar too:
-# fill means current, outline means shouting. The bar draws its active
-# workspace as the site's filled CTA - solid --color-primary-deep #256aba under
-# white - and its urgent one as .badge-early, a gold letter inside a gold
-# hairline with nothing behind it. Two different channels, so neither can be
-# mistaken for the other however loud the gold gets.
-#
-# So the focused title is that CTA verbatim: #256aba edge to edge, #ffffff on
-# top. An earlier pass tried to carry focus on the --bg-section -> --bg-elevated
-# lift alone, #1a2d4f against #0f1f38, and it lost - with an urgent window on
-# screen the gold was the only thing wearing real colour, so the gold read as
+# Nightbar, on the bar's grammar: fill means current, outline means shouting.
+# The focused title is the bar's accent edge to edge under white. An earlier
+# pass carried focus on the lift alone, and lost - with an urgent window on
+# screen the amber was the only thing wearing real colour, so the amber read as
 # the current one. A fill has to be a fill.
 #
 # Outlines stay quiet, which is the point of putting the signal in the fill.
-# The ring around the focused window is #275288 - waybar's --nav-border
-# rgba(74, 158, 255, .4) flattened onto --nav-ground, the same hairline the bar
-# draws around its cards - and the title takes no edge of its own, so the bar
-# reads as one solid block rather than a block inside a border.
-# --color-primary #4a9eff survives only in the split indicator, which is a few
-# pixels on one side and wants to be seen.
-#
-# Text is waybar's white ramp flattened the same way: .72 alpha #bcc0c7 for a
-# title that is present but not current, .52 #8c93a0 for one that is neither.
-# Urgent is .badge-early verbatim, the gold-on-ground letter inside a gold
-# hairline that the bar already uses - not the red, which the bar spends on
-# battery and network failure.
+# The ring around a focused window is the accent at .45 flattened onto the
+# panel ground; the split indicator keeps the lit accent, being a few pixels on
+# one side that want to be seen.
 #
 # class                 border    backgr.   text    indicator child_border
-client.focused          #256aba   #256aba   #ffffff #4a9eff   #275288
-client.focused_inactive #1a2d4f   #0f1f38   #bcc0c7 #1a2d4f   #16294a
-client.unfocused        #16294a   #0f1f38   #8c93a0 #16294a   #16294a
-client.urgent           #f0b35e   #0f1f38   #f0b35e #f0b35e   #f0b35e
+client.focused          #2f7ff0   #2f7ff0   #ffffff #5aa6ff   #1c498a
+client.focused_inactive #182f52   #0c1c36   #94abcd #182f52   #12294a
+client.unfocused        #12294a   #081222   #5f769a #12294a   #12294a
+client.urgent           #ffb14d   #0c1c36   #ffb14d #ffb14d   #ffb14d
 
 #exec spotify
 
 # ULauncher listens from a background process
 exec GDK_BACKEND=wayland ulauncher --hide-window
-for_window [app_id="ulauncher"] floating enable, border none
+# ulauncher puts its own top edge a fifth of the way down the screen
+# (UlauncherWindow.position_window, hardcoded), but a Wayland client cannot
+# place itself, so that move is a no-op and sway decides. Centre the whole
+# window rather than leaving its top on the centre line.
+for_window [app_id="ulauncher"] floating enable, border none, move position center
 
 # The keyboard cheatsheet is a reference rather than a menu -- something you
 # may want beside the thing you are doing -- so it is an ordinary window and

@@ -1,0 +1,52 @@
+#!/bin/sh
+# swaync-gauge <out.svg> <percent> <caption> <value> <unit> [warn]
+#
+# One ring gauge for the control center. GTK3 has no conic-gradient, so the
+# ring cannot be drawn by the stylesheet -- but a url() background whose file
+# has changed is re-read on `swaync-client --reload-css`, so the sheet points
+# at a fixed path and swaync-panel rewrites what is behind it.
+#
+# The figure is in here rather than in the button's label because a GtkLabel
+# carries one type size, and the design wants the value at 17px beside its unit
+# at 9px on one baseline. Drawing both here also puts them at the ring's own
+# centre rather than at the centre of whatever box GTK gives the label.
+set -u
+
+OUT=$1; PCT=$2; CAPTION=$3; VALUE=$4; UNIT=$5; STATE=${6:-ok}
+
+R=44
+C=$(awk -v r="$R" 'BEGIN { printf "%.3f", 2 * 3.14159265358979 * r }')
+DASH=$(awk -v c="$C" -v p="$PCT" 'BEGIN {
+    if (p < 0) p = 0
+    # Never a closed ring: the track has to stay readable at every value.
+    if (p > 99) p = 99
+    printf "%.3f", c * p / 100 }')
+
+# One hue for all three, with two levels above it: amber means worth a look,
+# red means it has run out. A gauge sitting amber all day means nothing, and a
+# pegged CPU should not look the same as a warm one.
+case "$STATE" in
+    crit) LIT="#ff4a4a" ;;
+    warn) LIT="#ffb14d" ;;
+    *)    LIT="#4d9dff" ;;
+esac
+
+# rotate(-90) starts the arc at twelve o'clock and sweeps clockwise, so the
+# three read as one instrument cluster.
+cat > "$OUT.tmp" <<SVG
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="116" viewBox="0 0 96 116">
+  <circle cx="48" cy="48" r="$R" fill="none" stroke="#16294a" stroke-width="8"/>
+  <circle cx="48" cy="48" r="$R" fill="none" stroke="$LIT" stroke-width="8"
+          stroke-dasharray="$DASH $C" stroke-linecap="round"
+          transform="rotate(-90 48 48)"/>
+  <circle cx="48" cy="48" r="40" fill="#0b1729"/>
+  <text x="48" y="55" text-anchor="middle" font-family="Inter">
+    <tspan font-size="20" font-weight="700" fill="#f2f7ff">$VALUE</tspan><tspan
+          font-size="9" fill="rgba(226,234,246,0.55)" dx="1">$UNIT</tspan>
+  </text>
+  <text x="48" y="112" fill="#7f96b8" text-anchor="middle"
+        font-family="Inter" font-size="9" font-weight="600"
+        letter-spacing="1.3">$CAPTION</text>
+</svg>
+SVG
+mv "$OUT.tmp" "$OUT"
