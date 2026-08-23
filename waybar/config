@@ -93,10 +93,10 @@
         },
         "cpu": {
             "on-click": "foot -e htop",
-            "format": " {usage}%"
+            "format": "龍 {usage}%"
         },
         "memory": {
-            "format": " {}%"
+            "format": " {}%"
         },
         "temperature": {
             "critical-threshold": 80,
@@ -133,31 +133,31 @@
         "network": {
             "on-click": "foot -e nmtui",
             "tooltip-format-wifi": "{essid} ({signalStrength}%)",
-            "format-wifi": "",
-            "format-disconnected": ""
+            "format-wifi": "直",
+            "format-disconnected": "睊"
         },
         "pulseaudio": {
             "format": "{icon} {volume}%",
-            "format-bluetooth": "{volume}% {icon}",
-            "format-muted": "",
+            "format-bluetooth": "{volume}% {icon}",
+            "format-muted": "婢",
             "format-icons": {
-                "headphones": "",
-                "handsfree": "",
-                "headset": "",
-                "phone": "",
-                "portable": "",
-                "car": "",
+                "headphones": "",
+                "handsfree": "",
+                "headset": "",
+                "phone": "",
+                "portable": "蓼",
+                "car": "",
                 "default": [
-                    "",
-                    "",
-                    ""
+                    "奄",
+                    "奔",
+                    "墳"
                 ]
             },
             "on-click": "pavucontrol"
         },
         "wireplumber": {
             "format": "{volume}%",
-            "format-muted": "",
+            "format-muted": "婢",
             "on-click": "helvum"
         },
         "custom/media": {
