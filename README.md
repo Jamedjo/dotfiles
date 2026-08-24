@@ -187,7 +187,7 @@ pick.
 
 ## Terminal
 
-[foot](foot.ini), with:
+[foot](foot/foot.ini), with:
 
 - one million lines of scrollback,
 - the desktop's navy background, set once in `[colors]`,

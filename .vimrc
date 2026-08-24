@@ -37,7 +37,7 @@ set display=lastline "If the last line is very long we still want to see it
 set smoothscroll "If a line is very long we don't want to jump past it but scroll through the word wrap
 
 set background=dark
-colo jamedjo "stereokai dracula thor PaperColor
+colo valedjo "vale-nightbar jamedjo stereokai dracula thor PaperColor
 let g:airline_theme='base16'
 
 "Remap recording to Q, to avoid accidents

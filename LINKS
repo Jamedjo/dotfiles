@@ -27,8 +27,12 @@ ln ~/.config/pulse/default.pa
 ln ~/browser-chooser.sh
 ln ~/.config/alacritty/alacritty.yml
 ln ~/.config/alacritty/alacritty.toml
-ln ~/.config/foot/foot.ini
 ln ~/.config/user-dirs.dirs
+ln ~/.vim/colors/jamedjo.vim jamedjo.vim
+ln ~/.vim/colors/valedjo.vim valedjo.vim
+ln ~/.vim/colors/vale-nightbar.vim vale-nightbar.vim
+
+mkdir -p foot/themes && ln ~/.config/foot/foot.ini foot/ && ln ~/.config/foot/themes/* foot/themes/
 
 mkdir sway && ln ~/.config/sway/* sway/
 mkdir sway/config.d && ln ~/.config/sway/config.d/* sway/config.d/

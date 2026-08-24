@@ -47,14 +47,14 @@ FG="1c1c1c"
 # too: on a near-white background the usual bright variants are the least
 # readable thing on screen, and bright white would vanish entirely.
 #
-# Tuned against the jamedjo palette in foot.ini rather than stock ANSI: that
-# scheme spends 4/5/6/7 and 15 on near-white *text* (warm grey, two light
-# greys, white, tan), so those slots go to dark neutrals here -- the first
-# pass mapped 5 to magenta and left text unreadable. Hue slots keep their
-# jamedjo family (1 amber, 9 pink, 10 chartreuse, 12 sky, 13 lilac), just
-# flipped dark enough to sit on cream.
-PALETTE="000000 7a3f00 3f3f20 55553a 453a30 2e2e2e 1f1f1f 1c1c1c
-         6b3a30 a01050 6a6a20 7a5c00 0f5a7a 6a4a90 007a7a 5c3a1a"
+# Tuned against the valedjo palette in foot.ini rather than stock ANSI
+# (the earlier jamedjo tuning is superseded with it). Every hue slot keeps
+# its family flipped dark enough to sit on cream (terracotta -> dark red,
+# leaf -> dark green, mist -> dark blue, and so on); the text slots 7 and 15
+# and the rust bright-black become dark neutrals. Slot 0 stays a navy-black
+# so "black" output keeps the theme's ground family.
+PALETTE="1a2438 a02020 14724a 7a5200 1a4fa0 7a3a92 0f6178 1c1c1c
+         3a465c b03028 1a8a5c 8a5f00 2a62b8 8a4aaa 147a96 2e2e2e"
 
 # Every pts owned by a running foot, found via the shell foot spawned.
 foot_ptys() {
