@@ -44,6 +44,7 @@ mkdir mako && ln ~/.config/mako/* mako/
 mkdir swaync && ln ~/.config/swaync/* swaync/
 mkdir switchboard && ln ~/.config/switchboard/* switchboard/
 mkdir sway-cheatsheet && ln ~/.config/sway-cheatsheet/* sway-cheatsheet/
+mkdir xdg-desktop-portal-wlr && ln ~/.config/xdg-desktop-portal-wlr/config xdg-desktop-portal-wlr/config
 
 
 mkdir fuzzel && ln ~/.config/fuzzel/* fuzzel/

@@ -1,0 +1,28 @@
+[screencast]
+output_name=Slurp
+chooser_type=simple
+chooser_cmd=slurp -f %o -or
+exec_before=/home/james/.config/sway/scripts/swaync-dnd-share before
+exec_after=/home/james/.config/sway/scripts/swaync-dnd-share after
+
+[disabled-screencast]
+output_name=eDP-1
+chooser_type=none
+
+[disabled-screencast]
+output_name=DP-3
+chooser_type=none
+
+[disabled-screencast]
+output_name=DP-1
+chooser_type=none
+
+[disabled-screencast]
+output_name=DP-4
+chooser_type=none
+
+[disabled-screencast]
+output_name=DP-5
+chooser_type=none
+max_fps=30
+

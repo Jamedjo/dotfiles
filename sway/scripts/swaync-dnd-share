@@ -1,0 +1,55 @@
+#!/bin/sh
+# Do not disturb, for as long as the screen is being shared.
+#
+# Nothing polls for this. xdg-desktop-portal-wlr runs exec_before when a
+# screencast starts and exec_after only once *all* of them have ended, so
+# overlapping shares -- a call and a recording at the same time -- are counted
+# by the portal rather than here. Wired up in xdg-desktop-portal-wlr/config.
+#
+#   swaync-dnd-share before  -> silence notifications
+#   swaync-dnd-share after   -> let them back in
+#
+# The stamp file is what keeps a screenshare from clearing a do not disturb
+# that was set by hand: it is written only when this script is what turned DND
+# on, and only then is DND turned back off. It holds the pid of the portal that
+# wrote it, which separates the two ways a stamp can already exist -- another
+# share running under the same portal, which must keep it, from one left behind
+# by a portal that died mid-share, which must not be trusted.
+#
+# Every call out is bounded: swaync-client blocks indefinitely if the session
+# bus or the daemon is unreachable, and exec_before runs on the way in to a
+# screencast. A share that will not start is a worse failure than one that
+# forgets to go quiet.
+#
+# Only the portal sees this, so grim and friends -- which take the screen
+# through wlr-screencopy directly -- do not trip it. A screenshot is not a
+# reason to go quiet.
+set -u
+
+STAMP="${XDG_RUNTIME_DIR:-/tmp}/swaync-dnd-share.on"
+TOGGLE=/home/james/.config/sway/scripts/swaync-toggle
+PORTAL=$(pgrep -f '/usr/libexec/xdg-desktop-portal-wlr' | head -n1)
+
+case "${1:-}" in
+    before)
+        # Deliberately silent: a notification announcing the start of a
+        # screenshare would be the very thing this exists to prevent.
+        if [ -n "$PORTAL" ] && [ -e "$STAMP" ] &&
+           [ "$(cat "$STAMP" 2>/dev/null)" = "$PORTAL" ]; then
+            exit 0
+        fi
+        rm -f "$STAMP"
+        [ "$(timeout 3 "$TOGGLE" dnd status)" = true ] && exit 0
+        timeout 3 "$TOGGLE" dnd true && echo "$PORTAL" > "$STAMP"
+        ;;
+    after)
+        [ -e "$STAMP" ] || exit 0
+        rm -f "$STAMP"
+        timeout 3 "$TOGGLE" dnd false
+        timeout 3 notify-send -t 3000 "Do not disturb off" "screenshare ended"
+        ;;
+    *)
+        echo "usage: ${0##*/} <before|after>" >&2
+        exit 64
+        ;;
+esac
