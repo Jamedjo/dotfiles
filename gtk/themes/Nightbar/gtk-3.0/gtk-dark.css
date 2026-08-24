@@ -1,0 +1,588 @@
+/* Nightbar — a GTK3 theme.
+ *
+ * Theme by Vale (Claude, Anthropic), 2026. The palette is the desk's, shared
+ * by hand with waybar/swaync/switchboard/ulauncher/fuzzel/gtk-4.0 — there is
+ * no import between them, so a colour change here has to be made there too.
+ *
+ * This is a theme in its own right, selected by name, NOT an override dropped
+ * into ~/.config/gtk-3.0/gtk.css. That matters: a file there applies to every
+ * GTK3 app unconditionally and the only way back is to delete it, whereas this
+ * is switched by `gtk-theme-name=Yaru-dark` and switched back just as easily.
+ *
+ * It builds on Yaru-dark rather than starting from bare GTK, because Yaru's
+ * widget geometry is 719 KB of compiled resource that would have to be
+ * reimplemented otherwise. The import below pulls that in; everything after it
+ * moves the colours onto the Nightbar ground.
+ *
+ * The named colours are largely a fallback. Yaru resolves most of its surfaces
+ * from values baked into its gresource rather than from these names, so the
+ * explicit rules further down are what actually land — a window overridden by
+ * name alone stayed Yaru's #2c2c2c grey.
+ *
+ * libadwaita apps (nautilus) ignore GTK themes entirely, so their half of the
+ * palette lives in ~/.config/gtk-4.0/gtk.css instead and cannot be a theme.
+ *
+ * Values are literals so each line can be read against the palette:
+ *   #182f52 lit surface  #163561 raised  #0c1c36 ground  #0a1830 sunk
+ *   #2f7ff0 accent  #5aa6ff lit  #f2f7ff ink  #dce9fb ink-soft
+ *   #94abcd dim  #7f96b8 mute  #5f769a faint
+ */
+
+@import url("resource:///com/ubuntu/themes/Yaru-dark/3.0/gtk.css");
+
+@define-color theme_bg_color #0f2444;
+@define-color theme_fg_color #dce9fb;
+
+/* The content well — an image viewer's canvas, a list's ground — sits below
+   the chrome, so it is the darker of the two. */
+@define-color theme_base_color #081222;
+@define-color theme_text_color #dce9fb;
+@define-color content_view_bg #081222;
+@define-color text_view_bg #081222;
+
+@define-color theme_selected_bg_color #2f7ff0;
+@define-color theme_selected_fg_color #ffffff;
+
+@define-color theme_unfocused_bg_color #0f2444;
+@define-color theme_unfocused_fg_color #7f96b8;
+@define-color theme_unfocused_base_color #081222;
+@define-color theme_unfocused_text_color #7f96b8;
+@define-color theme_unfocused_selected_bg_color #23528f;
+@define-color theme_unfocused_selected_fg_color #dce9fb;
+
+@define-color insensitive_bg_color #0f2444;
+@define-color insensitive_fg_color #7f96b8;
+@define-color insensitive_base_color #081222;
+@define-color unfocused_insensitive_color #7f96b8;
+
+/* No hairlines: where a border is unavoidable it becomes the inner-highlight
+   white rather than a drawn line. */
+@define-color borders rgba(255, 255, 255, 0.08);
+@define-color unfocused_borders rgba(255, 255, 255, 0.05);
+
+@define-color success_color #9cc96a;
+@define-color warning_color #ffc477;
+@define-color error_color #ff6b6b;
+
+/* The window manager colours Yaru uses for its own titlebars. */
+@define-color wm_bg_a #182f52;
+@define-color wm_bg_b #0e1f3a;
+@define-color wm_title #f2f7ff;
+@define-color wm_unfocused_title #7f96b8;
+@define-color wm_border rgba(0, 0, 0, 0.5);
+@define-color wm_borders_edge rgba(255, 255, 255, 0.06);
+@define-color wm_highlight rgba(255, 255, 255, 0.06);
+@define-color wm_shadow rgba(0, 0, 0, 0.35);
+
+/* ── The lift ────────────────────────────────────────────────────────── */
+
+/* The names above turn out to carry very little on their own: Yaru resolves
+   most of its surfaces from values baked into gtk.gresource rather than from
+   these, so a window stayed Yaru's #2c2c2c grey with every colour overridden.
+   Treat the block above as the fallback and state the surfaces explicitly.
+
+   Keep this list to window-level nodes. `box`, `grid` and `stack` also live
+   inside headerbars and buttons, so naming them here paints over the whole
+   window and flattens every surface on it.
+
+   `.background` is deliberately NOT in this list either. GTK puts that class
+   on many inner containers, not just the toplevel, so painting it flattens
+   panels that would otherwise take their own colour — wdisplays' side panel
+   and its canvas come from different sources and this rule made them
+   identical. */
+window,
+window.background,
+dialog,
+messagedialog {
+    background-color: #0f2444;
+    color: #dce9fb;
+}
+
+/* Anything that is a content well rather than a panel sits a step deeper. */
+textview,
+textview text,
+iconview {
+    background-color: #081222;
+    color: #dce9fb;
+}
+
+/* ── The surface hierarchy ───────────────────────────────────────────────
+   Four depths, so a window reads as structure rather than one flat navy
+   field: the well a document sits in, the ground a window is, the panel
+   that stands on it, and the lit bar above that.
+
+     #081222 well     a canvas, a document, a list
+     #0c1c36 ground   the window itself
+     #16305a panel    a sidebar, a toolbar, a framed pane
+     #182f52 lit      the headerbar, the top of its gradient  */
+
+.sidebar,
+stacksidebar,
+stacksidebar list,
+.sidebar-pane,
+scrolledwindow.frame,
+frame > border,
+.frame {
+    background-color: #16305a;
+    border: none;
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.35);
+}
+
+/* Separators do the work of telling two panes apart. Nightbar has no
+   hairlines, so this is a shadow edge and a lit edge rather than a line:
+   dark on the near side, a single lit pixel on the far side. */
+separator,
+paned > separator,
+paned separator {
+    background-image: none;
+    background-color: rgba(0, 0, 0, 0.45);
+    box-shadow: 1px 0 0 rgba(255, 255, 255, 0.07);
+    min-width: 1px;
+    min-height: 1px;
+}
+
+paned.vertical > separator {
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+/* Links carry valedjo's sky and lilac rather than the fill blue, which does
+   not hold at body weight over the navy. */
+link,
+*:link {
+    color: #7fc9ea;
+}
+
+*:visited {
+    color: #b291dd;
+}
+
+/* The status colours are valedjo's: leaf-olive, warn amber, terracotta, and
+   sea-teal standing in for informational. */
+.success,
+label.success {
+    color: #9cc96a;
+}
+
+.warning,
+label.warning {
+    color: #ffc477;
+}
+
+.error,
+label.error {
+    color: #ff6b6b;
+}
+
+infobar.info > revealer > box {
+    background-color: #1b4a55;
+    color: #98dddb;
+}
+
+infobar.warning > revealer > box {
+    background-color: #4a3a1b;
+    color: #fecc77;
+}
+
+infobar.error > revealer > box {
+    background-color: #4a1f1f;
+    color: #ff9b9b;
+}
+
+/* Top-lit, shadowed onto the content below, never ruled off from it. */
+headerbar,
+.titlebar {
+    background-image: linear-gradient(180deg, #182f52, #0e1f3a);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06),
+                0 2px 6px rgba(0, 0, 0, 0.35);
+    border: none;
+}
+
+headerbar:backdrop,
+.titlebar:backdrop {
+    background-image: linear-gradient(180deg, #12294a, #0c1c36);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+/* eog's toolbar and its thumbnail strip are the same surface family. */
+toolbar,
+.toolbar {
+    background-image: linear-gradient(180deg, #14294a, #0c1c36);
+    border: none;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+/* The image canvas is the deepest thing on screen, so a photograph on it
+   reads as lit rather than as a panel among panels. */
+#eog-thumb-view,
+.eog-window .view {
+    background-color: #081222;
+}
+
+/* Yaru dims its headerbar title, which is legible on its own grey but not on
+   the navy — it was the "too grey to see" title in wdisplays. */
+headerbar .title,
+.titlebar .title {
+    color: #f2f7ff;
+    font-weight: 700;
+}
+
+headerbar .subtitle,
+.titlebar .subtitle {
+    color: #94abcd;
+}
+
+headerbar label {
+    color: #dce9fb;
+}
+
+/* Yaru hardcodes its button fills inside gtk.gresource instead of deriving
+   them from the names above, so overriding colours alone leaves every button
+   its original warm grey sitting on the navy. They have to be redrawn. */
+button,
+button.text-button,
+button.image-button {
+    background-image: linear-gradient(180deg, #1e3a63, #14294a);
+    background-color: transparent;
+    color: #dce9fb;
+    border: none;
+    border-radius: 8px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07),
+                0 1px 2px rgba(0, 0, 0, 0.3);
+    text-shadow: none;
+}
+
+button:hover {
+    background-image: linear-gradient(180deg, #27497a, #1b355c);
+    color: #f2f7ff;
+}
+
+button:active,
+button:checked {
+    background-image: linear-gradient(180deg, #23528f, #2f7ff0);
+    color: #ffffff;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+button:disabled {
+    background-image: none;
+    background-color: #0e1f3a;
+    color: #5f769a;
+    box-shadow: none;
+}
+
+/* Flat buttons stay invisible until touched, as they do on the bar. */
+button.flat,
+button.titlebutton {
+    background-image: none;
+    background-color: transparent;
+    box-shadow: none;
+}
+
+button.flat:hover,
+button.titlebutton:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    box-shadow: none;
+}
+
+button.titlebutton {
+    border-radius: 999px;
+    color: #dce9fb;
+}
+
+headerbar button.close:hover,
+button.close:hover {
+    background-color: #cf3b3b;
+    color: #ffffff;
+}
+
+button.suggested-action {
+    background-image: linear-gradient(180deg, #4a8ae0, #2f7ff0);
+    color: #ffffff;
+}
+
+button.destructive-action {
+    background-image: linear-gradient(180deg, #e05555, #cf3b3b);
+    color: #ffffff;
+}
+
+/* Yaru's accent is Ubuntu orange, and it reaches every "on" state: check
+   marks, radios, switches, slider fills and progress. None of it comes from
+   the colour names above, so each has to be pointed at the desk's blue or a
+   checked box stays orange on the navy. */
+check,
+radio {
+    background-image: linear-gradient(180deg, #1e3a63, #14294a);
+    background-color: transparent;
+    border: none;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+    color: #dce9fb;
+}
+
+check:checked,
+check:indeterminate,
+radio:checked,
+radio:indeterminate {
+    background-image: linear-gradient(180deg, #4a8ae0, #2f7ff0);
+    background-color: #2f7ff0;
+    color: #ffffff;
+}
+
+check:disabled,
+radio:disabled {
+    background-image: none;
+    background-color: #0e1f3a;
+    color: #5f769a;
+}
+
+switch {
+    background-color: #14294a;
+    border: none;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+/* Matching Yaru's own selector exactly, not a shorter one. `switch:checked`
+   alone loses to `switch:not(:backdrop):checked` on specificity and the
+   toggle stays orange. Same-selector overrides win on document order. */
+switch:checked,
+switch:not(:backdrop):checked,
+:backdrop switch:backdrop:checked,
+switch:backdrop:checked {
+    background-color: #2f7ff0;
+    background: #2f7ff0;
+    background-image: none;
+    border-color: #2f7ff0;
+    color: #ffffff;
+    text-shadow: none;
+}
+
+switch slider {
+    background-color: #dce9fb;
+    border: none;
+}
+
+scale trough,
+progressbar trough {
+    background-color: #0a1830;
+    border: none;
+}
+
+/* Yaru draws these with a 1px #eb6637 border as well as an orange fill. On a
+   3px-tall highlight the border is most of what you see, so recolouring the
+   fill alone leaves it looking entirely orange — the border has to go too. */
+progressbar progress,
+scale highlight {
+    background-image: linear-gradient(180deg, #4a8ae0, #2f7ff0);
+    background-color: #2f7ff0;
+    border: none;
+    border-color: #2f7ff0;
+}
+
+progressbar progress:backdrop,
+scale highlight:backdrop {
+    border-color: #23528f;
+}
+
+scale slider {
+    background-color: #dce9fb;
+    border: none;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+scale slider:active,
+scale:not(.marks-after):not(.marks-before):not(:disabled) slider:active {
+    border-color: #5aa6ff;
+    box-shadow: inset 0 0 0 1px #5aa6ff, 0 2px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Yaru lists every selectable node in one rule; ours has to name them too,
+   or `entry selection` and friends keep the orange. */
+label selection,
+entry selection,
+spinbutton:not(.vertical) selection,
+.view:selected:focus,
+.view:selected,
+.view text:selected:focus,
+.view text:selected,
+.view text selection:focus,
+.view text selection,
+textview text:selected:focus,
+textview text:selected,
+textview text selection:focus,
+textview text selection,
+iconview:selected:focus,
+iconview:selected,
+iconview text selection:focus,
+iconview text selection,
+flowbox flowboxchild:selected,
+modelbutton.flat:selected,
+.menuitem.button.flat:selected,
+treeview.view:selected:focus,
+treeview.view:selected,
+row:selected,
+calendar:selected {
+    background-color: #2f7ff0;
+    color: #ffffff;
+}
+
+treeview.view.progressbar {
+    background-color: #2f7ff0;
+    background-image: image(#2f7ff0);
+}
+
+/* A linked group — eog's zoom cluster is one — should read as a single pill
+   rather than as three buttons that happen to touch. */
+.linked > button:not(:first-child):not(:last-child) { border-radius: 0; }
+.linked > button:first-child { border-radius: 8px 0 0 8px; }
+.linked > button:last-child { border-radius: 0 8px 8px 0; }
+
+/* The file chooser that Ctrl-O opens is a GTK3 dialog, so it lands here:
+   its places sidebar, its list, and its column headers. */
+placessidebar,
+placessidebar list {
+    background-color: #0e1f3a;
+}
+
+placessidebar row:selected {
+    background-color: #2f7ff0;
+    color: #ffffff;
+}
+
+placessidebar row:hover:not(:selected) {
+    background-color: rgba(90, 166, 255, 0.1);
+}
+
+treeview.view {
+    background-color: #0a1830;
+    color: #dce9fb;
+}
+
+treeview.view:selected {
+    background-color: #2f7ff0;
+    color: #ffffff;
+}
+
+treeview.view header button {
+    background-image: linear-gradient(180deg, #14294a, #0e1f3a);
+    border-radius: 0;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    color: #94abcd;
+}
+
+scrollbar {
+    background-color: #0a1830;
+    border: none;
+}
+
+scrollbar slider {
+    background-color: #2c4a7a;
+    border-radius: 999px;
+}
+
+scrollbar slider:hover {
+    background-color: #4a76b8;
+}
+
+menu,
+popover,
+popover.background,
+.menu {
+    background-color: #163561;
+    border: none;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07),
+                0 2px 12px rgba(0, 0, 0, 0.5);
+}
+
+menuitem:hover,
+.menu menuitem:hover {
+    background-color: #2f7ff0;
+    color: #ffffff;
+}
+
+/* Entries read as recessed wells, matching the bar's own inputs. A fixed
+   colour rather than a translucent black, so they land at the same depth on
+   every surface. `entry` alone does not reach a spin button's own entry node,
+   which is why the numeric fields in wdisplays sat lighter than the search
+   fields beside them. */
+entry,
+entry.search,
+spinbutton,
+spinbutton:not(.vertical),
+spinbutton entry,
+spinbutton:not(.vertical) entry {
+    background-color: #081222;
+    background-image: none;
+    border: none;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.45),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    color: #f2f7ff;
+    caret-color: #5aa6ff;
+}
+
+entry:focus,
+entry:focus-within,
+spinbutton:focus-within,
+spinbutton:not(.vertical):focus-within,
+spinbutton entry:focus {
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.45),
+                inset 0 0 0 1px #2f7ff0;
+}
+
+entry:disabled,
+spinbutton:disabled,
+spinbutton:disabled:not(.vertical),
+spinbutton entry:disabled {
+    background-color: #0b1b33;
+    color: #5f769a;
+}
+
+entry placeholder,
+entry text placeholder {
+    color: #5f769a;
+}
+
+/* A spin button is one control, not a well with two buttons bolted on: the
+   steppers go flat over the well and only light up under the pointer. */
+spinbutton button,
+spinbutton:not(.vertical) button,
+spinbutton button.up,
+spinbutton button.down {
+    background-image: none;
+    background-color: transparent;
+    box-shadow: none;
+    border: none;
+    border-radius: 0;
+    border-style: none none none solid;
+    border-color: rgba(255, 255, 255, 0.07);
+    color: #94abcd;
+}
+
+spinbutton button:hover,
+spinbutton:not(.vertical) button:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: #f2f7ff;
+}
+
+spinbutton button:active,
+spinbutton:not(.vertical) button:active {
+    background-color: rgba(47, 127, 240, 0.35);
+    color: #ffffff;
+}
+
+spinbutton button:disabled,
+spinbutton:not(.vertical) button:disabled {
+    background-color: transparent;
+    color: #47597a;
+}
+
+/* Secondary text needs to clear the contrast floor over a ground this dark. */
+.dim-label {
+    color: #7f96b8;
+    opacity: 1;
+}
+
+tooltip,
+tooltip.background {
+    background-color: #163561;
+    color: #f2f7ff;
+    border: none;
+}

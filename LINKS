@@ -52,6 +52,24 @@ mkdir -p ulauncher/user-themes/nightbar
 ln ~/.config/ulauncher/settings.json ulauncher/settings.json
 ln ~/.config/ulauncher/user-themes/nightbar/* ulauncher/user-themes/nightbar/
 
+mkdir -p gtk/gtk-4.0 && ln ~/.config/gtk-4.0/gtk.css gtk/gtk-4.0/gtk.css
+mkdir -p gtk/gtk-3.0 && ln ~/.config/gtk-3.0/settings.ini gtk/gtk-3.0/settings.ini
+# GTK3 is a real named theme, not a ~/.config/gtk-3.0/gtk.css override, so it
+# can be switched off by name. gtk-dark.css is a copy of gtk.css (GTK loads
+# that one when gtk-application-prefer-dark-theme is set), and the gresource
+# symlink is what makes the @import of Yaru-dark resolve under our theme name.
+mkdir -p ~/.local/share/themes/Nightbar/gtk-3.0
+ln gtk/themes/Nightbar/index.theme ~/.local/share/themes/Nightbar/index.theme
+ln gtk/themes/Nightbar/gtk-3.0/gtk.css ~/.local/share/themes/Nightbar/gtk-3.0/gtk.css
+ln gtk/themes/Nightbar/gtk-3.0/gtk-dark.css ~/.local/share/themes/Nightbar/gtk-3.0/gtk-dark.css
+ln -s /usr/share/themes/Yaru-dark/gtk-3.0/gtk.gresource ~/.local/share/themes/Nightbar/gtk-3.0/gtk.gresource
+# icons/nightbar-icons draws the icon theme rather than storing it; run it to
+# write ~/.local/share/icons/Nightbar, then gtk-update-icon-cache.
+# Scripts/nightbar-desktop-settings puts back the dconf half of the theme
+# (color-scheme, icon-theme, eog's canvas, the screenshot folder icons).
+# chrome/nightbar-theme is not linked: it is loaded in-place from
+# chrome://extensions -> Load unpacked.
+
 mkdir btop && ln ~/.config/btop/btop.conf btop/
 mkdir btop/themes && ln ~/.config/btop/themes/nightbar.theme btop/themes/
 

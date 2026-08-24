@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=X-GNOME-Metatheme
+Name=Nightbar
+Comment=The desk's theme: Vale's Nightbar palette on Yaru-dark's widget geometry.
+Encoding=UTF-8
+
+[X-GNOME-Metatheme]
+GtkTheme=Nightbar
+MetacityTheme=Nightbar
+IconTheme=Nightbar
+CursorTheme=Yaru
+ButtonLayout=:minimize,maximize,close

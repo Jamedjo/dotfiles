@@ -1,0 +1,46 @@
+{
+  "manifest_version": 3,
+  "name": "Nightbar",
+  "version": "1.0",
+  "description": "The desk's theme, on the browser. Ground #0c1c36, accent #2f7ff0, valedjo ink.",
+  "theme": {
+    "colors": {
+      "frame": [12, 28, 54],
+      "frame_inactive": [10, 24, 48],
+      "frame_incognito": [8, 18, 34],
+      "frame_incognito_inactive": [7, 16, 30],
+
+      "toolbar": [24, 47, 82],
+      "toolbar_text": [242, 247, 255],
+      "toolbar_button_icon": [220, 233, 251],
+
+      "tab_text": [242, 247, 255],
+      "tab_background_text": [148, 171, 205],
+      "tab_background_text_inactive": [127, 150, 184],
+      "tab_background_text_incognito": [148, 171, 205],
+      "tab_background_text_incognito_inactive": [127, 150, 184],
+
+      "background_tab": [12, 28, 54],
+      "background_tab_inactive": [10, 24, 48],
+      "background_tab_incognito": [8, 18, 34],
+      "background_tab_incognito_inactive": [7, 16, 30],
+
+      "bookmark_text": [220, 233, 251],
+      "button_background": [22, 53, 97],
+
+      "omnibox_background": [10, 24, 48],
+      "omnibox_text": [242, 247, 255],
+
+      "ntp_background": [12, 28, 54],
+      "ntp_header": [24, 47, 82],
+      "ntp_text": [220, 233, 251],
+      "ntp_link": [90, 166, 255]
+    },
+    "tints": {
+      "buttons": [-1, -1, 0.92]
+    },
+    "properties": {
+      "ntp_logo_alternate": 1
+    }
+  }
+}

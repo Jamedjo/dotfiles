@@ -1,0 +1,210 @@
+#!/usr/bin/env python3
+"""Draw the Nightbar icon theme.
+
+Yaru ships its folders as PNGs, so they cannot be recoloured onto the desk's
+navy - these are drawn instead. The hierarchy is the point: folders carry the
+accent and lead the view, files recede as raised cards with a coloured type
+stripe, so a directory of files reads as one quiet field with the folders
+standing out of it.
+
+Writes an icon theme that inherits Yaru-blue-dark, so anything not drawn here
+still resolves. Run it, then:
+
+    gtk-update-icon-cache -f -t ~/.local/share/icons/Nightbar
+"""
+
+import os
+import sys
+
+OUT = os.path.expanduser("~/.local/share/icons/Nightbar")
+
+# The desk's palette. Shared by hand with waybar/swaync/gtk-4.0 - see the
+# Nightbar note in each of those; there is no import between them.
+ACCENT_LIT = "#6fb2ff"   # the folder's back tab, catching the light
+ACCENT_TOP = "#4a8ae0"   # body, top of the gradient
+ACCENT_BOT = "#2a5da8"   # body, bottom
+CARD_TOP = "#22406e"     # a file, top of the gradient
+CARD_BOT = "#16294a"     # a file, bottom
+FOLD = "#2f5590"         # the folded corner
+INK = "#dce9fb"
+GROUND = "#0c1c36"
+
+# valedjo, for the type stripes.
+TERRACOTTA = "#e0563f"
+OLIVE = "#7fae4f"
+AMBER = "#ffb14d"
+MIST = "#849bc4"
+ROSE = "#cf85ae"
+TEAL = "#5fb8ad"
+SKY = "#7fc9ea"
+LILAC = "#b291dd"
+CREAM = "#fecc77"
+
+HEAD = ('<svg xmlns="http://www.w3.org/2000/svg" '
+        'viewBox="0 0 128 128" width="128" height="128">')
+
+
+def grad(name, top, bottom):
+    return (f'<linearGradient id="{name}" x1="0" y1="0" x2="0" y2="1">'
+            f'<stop offset="0" stop-color="{top}"/>'
+            f'<stop offset="1" stop-color="{bottom}"/></linearGradient>')
+
+
+def folder(glyph="", tint=None):
+    """A folder. The tab sits behind and above the body, lit from the top."""
+    top, bot = (tint if tint else (ACCENT_TOP, ACCENT_BOT))
+    tab = ACCENT_LIT if not tint else top
+    return "".join([
+        HEAD,
+        "<defs>", grad("body", top, bot), "</defs>",
+        # The back tab, peeking over the body.
+        f'<path d="M12,44 a8,8 0 0 1 8,-8 h30 a8,8 0 0 1 5.7,2.4 L62,44 '
+        f'h46 a8,8 0 0 1 8,8 v12 H12 Z" fill="{tab}"/>',
+        # The body.
+        f'<rect x="12" y="50" width="104" height="58" rx="9" fill="url(#body)"/>',
+        # The 1px inner highlight that stands in for an outline everywhere
+        # else on this desk.
+        f'<rect x="12" y="50" width="104" height="2.5" rx="1.25" '
+        f'fill="#ffffff" opacity="0.28"/>',
+        glyph,
+        "</svg>",
+    ])
+
+
+def card(stripe, marks=2):
+    """A file: a raised card, a folded corner, and a stripe naming its type."""
+    lines = []
+    for i in range(marks):
+        y = 62 + i * 13
+        w = 44 if i % 2 == 0 else 32
+        lines.append(f'<rect x="40" y="{y}" width="{w}" height="6" rx="3" '
+                     f'fill="{INK}" opacity="0.20"/>')
+    return "".join([
+        HEAD,
+        "<defs>", grad("page", CARD_TOP, CARD_BOT), "</defs>",
+        f'<path d="M36,12 h42 l26,26 v70 a9,9 0 0 1 -9,9 H36 '
+        f'a9,9 0 0 1 -9,-9 V21 a9,9 0 0 1 9,-9 Z" fill="url(#page)"/>',
+        # The fold, a lighter plane catching the same top light.
+        f'<path d="M78,12 l26,26 h-17 a9,9 0 0 1 -9,-9 Z" fill="{FOLD}"/>',
+        f'<path d="M36,12 h42 l3,3 H36 a6,6 0 0 0 -6,6 V18 a6,6 0 0 1 6,-6 Z" '
+        f'fill="#ffffff" opacity="0.22"/>',
+        "".join(lines),
+        # The type stripe.
+        f'<rect x="40" y="90" width="34" height="8" rx="4" fill="{stripe}"/>',
+        "</svg>",
+    ])
+
+
+def g(path, opacity="0.92", fill="#ffffff"):
+    return f'<path d="{path}" fill="{fill}" opacity="{opacity}"/>'
+
+
+# Glyphs sit in the lower half of the folder body, centred on x=64.
+GLYPHS = {
+    "folder-documents": g("M50,68 h28 v6 H50 Z M50,80 h28 v6 H50 Z "
+                          "M50,92 h18 v6 H50 Z"),
+    "folder-download": g("M60,64 h8 v18 h10 L64,98 50,82 h10 Z"),
+    "folder-music": g("M78,62 v26 a8,8 0 1 1 -6,-7.8 V72 l-16,4 v20 "
+                      "a8,8 0 1 1 -6,-7.8 V70 Z"),
+    "folder-pictures": g("M48,94 l12,-16 8,10 6,-7 10,13 Z M76,64 "
+                         "a5,5 0 1 1 0,10 5,5 0 0 1 0,-10 Z"),
+    "folder-videos": g("M56,66 l26,15 -26,15 Z"),
+    # A globe reads as a crosshair if the meridians are filled shapes; it
+    # needs to be drawn as strokes.
+    "folder-publicshare": (
+        '<g fill="none" stroke="#ffffff" stroke-width="5" opacity="0.92">'
+        '<circle cx="64" cy="80" r="17"/>'
+        '<path d="M47,80 h34"/>'
+        '<ellipse cx="64" cy="80" rx="8" ry="17"/></g>'),
+    "folder-templates": g("M50,64 h28 v8 H68 v26 h-8 V72 H50 Z"),
+    # The lens is punched through with evenodd so the folder's own gradient
+    # shows in it, rather than being faked with a flat disc that only matches
+    # the body at one height.
+    "folder-screenshots": (
+        '<path fill-rule="evenodd" fill="#ffffff" opacity="0.92" '
+        'd="M49,68 h5 l4,-6 h12 l4,6 h5 a7,7 0 0 1 7,7 v17 '
+        'a7,7 0 0 1 -7,7 H49 a7,7 0 0 1 -7,-7 V75 a7,7 0 0 1 7,-7 Z '
+        'M64,73 a10,10 0 1 0 0.01,0 Z"/>'),
+    "folder-remote": g("M46,72 h36 v20 H46 Z M52,78 h24 v8 H52 Z "
+                       "M58,96 h12 v4 H58 Z"),
+    "user-home": g("M64,60 l20,18 h-6 v20 H50 V78 h-6 Z"),
+    "user-desktop": g("M44,66 h40 v24 H44 Z M58,94 h12 v4 H58 Z"),
+    "folder-saved-search": g("M64,60 l5.5,11.5 12.5,1.8 -9,8.8 2.1,12.5 "
+                             "-11.1,-5.9 -11.1,5.9 2.1,-12.5 -9,-8.8 "
+                             "12.5,-1.8 Z"),
+}
+
+PLACES = {
+    "folder": folder(),
+    "folder-open": folder(),
+    "inode-directory": folder(),
+    "folder-drag-accept": folder(tint=(ACCENT_LIT, ACCENT_TOP)),
+    "folder-visiting": folder(tint=(ACCENT_LIT, ACCENT_TOP)),
+}
+for name, glyph in GLYPHS.items():
+    PLACES[name] = folder(glyph)
+
+# The generic mimetypes nautilus reaches for most. Anything absent falls
+# through to Yaru-blue-dark.
+MIMES = {
+    "text-x-generic": card(MIST, 3),
+    "text-x-generic-template": card(MIST, 3),
+    "text-x-preview": card(MIST, 3),
+    "text-plain": card(MIST, 3),
+    "text-x-script": card(OLIVE, 3),
+    "text-x-python": card(OLIVE, 3),
+    "text-html": card(TERRACOTTA, 3),
+    "text-css": card(SKY, 3),
+    "application-x-generic": card(MIST, 2),
+    "application-x-executable": card(OLIVE, 2),
+    "application-pdf": card(TERRACOTTA, 3),
+    "application-json": card(TEAL, 3),
+    "application-zip": card(AMBER, 2),
+    "package-x-generic": card(AMBER, 2),
+    "image-x-generic": card(LILAC, 2),
+    "video-x-generic": card(ROSE, 2),
+    "audio-x-generic": card(TEAL, 2),
+    "font-x-generic": card(CREAM, 2),
+    "x-office-document": card(SKY, 3),
+    "x-office-spreadsheet": card(OLIVE, 3),
+    "x-office-presentation": card(AMBER, 3),
+}
+
+INDEX = """[Icon Theme]
+Name=Nightbar
+Comment=The desk's theme, on the file manager. Folders lead in the accent; files recede as cards.
+Inherits=Yaru-blue-dark,Yaru-blue,Yaru-dark,Adwaita,hicolor
+Example=folder
+
+Directories=scalable/places,scalable/mimetypes
+
+[scalable/places]
+Context=Places
+Size=128
+MinSize=16
+MaxSize=512
+Type=Scalable
+
+[scalable/mimetypes]
+Context=MimeTypes
+Size=128
+MinSize=16
+MaxSize=512
+Type=Scalable
+"""
+
+
+def main():
+    for sub, icons in (("places", PLACES), ("mimetypes", MIMES)):
+        d = os.path.join(OUT, "scalable", sub)
+        os.makedirs(d, exist_ok=True)
+        for name, svg in icons.items():
+            with open(os.path.join(d, name + ".svg"), "w") as fh:
+                fh.write(svg)
+    with open(os.path.join(OUT, "index.theme"), "w") as fh:
+        fh.write(INDEX)
+    print(f"wrote {len(PLACES)} places and {len(MIMES)} mimetypes to {OUT}")
+
+
+if __name__ == "__main__":
+    sys.exit(main())

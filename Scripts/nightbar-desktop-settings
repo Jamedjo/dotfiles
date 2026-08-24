@@ -1,0 +1,37 @@
+#!/bin/sh
+# The part of Nightbar that is not a config file.
+#
+# The GTK sheets (gtk/gtk-3.0/gtk.css, gtk/gtk-4.0/gtk.css) and the icon
+# theme (icons/nightbar-icons) carry the colours, but three things live in
+# dconf instead and are lost on a fresh machine. This puts them back.
+#
+# Safe to re-run, and safe to run in a live session: GTK apps restyle in
+# place. Chrome is unaffected — it is in Classic appearance mode, not GTK.
+set -eu
+
+# libadwaita picks its light stylesheet unless this is set, and would paint
+# dark text over the navy grounds.
+gsettings set org.gnome.desktop.interface color-scheme prefer-dark
+
+# Drawn by icons/nightbar-icons into ~/.local/share/icons/Nightbar.
+gsettings set org.gnome.desktop.interface icon-theme Nightbar
+
+# GTK3 apps disagree about where to read the theme from: some take
+# gtk-3.0/settings.ini, others (xdg-desktop-portal-gtk's file chooser, and
+# wdisplays) take GSettings. This key was still 'Adwaita' while settings.ini
+# said Nightbar, so those apps rendered in light Adwaita and none of the
+# palette landed. Both have to name the same theme.
+gsettings set org.gnome.desktop.interface gtk-theme Nightbar
+
+# eog paints its canvas from its own setting, not from CSS, so the sheet
+# cannot reach it — without this the viewer is a black hole in a navy desk.
+gsettings set org.gnome.eog.view background-color 'rgb(8,18,34)'
+gsettings set org.gnome.eog.view trans-color '#0c1c36'
+
+# The screenshot folders wear the drawn camera. This is per-folder gvfs
+# metadata, so it does not survive a move or a fresh checkout.
+for d in "$HOME/Screenshots" "$HOME/dotfiles/screenshots"; do
+    [ -d "$d" ] && gio set "$d" metadata::custom-icon-name folder-screenshots
+done
+
+echo "Nightbar desktop settings applied."

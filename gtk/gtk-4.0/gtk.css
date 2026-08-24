@@ -1,0 +1,247 @@
+/* Nightbar — GTK4 / libadwaita (nautilus, and every other adwaita app).
+ *
+ * Theme by Vale (Claude, Anthropic), 2026. The palette is the desk's, shared
+ * by hand with waybar/swaync/switchboard/ulauncher/fuzzel — there is no import
+ * between them, so a colour change here has to be made there too.
+ *
+ * libadwaita ignores gtk-theme-name. What it does read is this file, loaded
+ * after its own stylesheet, so redefining its named colours is the whole
+ * mechanism. Everything below the colour block is the Nightbar surface
+ * language on top: no hairlines, a top-lit gradient, a 1px inner highlight
+ * and a drop shadow.
+ *
+ * This needs `color-scheme` set to prefer-dark, or libadwaita picks its light
+ * stylesheet and paints dark text over these grounds:
+ *   gsettings set org.gnome.desktop.interface color-scheme prefer-dark
+ */
+
+/* ── libadwaita's palette ────────────────────────────────────────────── */
+
+/* Literals rather than aliases, so each name can be read on its own line
+   against the palette the rest of the desk shares:
+     #182f52 lit surface   #163561 raised   #0c1c36 ground   #0a1830 sunk
+     #2f7ff0 accent        #5aa6ff lit      #ffb14d warn
+     #f2f7ff ink  #dce9fb ink-soft  #94abcd dim  #7f96b8 mute  #5f769a faint */
+
+@define-color window_bg_color #0c1c36;
+@define-color window_fg_color #dce9fb;
+
+/* The list sits below the headerbar, so it is the darker of the two. */
+@define-color view_bg_color #0a1830;
+@define-color view_fg_color #dce9fb;
+
+@define-color headerbar_bg_color #182f52;
+@define-color headerbar_fg_color #f2f7ff;
+@define-color headerbar_border_color #f2f7ff;
+@define-color headerbar_backdrop_color #0c1c36;
+@define-color headerbar_shade_color rgba(0, 0, 0, 0.36);
+@define-color headerbar_darker_shade_color rgba(0, 0, 0, 0.5);
+
+@define-color sidebar_bg_color #0e1f3a;
+@define-color sidebar_fg_color #dce9fb;
+@define-color sidebar_backdrop_color #0c1c36;
+@define-color sidebar_border_color rgba(0, 0, 0, 0.4);
+@define-color sidebar_shade_color rgba(0, 0, 0, 0.32);
+
+@define-color secondary_sidebar_bg_color #0d1d36;
+@define-color secondary_sidebar_fg_color #dce9fb;
+@define-color secondary_sidebar_backdrop_color #0c1c36;
+@define-color secondary_sidebar_border_color rgba(0, 0, 0, 0.4);
+@define-color secondary_sidebar_shade_color rgba(0, 0, 0, 0.32);
+
+@define-color card_bg_color #14294a;
+@define-color card_fg_color #dce9fb;
+@define-color card_shade_color rgba(0, 0, 0, 0.36);
+
+@define-color dialog_bg_color #0f2342;
+@define-color dialog_fg_color #dce9fb;
+
+@define-color popover_bg_color #163561;
+@define-color popover_fg_color #dce9fb;
+@define-color popover_shade_color rgba(0, 0, 0, 0.4);
+
+@define-color thumbnail_bg_color #0e1f3a;
+@define-color thumbnail_fg_color #dce9fb;
+
+@define-color shade_color rgba(0, 0, 0, 0.36);
+@define-color scrollbar_outline_color rgba(0, 0, 0, 0.5);
+
+/* Not a hairline anywhere: where libadwaita insists on a border, it gets the
+   inner-highlight white rather than a drawn line. */
+@define-color borders rgba(255, 255, 255, 0.08);
+@define-color unfocused_borders rgba(255, 255, 255, 0.05);
+
+@define-color accent_bg_color #2f7ff0;
+@define-color accent_fg_color #ffffff;
+/* accent_color is accent text ON the ground, so it is the lit blue — the
+   fill blue does not carry at body weight over navy. */
+@define-color accent_color #5aa6ff;
+
+/* This libadwaita is Yaru-patched and reads its own accent names in places. */
+@define-color yaru_accent_bg_color #2f7ff0;
+@define-color yaru_accent_color #5aa6ff;
+@define-color yaru_link_color #5aa6ff;
+@define-color yaru_link_visited_color #b291dd;
+
+/* The status colours come from valedjo: terracotta, leaf-olive, warn amber. */
+@define-color destructive_bg_color #cf3b3b;
+@define-color destructive_fg_color #ffffff;
+@define-color destructive_color #ff6b6b;
+
+@define-color error_bg_color #cf3b3b;
+@define-color error_fg_color #ffffff;
+@define-color error_color #ff6b6b;
+
+@define-color success_bg_color #5f8f36;
+@define-color success_fg_color #ffffff;
+@define-color success_color #9cc96a;
+
+@define-color warning_bg_color #ffb14d;
+@define-color warning_fg_color #0c1c36;
+@define-color warning_color #ffc477;
+
+@define-color insensitive_bg_color #0c1c36;
+@define-color insensitive_fg_color #5f769a;
+@define-color insensitive_base_color #0a1830;
+
+/* GTK3-era names some GTK4 apps still ask for. */
+@define-color theme_bg_color #0c1c36;
+@define-color theme_fg_color #dce9fb;
+@define-color theme_base_color #0a1830;
+@define-color theme_text_color #dce9fb;
+@define-color theme_selected_bg_color #2f7ff0;
+@define-color theme_selected_fg_color #ffffff;
+@define-color theme_unfocused_bg_color #0c1c36;
+@define-color theme_unfocused_fg_color #7f96b8;
+@define-color theme_unfocused_base_color #0a1830;
+@define-color theme_unfocused_text_color #7f96b8;
+@define-color theme_unfocused_selected_bg_color #23528f;
+@define-color theme_unfocused_selected_fg_color #dce9fb;
+@define-color unfocused_insensitive_color #5f769a;
+
+/* ── The lift ────────────────────────────────────────────────────────── */
+
+/* The bar is top-lit and shadowed onto the view below it, rather than ruled
+   off from it. The shadow is drawn by the headerbar because the view has no
+   node above it to cast one. */
+/* The surface is AdwToolbarView's `.top-bar`, not the headerbar. The
+   headerbar sits *inside* it and is about 3px shorter at each end, so a
+   gradient on the headerbar alone leaves a seam of the top-bar's own colour
+   above and below it — a hairline of exactly the kind this theme avoids.
+   Paint the band once on the container and let the headerbar be glass. */
+.toolbarview > .top-bar,
+.top-bar {
+    background-image: linear-gradient(180deg, #182f52, #0e1f3a);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06),
+                0 2px 6px rgba(0, 0, 0, 0.35);
+    border: none;
+}
+
+.toolbarview > .top-bar:backdrop,
+.top-bar:backdrop {
+    background-image: linear-gradient(180deg, #12294a, #0c1c36);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03),
+                0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+headerbar,
+headerbar:backdrop {
+    background-image: none;
+    background-color: transparent;
+    box-shadow: none;
+    border: none;
+}
+
+/* Same treatment for the search/path bar nautilus stacks under the header. */
+.toolbar,
+searchbar > revealer > box,
+actionbar > revealer > box {
+    border: none;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+/* The sidebar is a surface, not a column ruled off the view. */
+.sidebar-pane,
+.navigation-sidebar {
+    border: none;
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.35);
+}
+
+/* Rows and buttons are the desk's pills. */
+.navigation-sidebar > row {
+    border-radius: 999px;
+    margin: 1px 6px;
+    color: #94abcd;
+}
+
+.navigation-sidebar > row:selected {
+    background-color: #2f7ff0;
+    color: #ffffff;
+}
+
+.navigation-sidebar > row:hover:not(:selected) {
+    background-color: rgba(90, 166, 255, 0.1);
+    color: #dce9fb;
+}
+
+/* Popovers and dialogs get the same lift as every other floating surface
+   here — inner highlight, soft shadow, no outline. */
+popover > contents,
+.osd,
+window.dialog > box {
+    border: none;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07),
+                0 2px 12px rgba(0, 0, 0, 0.5);
+}
+
+/* Selected files: the accent fill, matching the workspace pill. */
+gridview child:selected,
+columnview row:selected,
+listview row:selected {
+    background-color: #2f7ff0;
+    color: #ffffff;
+}
+
+/* Secondary text stays legible on navy — libadwaita's default dim-label alpha
+   lands under the contrast floor over a ground this dark. */
+.dim-label,
+label.dim-label {
+    color: #7f96b8;
+    opacity: 1;
+}
+
+/* Entries read as recessed wells, the way the bar's own inputs do. */
+entry,
+entry.search,
+spinbutton {
+    background-color: rgba(0, 0, 0, 0.28);
+    border: none;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
+    color: #f2f7ff;
+}
+
+entry:focus-within {
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35),
+                inset 0 0 0 1px #2f7ff0;
+}
+
+/* Flat header buttons should not paint a box until they are touched. */
+headerbar button.flat:hover,
+headerbar button.image-button:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+headerbar button.flat:active,
+headerbar button.image-button:active,
+headerbar button.flat:checked {
+    background-color: rgba(47, 127, 240, 0.4);
+}
+
+/* The path bar's current segment is the lit one. */
+.path-bar-box button:checked label {
+    color: #f2f7ff;
+}
+
+progressbar > trough > progress {
+    background-color: #2f7ff0;
+}
